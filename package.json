@@ -1,6 +1,5 @@
 {
-  "name": "investHoldFrontend",
-  "type": "module",
+  "name": "investhold-frontend",
   "private": true,
   "scripts": {
     "build": "nuxt build",
@@ -10,8 +9,17 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "nuxt": "^4.2.1",
-    "vue": "^3.5.25",
-    "vue-router": "^4.6.3"
+    "@nuxt/ui": "^2.22.3",
+    "@pinia/nuxt": "^0.6.0",
+    "@vueuse/nuxt": "^14.1.0",
+    "axios": "^1.6.0",
+    "nuxt": "^4.0.0",
+    "pinia": "^2.1.0",
+    "vue": "^3.3.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.0"
   }
 }
