@@ -16,7 +16,7 @@
           }"
         />
       </UFormField>
-
+      <br>
       <UFormField label="Password" name="password">
         <UInput
             v-model="state.password"
