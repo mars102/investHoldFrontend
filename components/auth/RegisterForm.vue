@@ -3,7 +3,7 @@
     <h2 class="text-2xl font-bold text-white mb-6">Create Account</h2>
 
     <UForm :schema="registerSchema" :state="state" @submit="handleSubmit" class="space-y-4">
-      <UFormField label="Full Name" name="name">
+      <UFormField class="field-pole" label="Full Name" name="name">
         <UInput
             v-model="state.name"
             placeholder="John Doe"
@@ -16,7 +16,7 @@
         />
       </UFormField>
 
-      <UFormField label="Email" name="email">
+      <UFormField class="field-pole" label="Email" name="email">
         <UInput
             v-model="state.email"
             type="email"
@@ -30,7 +30,7 @@
         />
       </UFormField>
 
-      <UFormField label="Password" name="password">
+      <UFormField class="field-pole" label="Password" name="password">
         <UInput
             v-model="state.password"
             type="password"
@@ -44,7 +44,7 @@
         />
       </UFormField>
 
-      <UFormField label="Confirm Password" name="confirmPassword">
+      <UFormField class="field-pole" label="Confirm Password" name="confirmPassword">
         <UInput
             v-model="state.confirmPassword"
             type="password"
@@ -106,6 +106,7 @@
 <script setup lang="ts">
 import { registerSchema } from '~/utils/validation'
 
+
 const authStore = useAuthStore()
 const { $toast } = useNuxtApp()
 const router = useRouter()
@@ -129,7 +130,6 @@ const handleSubmit = async () => {
   pending.value = true
 
   const result = await authStore.register({
-    name: state.name,
     email: state.email,
     password: state.password
   })
@@ -141,3 +141,9 @@ const handleSubmit = async () => {
   }
 }
 </script>
+
+<style>
+.field-pole{
+  margin-bottom: 10px;
+}
+</style>

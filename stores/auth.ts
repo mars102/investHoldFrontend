@@ -16,15 +16,15 @@ export const useAuthStore = defineStore('auth', () => {
 
     const login = async (credentials: LoginCredentials) => {
         try {
-            const response = await $fetch<AuthResponse>('/auth/login', {
+            const response = await $fetch<AuthResponse>('auth/login', {
                 method: 'POST',
                 body: credentials,
                 baseURL: useRuntimeConfig().public.apiUrl
             })
 
-            accessToken.value = response.access_token
-            refreshToken.value = response.refresh_token
-            user.value = response.user
+            accessToken.value = response.token
+            refreshToken.value = response.token
+            user.value = response.token
 
             await navigateTo('/')
             return { success: true }
@@ -35,9 +35,9 @@ export const useAuthStore = defineStore('auth', () => {
 
     const register = async (credentials: RegisterCredentials) => {
         try {
-            const response = await $fetch<AuthResponse>('/auth/register', {
+            const response = await $fetch<AuthResponse>('auth/registration', {
                 method: 'POST',
-                body: credentials,
+                body: JSON.stringify(credentials) ,
                 baseURL: useRuntimeConfig().public.apiUrl
             })
 
@@ -73,7 +73,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (!accessToken.value) return
 
         try {
-            const response = await $fetch<User>('/auth/me', {
+            const response = await $fetch<User>('auth/me', {
                 headers: {
                     Authorization: `Bearer ${accessToken.value}`
                 },
@@ -93,7 +93,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (!refreshToken.value) return false
 
         try {
-            const response = await $fetch<{ access_token: string }>('/auth/refresh', {
+            const response = await $fetch<{ access_token: string }>('auth/refresh', {
                 method: 'POST',
                 body: { refresh_token: refreshToken.value },
                 baseURL: useRuntimeConfig().public.apiUrl

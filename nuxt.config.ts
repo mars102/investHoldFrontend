@@ -1,6 +1,10 @@
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
+  components: true,  // должно быть true или объект настроек
+  imports: {
+    autoImport: true  // по умолчанию true
+  },
   devtools: { enabled: true },
   modules: [
     '@pinia/nuxt',
@@ -12,7 +16,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiUrl: process.env.API_URL || 'http://localhost:3000/api'
+      apiUrl: process.env.API_URL || 'http://localhost:3000/backend'
     }
   },
   ssr: false,
@@ -28,5 +32,14 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]
     }
-  }
+  },
+  nitro: {
+    devProxy: {
+      '/backend': {
+        target: 'http://investhold.ru/backend',
+        changeOrigin: true,
+        prependPath: true,
+      }
+    }
+  },
 })

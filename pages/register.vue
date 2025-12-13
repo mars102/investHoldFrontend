@@ -1,8 +1,9 @@
 <template>
-  <RegisterForm />
+  <AuthRegisterForm />
 </template>
 
 <script setup lang="ts">
+
 definePageMeta({
   layout: 'auth',
   middleware: 'guest'
