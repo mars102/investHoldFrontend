@@ -1,12 +1,13 @@
 <template>
   <div>
-    <h2 class="text-2xl font-bold text-white mb-6">Create Account</h2>
+    <h2 class="text-2xl font-bold mb-6" style="color: #386c7d;">Создание аккаунта</h2>
 
-    <UForm :schema="registerSchema" :state="state" @submit="handleSubmit" class="space-y-4">
-      <UFormField class="field-pole" label="Full Name" name="name">
+    <UForm :schema="registerSchema" :state="state" @submit="handleSubmit">
+      <div class="field-pole">
+        <UFormField  label="Full Name" name="name">
         <UInput
             v-model="state.name"
-            placeholder="John Doe"
+            placeholder="Login"
             icon="i-heroicons-user"
             size="lg"
             :ui="{
@@ -15,8 +16,9 @@
           }"
         />
       </UFormField>
-
-      <UFormField class="field-pole" label="Email" name="email">
+      </div>
+      <div class="field-pole">
+        <UFormField  label="Email" name="email">
         <UInput
             v-model="state.email"
             type="email"
@@ -29,7 +31,8 @@
           }"
         />
       </UFormField>
-
+      </div>
+      <div class="field-pole">
       <UFormField class="field-pole" label="Password" name="password">
         <UInput
             v-model="state.password"
@@ -43,7 +46,8 @@
           }"
         />
       </UFormField>
-
+      </div>
+      <div class="field-pole">
       <UFormField class="field-pole" label="Confirm Password" name="confirmPassword">
         <UInput
             v-model="state.confirmPassword"
@@ -57,20 +61,22 @@
           }"
         />
       </UFormField>
-
+      </div>
+      <div class="button-pole">
       <div class="flex items-center">
         <UCheckbox
             v-model="state.terms"
             color="primary"
             class="mr-2"
         />
-        <span class="text-sm text-gray-300">
-          I agree to the
-          <a href="#" class="text-cyan-400 hover:text-cyan-300">Terms</a> and
-          <a href="#" class="text-cyan-400 hover:text-cyan-300">Privacy Policy</a>
+        <span class="text-sm text-gray-300" style="font-size: 12px;">
+         Я согласен с  и Политикой конфиденциальности
+          <a href="#" class="text-cyan-400 hover:text-cyan-300">Условиями</a> и
+          <a href="#" class="text-cyan-400 hover:text-cyan-300">Политикой конфидециальности</a>
         </span>
       </div>
-
+      </div>
+      <div class="button-pole">
       <UButton
           type="submit"
           block
@@ -84,18 +90,18 @@
         }"
       >
         <template v-if="!pending">
-          Create Account
+          Создать аккаунт
         </template>
         <template v-else>
-          Creating account...
+          Создание акаунта...
         </template>
       </UButton>
-
-      <div class="text-center mt-6">
+      </div>
+      <div class="text-center mt-2">
         <p class="text-sm text-gray-400">
-          Already have an account?
+          Уже есть аккаунт?
           <NuxtLink to="/login" class="text-cyan-400 hover:text-cyan-300 ml-1 font-medium">
-            Sign In
+           Войти
           </NuxtLink>
         </p>
       </div>
@@ -145,5 +151,8 @@ const handleSubmit = async () => {
 <style>
 .field-pole{
   margin-bottom: 10px;
+}
+.button-pole{
+  padding-bottom: 5px;
 }
 </style>

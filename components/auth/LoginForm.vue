@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-2xl font-bold text-white mb-6">Sign In</h2>
+    <h2 class="text-2xl font-bold mb-6" style="color: #386c7d;">Вход в учетную запись</h2>
 
     <UForm :schema="loginSchema" :state="state" @submit="handleSubmit" class="space-y-4">
       <UFormField label="Email" name="email">
@@ -38,12 +38,12 @@
               color="primary"
               class="mr-2"
           />
-          <span class="text-sm text-gray-300">Remember me</span>
+          <span class="text-sm text-gray-300">Запомнить меня</span>
         </label>
 
-        <NuxtLink to="/forgot-password" class="text-sm text-cyan-400 hover:text-cyan-300 transition">
-          Forgot password?
-        </NuxtLink>
+<!-- убрал так как нет востановления пароля       <NuxtLink to="/forgot-password" class="text-sm text-cyan-400 hover:text-cyan-300 transition">-->
+<!--          Forgot password?-->
+<!--        </NuxtLink>-->
       </div>
 
       <UButton
@@ -58,18 +58,18 @@
         }"
       >
         <template v-if="!pending">
-          Sign In
+          Войти
         </template>
         <template v-else>
-          Signing in...
+          Войти ...
         </template>
       </UButton>
 
       <div class="text-center mt-6">
         <p class="text-sm text-gray-400">
-          Don't have an account?
+          У вас нет аккаунта?
           <NuxtLink to="/register" class="text-cyan-400 hover:text-cyan-300 ml-1 font-medium">
-            Sign Up
+            Создать
           </NuxtLink>
         </p>
       </div>
