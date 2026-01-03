@@ -3,12 +3,12 @@
     <h2 class="text-2xl font-bold mb-6" style="color: #386c7d;">Вход в учетную запись</h2>
 
     <UForm :schema="loginSchema" :state="state" @submit="handleSubmit" class="space-y-4">
-      <UFormField label="Email" name="email">
+      <UFormField label="Email или логин" name="email">
         <UInput
             v-model="state.email"
-            type="email"
-            placeholder="you@example.com"
-            icon="i-heroicons-envelope"
+            type="text"
+            placeholder="email или логин"
+            icon="i-heroicons-user"
             size="lg"
             :ui="{
             icon: { trailing: { pointer: '' } },
@@ -40,10 +40,6 @@
           />
           <span class="text-sm text-gray-300">Запомнить меня</span>
         </label>
-
-<!-- убрал так как нет востановления пароля       <NuxtLink to="/forgot-password" class="text-sm text-cyan-400 hover:text-cyan-300 transition">-->
-<!--          Forgot password?-->
-<!--        </NuxtLink>-->
       </div>
 
       <UButton
@@ -103,7 +99,7 @@ const handleSubmit = async () => {
   pending.value = false
 
   if (!result.success) {
-    $toast.error(result.error || 'Login failed')
+    $toast.error(result.error || 'Вход не выполнен')
   }
 }
 </script>

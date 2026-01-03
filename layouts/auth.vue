@@ -1,5 +1,9 @@
 <template>
   <div class="auth-layout">
+<!--    <PhoenixMain width="600px"-->
+<!--                 height="900px"-->
+<!--                 :animation-speed="0.55"-->
+<!--                 />-->
     <!-- Анимированный фон с геометрическими паттернами -->
     <div class="background-animation">
       <div class="grid-pattern"></div>

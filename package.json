@@ -11,10 +11,13 @@
   "dependencies": {
     "@nuxt/ui": "^2.22.3",
     "@pinia/nuxt": "^0.6.0",
+    "@pixi/filter-glow": "^5.2.1",
     "@vueuse/nuxt": "^14.1.0",
     "axios": "^1.6.0",
     "nuxt": "^4.0.0",
     "pinia": "^2.1.0",
+    "pixi.js": "^8.14.3",
+    "three": "^0.182.0",
     "vue": "^3.3.0",
     "zod": "^3.22.0"
   },

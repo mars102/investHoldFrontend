@@ -1,0 +1,67 @@
+{
+  "frames": {
+    "phoenix_00.png": { "frame": { "x": 0, "y": 0, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_01.png": { "frame": { "x": 256, "y": 0, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_02.png": { "frame": { "x": 512, "y": 0, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_03.png": { "frame": { "x": 768, "y": 0, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_04.png": { "frame": { "x": 1024, "y": 0, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_05.png": { "frame": { "x": 1280, "y": 0, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+
+    "phoenix_06.png": { "frame": { "x": 0, "y": 256, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_07.png": { "frame": { "x": 256, "y": 256, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_08.png": { "frame": { "x": 512, "y": 256, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_09.png": { "frame": { "x": 768, "y": 256, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_10.png": { "frame": { "x": 1024, "y": 256, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_11.png": { "frame": { "x": 1280, "y": 256, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+
+    "phoenix_12.png": { "frame": { "x": 0, "y": 512, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_13.png": { "frame": { "x": 256, "y": 512, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_14.png": { "frame": { "x": 512, "y": 512, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_15.png": { "frame": { "x": 768, "y": 512, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_16.png": { "frame": { "x": 1024, "y": 512, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_17.png": { "frame": { "x": 1280, "y": 512, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+
+    "phoenix_18.png": { "frame": { "x": 0, "y": 768, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_19.png": { "frame": { "x": 256, "y": 768, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_20.png": { "frame": { "x": 512, "y": 768, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_21.png": { "frame": { "x": 768, "y": 768, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_22.png": { "frame": { "x": 1024, "y": 768, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } },
+    "phoenix_23.png": { "frame": { "x": 1280, "y": 768, "w": 256, "h": 256 }, "rotated": false, "trimmed": false, "spriteSourceSize": { "x": 0, "y": 0, "w": 256, "h": 256 }, "sourceSize": { "w": 256, "h": 256 }, "pivot": { "x": 0.5, "y": 0.5 } }
+  },
+  "animations": {
+    "fly": [
+      "phoenix_00.png",
+      "phoenix_01.png",
+      "phoenix_02.png",
+      "phoenix_03.png",
+      "phoenix_04.png",
+      "phoenix_05.png",
+      "phoenix_06.png",
+      "phoenix_07.png",
+      "phoenix_08.png",
+      "phoenix_09.png",
+      "phoenix_10.png",
+      "phoenix_11.png",
+      "phoenix_12.png",
+      "phoenix_13.png",
+      "phoenix_14.png",
+      "phoenix_15.png",
+      "phoenix_16.png",
+      "phoenix_17.png",
+      "phoenix_18.png",
+      "phoenix_19.png",
+      "phoenix_20.png",
+      "phoenix_21.png",
+      "phoenix_22.png",
+      "phoenix_23.png"
+    ]
+  },
+  "meta": {
+    "app": "pixi-json",
+    "version": "1.0",
+    "image": "phoenix.png",
+    "format": "RGBA8888",
+    "size": { "w": 1536, "h": 1024 },
+    "scale": "1"
+  }
+}
