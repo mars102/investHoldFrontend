@@ -5,7 +5,7 @@
     <UForm :schema="loginSchema" :state="state" @submit="handleSubmit" class="space-y-4">
       <UFormField label="Email или логин" name="email">
         <UInput
-            v-model="state.email"
+            v-model="state.login"
             type="text"
             placeholder="email или логин"
             icon="i-heroicons-user"
@@ -83,7 +83,7 @@ const router = useRouter()
 const pending = ref(false)
 
 const state = reactive({
-  email: '',
+  login: '',
   password: '',
   remember: false
 })
@@ -92,7 +92,7 @@ const handleSubmit = async () => {
   pending.value = true
 
   const result = await authStore.login({
-    email: state.email,
+    login: state.login,
     password: state.password
   })
 

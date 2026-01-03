@@ -6,7 +6,7 @@
       <div class="field-pole">
         <UFormField  label="Full Name" name="name">
         <UInput
-            v-model="state.name"
+            v-model="state.username"
             placeholder="Login"
             icon="i-heroicons-user"
             size="lg"
@@ -120,7 +120,7 @@ const router = useRouter()
 const pending = ref(false)
 
 const state = reactive({
-  name: '',
+  username: '',
   email: '',
   password: '',
   confirmPassword: '',
@@ -128,6 +128,7 @@ const state = reactive({
 })
 
 const handleSubmit = async () => {
+  console.log("что происходит !!!")
   if (!state.terms) {
     $toast.error('Please accept the terms and conditions')
     return
@@ -136,6 +137,7 @@ const handleSubmit = async () => {
   pending.value = true
 
   const result = await authStore.register({
+    username: state.username,
     email: state.email,
     password: state.password
   })
