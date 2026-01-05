@@ -3,7 +3,7 @@
     <!-- Ультракомпактная панель управления -->
     <div class="control-panel">
       <div class="panel-left">
-        <h1 class="gradient-title">Криптопортфель</h1>
+        <h1 class="gradient-title">Доступные монеты</h1>
         <div class="stats">
           <span class="stat-item">
             <span class="stat-value">{{ coins.length }}</span>
