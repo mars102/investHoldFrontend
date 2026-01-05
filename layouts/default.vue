@@ -22,6 +22,9 @@
               <NuxtLink to="/analytics" class="text-gray-300 hover:text-white transition">
                 Analytics
               </NuxtLink>
+              <NuxtLink to="/coins" class="text-gray-300 hover:text-white transition">
+                Админка
+              </NuxtLink>
             </div>
 
             <UDropdown v-if="authStore.user" :items="userMenuItems">
