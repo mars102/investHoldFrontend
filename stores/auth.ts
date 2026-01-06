@@ -22,9 +22,12 @@ export const useAuthStore = defineStore('auth', () => {
                 baseURL: useRuntimeConfig().public.apiUrl
             })
 
-            accessToken.value = response.token
-            refreshToken.value = response.token
-            user.value = response.token
+            // Исправление: сохраняем токен и загружаем данные пользователя
+            accessToken.value = response.access_token || response.token
+            refreshToken.value = response.refresh_token || response.token
+
+            // Загружаем данные пользователя сразу после успешного логина
+            await fetchUser()
 
             await navigateTo('/')
             return { success: true }
@@ -37,13 +40,20 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await $fetch<AuthResponse>('auth/registration', {
                 method: 'POST',
-                body: JSON.stringify(credentials) ,
+                body: JSON.stringify(credentials),
                 baseURL: useRuntimeConfig().public.apiUrl
             })
 
             accessToken.value = response.access_token
             refreshToken.value = response.refresh_token
-            user.value = response.user
+
+            // Устанавливаем пользователя из ответа или загружаем
+            if (response.user) {
+                user.value = response.user
+            } else {
+                // Если пользователь не пришел в ответе, загружаем отдельно
+                await fetchUser()
+            }
 
             await navigateTo('/')
             return { success: true }
@@ -54,13 +64,17 @@ export const useAuthStore = defineStore('auth', () => {
 
     const logout = async () => {
         try {
-            await $fetch('/auth/logout', {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${accessToken.value}`
-                },
-                baseURL: useRuntimeConfig().public.apiUrl
-            })
+            if (accessToken.value) {
+                await $fetch('/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${accessToken.value}`
+                    },
+                    baseURL: useRuntimeConfig().public.apiUrl
+                })
+            }
+        } catch (error) {
+            console.error('Logout error:', error)
         } finally {
             accessToken.value = null
             refreshToken.value = null
@@ -70,7 +84,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const fetchUser = async () => {
-        if (!accessToken.value) return
+        if (!accessToken.value) {
+            user.value = null
+            return null
+        }
 
         try {
             const response = await $fetch<User>('auth/me', {
@@ -81,16 +98,25 @@ export const useAuthStore = defineStore('auth', () => {
             })
 
             user.value = response
-        } catch (error) {
-            // Если токен истек, разлогиниваем
+            return response
+        } catch (error: any) {
+            // Если токен истек, пробуем обновить
             if (error.status === 401) {
-                logout()
+                const refreshed = await refreshAccessToken()
+                if (refreshed) {
+                    return await fetchUser() // Повторяем запрос с новым токеном
+                }
             }
+            user.value = null
+            return null
         }
     }
 
     const refreshAccessToken = async () => {
-        if (!refreshToken.value) return false
+        if (!refreshToken.value) {
+            await logout()
+            return false
+        }
 
         try {
             const response = await $fetch<{ access_token: string }>('auth/refresh', {
@@ -102,9 +128,17 @@ export const useAuthStore = defineStore('auth', () => {
             accessToken.value = response.access_token
             return true
         } catch (error) {
-            logout()
+            await logout()
             return false
         }
+    }
+
+    // Метод для инициализации при монтировании приложения
+    const init = async () => {
+        if (accessToken.value) {
+            await fetchUser()
+        }
+        return user.value
     }
 
     return {
@@ -116,6 +150,7 @@ export const useAuthStore = defineStore('auth', () => {
         register,
         logout,
         fetchUser,
-        refreshAccessToken
+        refreshAccessToken,
+        init
     }
 })

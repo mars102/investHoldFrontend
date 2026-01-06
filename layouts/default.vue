@@ -58,18 +58,7 @@
               </div>
             </NuxtLink>
 
-            <NuxtLink
-                to="/coins"
-                class="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-200 hover:scale-[1.02]"
-                active-class="!text-emerald-600 !bg-emerald-50 !font-bold"
-            >
-              <div class="flex items-center gap-2">
-                <div class="w-4 h-4 bg-gradient-to-br from-emerald-500 to-green-400 rounded flex items-center justify-center">
-                  <UIcon name="i-heroicons-cog-6-tooth" class="w-2.5 h-2.5 text-white" />
-                </div>
-                <span>Монеты</span>
-              </div>
-            </NuxtLink>
+
           </nav>
 
           <!-- User Menu -->
@@ -114,16 +103,7 @@
           <span class="text-[10px] font-semibold">Analytics</span>
         </NuxtLink>
 
-        <NuxtLink
-            to="/coins"
-            class="flex flex-col items-center p-2"
-            active-class="text-emerald-600"
-        >
-          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-1">
-            <UIcon name="i-heroicons-cog-6-tooth" class="w-6 h-6" />
-          </div>
-          <span class="text-[10px] font-semibold">Монеты</span>
-        </NuxtLink>
+
       </div>
     </div>
 
