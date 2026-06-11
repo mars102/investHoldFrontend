@@ -110,9 +110,7 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-6 pb-20 md:pb-6">
       <div class="max-w-7xl mx-auto">
-        <!-- Page Header Gradient Bar -->
-        <div class="h-1 w-full mb-8 bg-gradient-to-r from-orange-500 via-blue-500 to-emerald-500 rounded-full"></div>
-
+        
         <slot />
 
         <!-- Modern Footer -->
@@ -146,7 +144,7 @@
 import UserMenu from '~/components/user/UserMenu.vue'
 </script>
 
-<style>
+<style scoped>
 /* Custom Animations */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
