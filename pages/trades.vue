@@ -2,11 +2,14 @@
   <div class="main-content">
     <div style="width: 300px; margin-right: 20px; border-right: 1px solid #ccc;">
         <TradeButtonCreate></TradeButtonCreate>
+
         <br>
         <br>
         <br>
       </div>
-    <div style="flex-grow: 1;"> </div>
+    <div style="flex-grow: 1;">
+      {{isCreate?"Форма создания сделки": "инфо по какойто сделке"}}
+    </div>
 
     
 
@@ -18,6 +21,9 @@ definePageMeta({
   middleware: 'auth',
   title: 'Мои сделки',
 })
+
+const tradeStore = useMyTradeStore();
+const { isCreate  } = storeToRefs(tradeStore)
 
 </script>
 

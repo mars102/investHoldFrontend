@@ -1,14 +1,19 @@
 <template>
       <div >
+
            <ui-button @click="createTrade">Создать сделку</ui-button>
       </div>
 </template>
 
 <script lang="ts" setup>
 
+
+const tradeStore = useMyTradeStore();
+const { isCreate,  } = storeToRefs(tradeStore)
+const { toggleCreate } = tradeStore
 function createTrade() {
   // Логика создания сделки
-  alert('Создание новой сделки');
+    toggleCreate()
 }
 
 </script>
