@@ -1,36 +1,24 @@
-export enum TradeType {
-    BUY = 'buy',
-    SELL = 'sell'
-}
 
-export enum TradeStatus {
-    OPEN = 'open',
-    CLOSED = 'closed',
-    PENDING = 'pending'
-}
+export type TradeType = 'BUY'|'SELL'
+export type TradeStatus = 'OPEN'|'CLOSED'|'PENDING'
 
 export interface Trade {
     id: string
-    user_id: string
-    symbol: string
+    userId: string
+    coinId: string
     type: TradeType
-    amount: number
-    price: number
-    total: number
-    fee: number
-    notes?: string
-    status: TradeStatus
-    executed_at: string
-    created_at: string
-    updated_at: string
+    quantity: number
+    pricePerUnit: number // цена одной монеты
+    totalAmount: number // quantity*pricePerUnit
+    fee: number, //коммисия
+    feeCurrency: string
+    status: TradeStatus,
+    exchangeSource: string // написать биржу для групировки
+    description: string // Коментарий к сделке
+    executedAt: string
+    createdAt: string
+    updatedAt: string
 }
 
-export interface CreateTradeDto {
-    symbol: string
-    type: TradeType
-    amount: number
-    price: number
-    fee?: number
-    notes?: string
-    executed_at?: string
-}
+export type createTrade =  Omit<Trade,'updatedAt'|'createdAt'|'totalAmount'|'id'|'userId'|'status'>
+

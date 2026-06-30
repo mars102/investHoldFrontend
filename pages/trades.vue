@@ -8,7 +8,8 @@
         <br>
       </div>
     <div style="flex-grow: 1;">
-      {{isCreate?"Форма создания сделки": "инфо по какойто сделке"}}
+      <TradeCreateForm v-if="isCreate"></TradeCreateForm>
+      <div v-else ><h1>Тут надо компонент со списком сделок</h1></div>
     </div>
 
     
