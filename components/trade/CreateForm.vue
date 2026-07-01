@@ -109,8 +109,8 @@ onMounted(async () => {
 });
 
 const tradeTypeOptions = [
-  { label: "Купить", value: "BUY" },
-  { label: "Продать", value: "SELL" },
+  { label: "Купить", value: "buy" },
+  { label: "Продать", value: "sell" },
 ];
 
 const exchangeOptions = [
@@ -122,7 +122,15 @@ const exchangeOptions = [
 ];
 
 function handleSubmit() {
-  console.log(form);
-  tradeStore.createTrade(form);
+  const payload = {
+    ...form,
+    coinId: form.coinId ? Number(form.coinId) : undefined,
+    quantity: Number(form.quantity),
+    pricePerUnit: Number(form.pricePerUnit),
+    fee: Number(form.fee),
+    executedAt: new Date(form.executedAt).toISOString(),
+  };
+
+  tradeStore.createTrade(payload);
 }
 </script>
