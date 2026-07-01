@@ -4,7 +4,7 @@ export type TradeStatus = "OPEN" | "CLOSED" | "PENDING";
 export interface Trade {
   id: string;
   userId: string;
-  coinId: number | null;
+  coinId: number | undefined;
   type: TradeType;
   quantity: number;
   pricePerUnit: number; // цена одной монеты
