@@ -30,7 +30,7 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       "/backend": {
-        target: "http://localhost", //'http://investhold.ru/backend',
+        target: "http://investhold.ru/backend", //"http://localhost", //'http://investhold.ru/backend',
         changeOrigin: true,
         prependPath: true,
       },
