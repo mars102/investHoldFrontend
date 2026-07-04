@@ -1,19 +1,25 @@
-export interface Asset {
-    id: string
-    symbol: string
-    name: string
-    amount: number
-    avg_buy_price: number
-    current_price: number
-    total_value: number
-    profit_loss: number
-    profit_loss_percentage: number
+import type { Coin } from "./coins";
+
+export interface Holding {
+  id: number;
+  userId: number;
+  coinId: number;
+  totalQuantity: string;
+  averageBuyPrice: string;
+  totalInvested: string;
+  currentValue: number;
+  profitLossAbsolute: number;
+  profitLossPercentage: number;
+  updatedAt: string;
+  createdAt: string;
+  coin: Coin;
 }
 
-export interface PortfolioStats {
-    total_balance: number
-    total_profit: number
-    total_profit_percentage: number
-    active_trades: number
-    total_assets: number
+export interface PortfolioSummary {
+  totalInvested: number;
+  totalCurrentValue: number;
+  totalProfitLoss: number;
+  totalProfitLossPercentage: number;
+  holdingsCount: number;
+  holdings: Holding[];
 }
