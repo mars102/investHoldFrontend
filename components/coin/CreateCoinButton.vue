@@ -134,6 +134,21 @@
                 </div>
 
                 <div class="form-group compact">
+                  <label for="externalId" class="compact-label">
+                    <span class="label-text">External ID</span>
+                    <span class="label-hint">Id в CoinGecko и т.п.</span>
+                  </label>
+                  <input
+                      id="externalId"
+                      v-model="form.externalId"
+                      type="text"
+                      :class="['form-input', 'compact-input', { 'error': errors.externalId }]"
+                      placeholder="bitcoin"
+                  />
+                  <div v-if="errors.externalId" class="error-text">{{ errors.externalId }}</div>
+                </div>
+
+                <div class="form-group compact">
                   <label for="category" class="compact-label">
                     <span class="label-text">Категория</span>
                   </label>
@@ -290,6 +305,7 @@ interface CoinFormData {
   website?: string
   blockchain?: string
   contractAddress?: string
+  externalId?: string
   category?: string
   isActive: boolean
   isTradable: boolean
@@ -314,6 +330,7 @@ const form = reactive<CoinFormData>({
   website: '',
   blockchain: '',
   contractAddress: '',
+  externalId: '',
   category: '',
   isActive: true,
   isTradable: true
@@ -329,6 +346,7 @@ const errors = reactive({
   website: '',
   blockchain: '',
   contractAddress: '',
+  externalId: '',
   category: ''
 })
 
@@ -364,6 +382,7 @@ const resetForm = () => {
     website: '',
     blockchain: '',
     contractAddress: '',
+    externalId: '',
     category: '',
     isActive: true,
     isTradable: true
@@ -466,6 +485,7 @@ const submitForm = async () => {
       website: form.website?.trim() || undefined,
       blockchain: form.blockchain?.trim() || undefined,
       contractAddress: form.contractAddress?.trim() || undefined,
+      externalId: form.externalId?.trim() || undefined,
       category: form.category?.trim() || undefined,
       isActive: form.isActive,
       isTradable: form.isTradable

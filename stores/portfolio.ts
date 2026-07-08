@@ -6,6 +6,7 @@ export const usePortfolioStore = defineStore("portfolio", {
     summary: null as PortfolioSummary | null,
     loading: false,
     error: null as string | null,
+    refreshingCoinId: null as number | null,
   }),
   actions: {
     async fetchSummary() {
@@ -22,6 +23,21 @@ export const usePortfolioStore = defineStore("portfolio", {
         this.error = e?.message || "Ошибка при получении сводки портфеля";
       } finally {
         this.loading = false;
+      }
+    },
+
+    async refreshCoinPrice(coinId: number) {
+      const { $api } = useNuxtApp();
+      this.refreshingCoinId = coinId;
+      try {
+        await $api(`/coins/${coinId}/refresh-price`, {
+          method: "POST",
+        });
+        await this.fetchSummary();
+      } catch (e: any) {
+        this.error = e?.message || "Ошибка при обновлении цены монеты";
+      } finally {
+        this.refreshingCoinId = null;
       }
     },
   },

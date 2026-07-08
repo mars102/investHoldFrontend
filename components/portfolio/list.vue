@@ -73,6 +73,20 @@
               </UButton>
             </div>
           </template>
+
+          <template #actions-data="{ row }">
+            <UButton
+              size="xs"
+              color="gray"
+              variant="ghost"
+              icon="i-heroicons-arrow-path"
+              :loading="portfolioStore.refreshingCoinId === row.coinId"
+              :disabled="portfolioStore.refreshingCoinId !== null"
+              @click="portfolioStore.refreshCoinPrice(row.coinId)"
+            >
+              Обновить цену
+            </UButton>
+          </template>
         </UTable>
       </div>
     </div>
@@ -109,10 +123,15 @@ const assetColumns = [
     key: "profit",
     label: "Profit/Loss",
   },
+  {
+    key: "actions",
+    label: "",
+  },
 ];
 
 const assetRows = computed(() =>
   (summary.value?.holdings ?? []).map((holding) => ({
+    coinId: holding.coinId,
     asset: `${holding.coin.fullName} (${holding.coin.ticker})`,
     amount: Number(holding.totalQuantity),
     value: `$ ${formatNumber(holding.currentValue)}`,
