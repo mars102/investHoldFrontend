@@ -1,152 +1,139 @@
 <template>
-  <div class="p-6 max-w-3xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold">Лента сделок</h1>
-      <UButton
-        icon="i-heroicons-arrow-path"
-        variant="ghost"
-        :loading="tradeStore.loading"
-        @click="tradeStore.fetchTrades()"
+  <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_300px] gap-6 items-start">
+    <div class="max-w-2xl w-full space-y-4">
+      <div class="flex items-center justify-between">
+        <h1 class="text-xl font-bold text-gray-900">Лента сделок</h1>
+        <button
+          class="w-8 h-8 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+          :disabled="tradeStore.loading"
+          @click="tradeStore.fetchTrades()"
+        >
+          <UIcon name="i-heroicons-arrow-path" class="w-4 h-4" :class="tradeStore.loading ? 'animate-spin' : ''" />
+        </button>
+      </div>
+
+      <TradeComposer />
+
+      <!-- Loading -->
+      <div v-if="tradeStore.loading && !tradeStore.trades.length" class="space-y-4">
+        <USkeleton v-for="i in 3" :key="i" class="h-64 w-full rounded-lg" />
+      </div>
+
+      <!-- Error -->
+      <UAlert
+        v-else-if="tradeStore.error"
+        color="red"
+        variant="soft"
+        title="Не удалось загрузить сделки"
+        :description="tradeStore.error"
       />
-    </div>
 
-    <!-- Загрузка -->
-    <div
-      v-if="tradeStore.loading && !tradeStore.trades.length"
-      class="space-y-3"
-    >
-      <USkeleton v-for="i in 4" :key="i" class="h-20 w-full rounded-lg" />
-    </div>
+      <!-- Empty -->
+      <div v-else-if="!sortedTrades.length" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100">
+        Сделок пока нет — поделитесь первой!
+      </div>
 
-    <!-- Ошибка -->
-    <UAlert
-      v-else-if="tradeStore.error"
-      color="red"
-      variant="soft"
-      title="Не удалось загрузить сделки"
-      :description="tradeStore.error"
-    />
+      <!-- No results after filtering -->
+      <div v-else-if="!filteredTrades.length" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100">
+        Ничего не найдено по этим фильтрам
+      </div>
 
-    <!-- Пусто -->
-    <div
-      v-else-if="!tradeStore.trades.length"
-      class="text-center text-gray-500 py-12"
-    >
-      Сделок пока нет
-    </div>
-
-    <!-- Список сделок -->
-    <div v-else class="space-y-3">
-      <div
-        v-for="trade in tradeStore.trades"
-        :key="trade.id"
-        class="flex items-center justify-between gap-4 p-4 rounded-lg border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
-      >
-        <div class="flex items-center gap-3">
-          <UIcon
-            :name="
-              trade.type === 'buy'
-                ? 'i-heroicons-arrow-trending-up'
-                : 'i-heroicons-arrow-trending-down'
-            "
-            :class="trade.type === 'buy' ? 'text-green-500' : 'text-red-500'"
-            class="w-6 h-6 shrink-0"
-          />
-
-          <div>
-            <div class="font-medium">
-              {{ typeLabel(trade.type) }} — {{ trade.quantity }} монет
-            </div>
-            <div class="text-sm text-gray-500">
-              {{ formatDate(trade.executedAt) }} · {{ trade.exchangeSource }}
-            </div>
-            <div v-if="trade.description" class="text-sm text-gray-400 mt-1">
-              {{ trade.description }}
-            </div>
-          </div>
-        </div>
-
-        <div class="text-right shrink-0">
-          <div class="font-semibold">
-            {{ formatCurrency(trade.totalAmount, trade.feeCurrency) }}
-          </div>
-          <div class="text-sm text-gray-500">
-            по {{ formatCurrency(trade.pricePerUnit, trade.feeCurrency) }}
-          </div>
-          <UBadge
-            :color="statusColor(trade.status)"
-            variant="subtle"
-            size="xs"
-            class="mt-1"
-          >
-            {{ statusLabel(trade.status) }}
-          </UBadge>
-        </div>
+      <!-- Feed -->
+      <div v-else class="space-y-4">
+        <TradePostCard
+          v-for="trade in filteredTrades"
+          :key="trade.id"
+          :trade="trade"
+          :coin="coinsById[trade.coinId as number]"
+          :cost-basis="costBasisByTradeId.get(trade.id)"
+        />
       </div>
     </div>
+
+    <TradeFilters
+      v-model="filters"
+      :coin-options="coinOptions"
+      :exchange-options="exchangeOptions"
+      :result-count="filteredTrades.length"
+    />
   </div>
 </template>
 
-<script lang="ts" setup>
-import { onMounted } from "vue";
-import { useMyTradeStore } from "~/stores/trade";
+<script setup lang="ts">
+import { useMyTradeStore } from '~/stores/trade'
+import type { Coin } from '~/types/coins'
+import type { TradeFiltersState } from '~/components/trade/Filters.vue'
 
-const tradeStore = useMyTradeStore();
+const tradeStore = useMyTradeStore()
+const coins = ref<Coin[]>([])
 
-onMounted(() => {
-  tradeStore.fetchTrades();
-});
+const coinsById = computed<Record<number, Coin>>(() =>
+  Object.fromEntries(coins.value.map((coin) => [coin.id, coin]))
+)
 
-function typeLabel(type: string) {
-  const labels: Record<string, string> = {
-    buy: "Покупка",
-    sell: "Продажа",
-    transfer_in: "Перевод входящий",
-    transfer_out: "Перевод исходящий",
-    stake: "Стейкинг",
-    unstake: "Анстейкинг",
-    reward: "Награда",
-    airdrop: "Airdrop",
-  };
-  return labels[type] || type;
-}
+const sortedTrades = computed(() =>
+  [...tradeStore.trades].sort(
+    (a, b) => new Date(b.executedAt).getTime() - new Date(a.executedAt).getTime()
+  )
+)
 
-function statusLabel(status: string) {
-  const labels: Record<string, string> = {
-    pending: "В ожидании",
-    completed: "Завершена",
-    cancelled: "Отменена",
-    failed: "Ошибка",
-  };
-  return labels[status] || status;
-}
+const costBasisByTradeId = computed(() => computeCostBasisTimeline(tradeStore.trades))
 
-function statusColor(status: string) {
-  const colors: Record<string, string> = {
-    pending: "yellow",
-    completed: "green",
-    cancelled: "gray",
-    failed: "red",
-  };
-  return colors[status] || "gray";
-}
+const filters = reactive<TradeFiltersState>({
+  search: '',
+  type: 'all',
+  coinId: 'all',
+  exchangeSource: 'all',
+  pnl: 'all'
+})
 
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleString("ru-RU", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+const coinOptions = computed(() => {
+  const seen = new Map<number, Coin>()
+  for (const trade of tradeStore.trades) {
+    const coin = coinsById.value[trade.coinId as number]
+    if (coin && !seen.has(coin.id)) seen.set(coin.id, coin)
+  }
+  const sorted = [...seen.values()].sort((a, b) => a.ticker.localeCompare(b.ticker))
+  return [
+    { label: 'Все монеты', value: 'all' },
+    ...sorted.map((coin) => ({ label: `${coin.fullName} (${coin.ticker})`, value: String(coin.id) }))
+  ]
+})
 
-function formatCurrency(value: number, currency: string) {
-  return new Intl.NumberFormat("ru-RU", {
-    style: "currency",
-    currency: currency || "USD",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
+const exchangeOptions = computed(() => {
+  const set = new Set<string>()
+  for (const trade of tradeStore.trades) {
+    if (trade.exchangeSource) set.add(trade.exchangeSource)
+  }
+  return [{ label: 'Все биржи', value: 'all' }, ...[...set].sort().map((ex) => ({ label: ex, value: ex }))]
+})
+
+const filteredTrades = computed(() =>
+  sortedTrades.value.filter((trade) => {
+    if (filters.type !== 'all' && trade.type?.toString().toLowerCase() !== filters.type) return false
+    if (filters.coinId !== 'all' && Number(trade.coinId) !== Number(filters.coinId)) return false
+    if (filters.exchangeSource !== 'all' && trade.exchangeSource !== filters.exchangeSource) return false
+
+    if (filters.pnl !== 'all') {
+      const pnl = computeTradePnlPercent(trade, coinsById.value[trade.coinId as number], costBasisByTradeId.value.get(trade.id))
+      if (filters.pnl === 'profit' && pnl < 0) return false
+      if (filters.pnl === 'loss' && pnl >= 0) return false
+    }
+
+    const query = filters.search.trim().toLowerCase()
+    if (query) {
+      const coin = coinsById.value[trade.coinId as number]
+      const haystack = `${trade.description ?? ''} ${coin?.fullName ?? ''} ${coin?.ticker ?? ''}`.toLowerCase()
+      if (!haystack.includes(query)) return false
+    }
+
+    return true
+  })
+)
+
+onMounted(async () => {
+  const { $api } = useNuxtApp()
+  const [, coinsResponse] = await Promise.all([tradeStore.fetchTrades(), $api<Coin[]>('/coins')])
+  coins.value = coinsResponse ?? []
+})
 </script>

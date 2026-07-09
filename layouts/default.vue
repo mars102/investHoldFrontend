@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-white via-gray-50 to-blue-50">
+  <div class="h-screen flex flex-col bg-gradient-to-br from-white via-gray-50 to-blue-50">
     <!-- Ultra-Compact Header -->
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm">
-      <div class="container mx-auto px-4">
+    <header class="shrink-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm">
+      <div class="w-full px-4 sm:px-6">
         <div class="flex items-center justify-between h-14">
           <!-- Logo Section -->
           <div class="flex items-center gap-2">
@@ -28,7 +28,7 @@
                 <div class="w-4 h-4 bg-gradient-to-br from-orange-500 to-orange-400 rounded flex items-center justify-center">
                   <UIcon name="i-heroicons-chart-bar" class="w-2.5 h-2.5 text-white" />
                 </div>
-                <span>Portfolio</span>
+                <span>Портфель</span>
               </div>
             </NuxtLink>
 
@@ -41,7 +41,7 @@
                 <div class="w-4 h-4 bg-gradient-to-br from-blue-500 to-cyan-400 rounded flex items-center justify-center">
                   <UIcon name="i-heroicons-arrow-path" class="w-2.5 h-2.5 text-white" />
                 </div>
-                <span>Trades</span>
+                <span>Лента</span>
               </div>
             </NuxtLink>
 
@@ -54,7 +54,7 @@
                 <div class="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-400 rounded flex items-center justify-center">
                   <UIcon name="i-heroicons-chart-pie" class="w-2.5 h-2.5 text-white" />
                 </div>
-                <span>Analytics</span>
+                <span>Аналитика</span>
               </div>
             </NuxtLink>
 
@@ -78,7 +78,7 @@
           <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-1">
             <UIcon name="i-heroicons-chart-bar" class="w-6 h-6" />
           </div>
-          <span class="text-[10px] font-semibold">Portfolio</span>
+          <span class="text-[10px] font-semibold">Портфель</span>
         </NuxtLink>
 
         <NuxtLink
@@ -89,7 +89,7 @@
           <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-1">
             <UIcon name="i-heroicons-arrow-path" class="w-6 h-6" />
           </div>
-          <span class="text-[10px] font-semibold">Trades</span>
+          <span class="text-[10px] font-semibold">Лента</span>
         </NuxtLink>
 
         <NuxtLink
@@ -100,7 +100,7 @@
           <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-1">
             <UIcon name="i-heroicons-chart-pie" class="w-6 h-6" />
           </div>
-          <span class="text-[10px] font-semibold">Analytics</span>
+          <span class="text-[10px] font-semibold">Аналитика</span>
         </NuxtLink>
 
 
@@ -108,25 +108,22 @@
     </div>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-6 pb-20 md:pb-6">
-      <div class="max-w-7xl mx-auto">
-        
-        <slot />
+    <main class="flex-1 min-h-0 overflow-y-auto w-full px-4 sm:px-6 py-6 pb-20 md:pb-6">
+      <slot />
 
-        <!-- Modern Footer -->
-        <div class="mt-12 pt-8 border-t border-gray-200">
-          <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-              <div class="w-6 h-6 bg-gradient-to-br from-orange-500 to-blue-600 rounded-lg"></div>
-              <span class="text-xs font-bold text-gray-700">InvestHold Pro v4.0</span>
-            </div>
-            <div class="flex items-center gap-6">
-              <span class="text-xs text-gray-500 font-medium">© 2024 Ultra Edition</span>
-              <div class="flex items-center gap-4">
-                <a href="#" class="text-xs text-gray-500 hover:text-orange-600 font-medium">Terms</a>
-                <a href="#" class="text-xs text-gray-500 hover:text-blue-600 font-medium">Privacy</a>
-                <a href="#" class="text-xs text-gray-500 hover:text-emerald-600 font-medium">Docs</a>
-              </div>
+      <!-- Modern Footer -->
+      <div class="mt-12 pt-8 border-t border-gray-200">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-6 h-6 bg-gradient-to-br from-orange-500 to-blue-600 rounded-lg"></div>
+            <span class="text-xs font-bold text-gray-700">InvestHold Pro v4.0</span>
+          </div>
+          <div class="flex items-center gap-6">
+            <span class="text-xs text-gray-500 font-medium">© 2024 Ultra Edition</span>
+            <div class="flex items-center gap-4">
+              <a href="#" class="text-xs text-gray-500 hover:text-orange-600 font-medium">Terms</a>
+              <a href="#" class="text-xs text-gray-500 hover:text-blue-600 font-medium">Privacy</a>
+              <a href="#" class="text-xs text-gray-500 hover:text-emerald-600 font-medium">Docs</a>
             </div>
           </div>
         </div>
