@@ -22,3 +22,10 @@ export interface Coin {
   updatedAt: string;
   priceUpdatedAt: string;
 }
+
+export type PriceHistoryPeriod = "24h" | "7d" | "30d" | "90d" | "1y" | "all";
+
+export interface PricePoint {
+  timestamp: string;
+  price: number;
+}

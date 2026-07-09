@@ -56,6 +56,8 @@
             icon: 'i-heroicons-circle-stack',
             label: 'No assets yet',
           }"
+          class="cursor-pointer"
+          @select="onSelectHolding"
         >
           <template #empty-state>
             <div class="text-center py-12">
@@ -82,7 +84,7 @@
               icon="i-heroicons-arrow-path"
               :loading="portfolioStore.refreshingCoinId === row.coinId"
               :disabled="portfolioStore.refreshingCoinId !== null"
-              @click="portfolioStore.refreshCoinPrice(row.coinId)"
+              @click.stop="portfolioStore.refreshCoinPrice(row.coinId)"
             >
               Обновить цену
             </UButton>
@@ -90,21 +92,40 @@
         </UTable>
       </div>
     </div>
+
+    <CoinPriceHistoryModal
+      v-model:open="isHistoryModalOpen"
+      :coin-id="selectedHolding?.coinId ?? null"
+      :coin="selectedHolding?.coin ?? null"
+      :average-buy-price="selectedHolding ? Number(selectedHolding.averageBuyPrice) : 0"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { useAuthStore } from "~/stores/auth";
 import { usePortfolioStore } from "~/stores/portfolio";
+import type { Holding } from "~/types/portfolio";
 
 const authStore = useAuthStore();
 const portfolioStore = usePortfolioStore();
 const { summary } = storeToRefs(portfolioStore);
 const router = useRouter();
 
+const isHistoryModalOpen = ref(false);
+const selectedHolding = ref<Holding | null>(null);
+
 onMounted(() => {
   portfolioStore.fetchSummary();
 });
+
+function onSelectHolding(row: { coinId: number }) {
+  const holding = summary.value?.holdings.find((h) => h.coinId === row.coinId);
+  if (holding) {
+    selectedHolding.value = holding;
+    isHistoryModalOpen.value = true;
+  }
+}
 
 const assetColumns = [
   {
