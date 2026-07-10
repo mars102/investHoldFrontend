@@ -14,13 +14,13 @@
 
     <div class="w-full space-y-4">
       <div class="flex items-center justify-between">
-        <h1 class="text-xl font-bold text-gray-900">Лента сделок</h1>
+        <h1 class="text-xl font-bold text-gray-900">Лента</h1>
         <button
           class="w-8 h-8 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
-          :disabled="tradeStore.loading"
-          @click="tradeStore.fetchTrades()"
+          :disabled="feedStore.loading"
+          @click="feedStore.fetchFeed()"
         >
-          <UIcon name="i-heroicons-arrow-path" class="w-4 h-4" :class="tradeStore.loading ? 'animate-spin' : ''" />
+          <UIcon name="i-heroicons-arrow-path" class="w-4 h-4" :class="feedStore.loading ? 'animate-spin' : ''" />
         </button>
       </div>
 
@@ -37,38 +37,45 @@
       </div>
 
       <!-- Loading -->
-      <div v-if="tradeStore.loading && !tradeStore.trades.length" class="space-y-4">
+      <div v-if="feedStore.loading && !feedStore.items.length" class="space-y-4">
         <USkeleton v-for="i in 3" :key="i" class="h-64 w-full rounded-lg" />
       </div>
 
       <!-- Error -->
       <UAlert
-        v-else-if="tradeStore.error"
+        v-else-if="feedStore.error"
         color="red"
         variant="soft"
-        title="Не удалось загрузить сделки"
-        :description="tradeStore.error"
+        title="Не удалось загрузить ленту"
+        :description="feedStore.error"
       />
 
       <!-- Empty -->
-      <div v-else-if="!sortedTrades.length" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100">
-        Сделок пока нет — поделитесь первой!
-      </div>
-
-      <!-- No results after filtering -->
-      <div v-else-if="!filteredTrades.length" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100">
-        Ничего не найдено по этим фильтрам
+      <div v-else-if="!feedStore.items.length" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100">
+        Пока ничего нет — поделитесь первым постом или сделкой!
       </div>
 
       <!-- Feed -->
       <div v-else class="space-y-4">
-        <TradePostCard
-          v-for="trade in filteredTrades"
-          :key="trade.id"
-          :trade="trade"
-          :coin="coinsById[trade.coinId as number]"
-          :cost-basis="costBasisByTradeId.get(trade.id)"
-        />
+        <template v-for="feedItem in feedStore.items" :key="`${feedItem.type}-${(feedItem.item as any).id}`">
+          <TradePostCard
+            v-if="feedItem.type === 'trade'"
+            :trade="(feedItem.item as Trade)"
+            :coin="coinsById[(feedItem.item as Trade).coinId as number]"
+            :cost-basis="costBasisByTradeId.get((feedItem.item as Trade).id)"
+          />
+          <PostCard
+            v-else
+            :post="(feedItem.item as Post)"
+            :coin="coinsById[(feedItem.item as Post).coinId as number]"
+          />
+        </template>
+
+        <div v-if="feedStore.hasMore" class="flex justify-center pt-2">
+          <UButton color="gray" variant="soft" :loading="feedStore.loadingMore" @click="feedStore.loadMore()">
+            Показать ещё
+          </UButton>
+        </div>
       </div>
     </div>
 
@@ -76,8 +83,7 @@
       <TradeFilters
         v-model="filters"
         :coin-options="coinOptions"
-        :exchange-options="exchangeOptions"
-        :result-count="filteredTrades.length"
+        :result-count="feedStore.total"
       />
     </div>
   </div>
@@ -85,10 +91,14 @@
 
 <script setup lang="ts">
 import { useMyTradeStore } from '~/stores/trade'
+import { useFeedStore } from '~/stores/feed'
 import type { Coin } from '~/types/coins'
-import type { TradeFiltersState } from '~/components/trade/Filters.vue'
+import type { Trade } from '~/types/trade'
+import type { Post } from '~/types/post'
+import type { FeedFiltersState } from '~/components/trade/Filters.vue'
 
 const tradeStore = useMyTradeStore()
+const feedStore = useFeedStore()
 const coins = ref<Coin[]>([])
 const formPreview = useTradeFormPreview()
 
@@ -117,69 +127,38 @@ const coinsById = computed<Record<number, Coin>>(() =>
   Object.fromEntries(coins.value.map((coin) => [coin.id, coin]))
 )
 
-const sortedTrades = computed(() =>
-  [...tradeStore.trades].sort(
-    (a, b) => new Date(b.executedAt).getTime() - new Date(a.executedAt).getTime()
-  )
-)
-
+// The cost-basis (average price / realized P&L) replay needs the user's full,
+// unpaginated trade history — the feed itself is paginated and mixes in posts,
+// so it can't be used as the source for that calculation.
 const costBasisByTradeId = computed(() => computeCostBasisTimeline(tradeStore.trades))
 
-const filters = reactive<TradeFiltersState>({
-  search: '',
+const filters = reactive<FeedFiltersState>({
   type: 'all',
-  coinId: 'all',
-  exchangeSource: 'all',
-  pnl: 'all'
+  coinId: 'all'
 })
 
-const coinOptions = computed(() => {
-  const seen = new Map<number, Coin>()
-  for (const trade of tradeStore.trades) {
-    const coin = coinsById.value[trade.coinId as number]
-    if (coin && !seen.has(coin.id)) seen.set(coin.id, coin)
+watch(
+  () => [filters.type, filters.coinId],
+  ([type, coinId]) => {
+    feedStore.setFilters(type as FeedFiltersState['type'], coinId !== 'all' ? Number(coinId) : null)
+    feedStore.fetchFeed()
   }
-  const sorted = [...seen.values()].sort((a, b) => a.ticker.localeCompare(b.ticker))
-  return [
-    { label: 'Все монеты', value: 'all' },
-    ...sorted.map((coin) => ({ label: `${coin.fullName} (${coin.ticker})`, value: String(coin.id) }))
-  ]
-})
-
-const exchangeOptions = computed(() => {
-  const set = new Set<string>()
-  for (const trade of tradeStore.trades) {
-    if (trade.exchangeSource) set.add(trade.exchangeSource)
-  }
-  return [{ label: 'Все биржи', value: 'all' }, ...[...set].sort().map((ex) => ({ label: ex, value: ex }))]
-})
-
-const filteredTrades = computed(() =>
-  sortedTrades.value.filter((trade) => {
-    if (filters.type !== 'all' && trade.type?.toString().toLowerCase() !== filters.type) return false
-    if (filters.coinId !== 'all' && Number(trade.coinId) !== Number(filters.coinId)) return false
-    if (filters.exchangeSource !== 'all' && trade.exchangeSource !== filters.exchangeSource) return false
-
-    if (filters.pnl !== 'all') {
-      const pnl = computeTradePnlPercent(trade, coinsById.value[trade.coinId as number], costBasisByTradeId.value.get(trade.id))
-      if (filters.pnl === 'profit' && pnl < 0) return false
-      if (filters.pnl === 'loss' && pnl >= 0) return false
-    }
-
-    const query = filters.search.trim().toLowerCase()
-    if (query) {
-      const coin = coinsById.value[trade.coinId as number]
-      const haystack = `${trade.description ?? ''} ${coin?.fullName ?? ''} ${coin?.ticker ?? ''}`.toLowerCase()
-      if (!haystack.includes(query)) return false
-    }
-
-    return true
-  })
 )
+
+const coinOptions = computed(() => [
+  { label: 'Все монеты', value: 'all' },
+  ...[...coins.value]
+    .sort((a, b) => a.ticker.localeCompare(b.ticker))
+    .map((coin) => ({ label: `${coin.fullName} (${coin.ticker})`, value: String(coin.id) }))
+])
 
 onMounted(async () => {
   const { $api } = useNuxtApp()
-  const [, coinsResponse] = await Promise.all([tradeStore.fetchTrades(), $api<Coin[]>('/coins')])
+  const [, coinsResponse] = await Promise.all([
+    tradeStore.fetchTrades(),
+    $api<Coin[]>('/coins'),
+    feedStore.fetchFeed()
+  ])
   coins.value = coinsResponse ?? []
 })
 </script>

@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import type { createTrade } from "../types/trade";
+import { usePortfolioStore } from "./portfolio";
+import { useFeedStore } from "./feed";
 
 export const useMyTradeStore = defineStore("trade", {
   state: () => ({
@@ -20,6 +22,8 @@ export const useMyTradeStore = defineStore("trade", {
         });
         // добавляем новую сделку в начало списка, чтобы не делать лишний запрос
         this.trades.unshift(response);
+        // сделка меняет холдинги и попадает в общую ленту — обновляем оба
+        await Promise.all([usePortfolioStore().fetchSummary(), useFeedStore().fetchFeed()]);
         return response;
       } catch (e: any) {
         this.error = e?.message || "Ошибка при создании сделки";
@@ -58,6 +62,7 @@ export const useMyTradeStore = defineStore("trade", {
         if (index !== -1) {
           this.trades[index] = response;
         }
+        await Promise.all([usePortfolioStore().fetchSummary(), useFeedStore().fetchFeed()]);
         return response;
       } catch (e: any) {
         this.error = e?.message || "Ошибка при обновлении сделки";
@@ -75,6 +80,7 @@ export const useMyTradeStore = defineStore("trade", {
           method: "DELETE",
         });
         this.trades = this.trades.filter((t) => t.id !== id);
+        await Promise.all([usePortfolioStore().fetchSummary(), useFeedStore().fetchFeed()]);
       } catch (e: any) {
         this.error = e?.message || "Ошибка при удалении сделки";
         throw e;
