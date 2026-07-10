@@ -7,7 +7,9 @@ function toFormData(payload: CreatePostPayload | UpdatePostPayload): FormData {
   if (payload.title !== undefined) formData.append("title", payload.title);
   if (payload.content !== undefined) formData.append("content", payload.content);
   if (payload.coinId !== undefined) formData.append("coinId", String(payload.coinId));
-  if (payload.image) formData.append("image", payload.image);
+  for (const file of payload.media ?? []) {
+    formData.append("media", file);
+  }
   return formData;
 }
 
@@ -67,6 +69,18 @@ export const usePostStore = defineStore("post", {
         throw e;
       } finally {
         this.loading = false;
+      }
+    },
+
+    async deleteMedia(postId: number, mediaId: number) {
+      const { $api } = useNuxtApp();
+      this.error = null;
+      try {
+        await $api(`/posts/${postId}/media/${mediaId}`, { method: "DELETE" });
+        await useFeedStore().fetchFeed();
+      } catch (e: any) {
+        this.error = e?.message || "Ошибка при удалении файла";
+        throw e;
       }
     },
   },

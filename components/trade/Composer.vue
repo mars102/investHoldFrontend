@@ -49,10 +49,8 @@
       <template v-if="mode === 'post'">
         <UInput v-model="postForm.title" placeholder="Заголовок" class="mb-2" />
         <UTextarea v-model="postForm.content" placeholder="О чём хотите рассказать?" autoresize :rows="3" class="mb-2" />
-        <div class="grid grid-cols-2 gap-2 mb-3">
-          <USelect v-model="postForm.coinId" :options="postCoinOptions" placeholder="Без привязки к монете" />
-          <input type="file" accept="image/*" class="text-xs text-gray-500" @change="onImageChange" />
-        </div>
+        <USelect v-model="postForm.coinId" :options="postCoinOptions" placeholder="Без привязки к монете" class="mb-2" />
+        <PostMediaPicker v-model="postForm.media" class="mb-3" />
 
         <div class="flex items-center justify-end">
           <UButton :loading="postStore.loading" :disabled="!isPostValid" @click="submitPost">
@@ -125,7 +123,7 @@ function defaultPostForm() {
     title: '',
     content: '',
     coinId: '',
-    image: undefined as File | undefined
+    media: [] as File[]
   }
 }
 
@@ -136,11 +134,6 @@ const postCoinOptions = computed(() => [
   ...coins.value.map((coin) => ({ label: `${coin.fullName} (${coin.ticker})`, value: String(coin.id) }))
 ])
 
-function onImageChange(e: Event) {
-  const file = (e.target as HTMLInputElement).files?.[0]
-  postForm.image = file ?? undefined
-}
-
 const isPostValid = computed(() => !!postForm.title.trim() && !!postForm.content.trim())
 
 async function submitPost() {
@@ -150,7 +143,7 @@ async function submitPost() {
     title: postForm.title.trim(),
     content: postForm.content.trim(),
     coinId: postForm.coinId ? Number(postForm.coinId) : undefined,
-    image: postForm.image
+    media: postForm.media
   })
   collapse()
 }

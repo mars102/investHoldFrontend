@@ -9,11 +9,34 @@
 
     <UInput v-model="form.title" placeholder="Заголовок" class="mb-2" />
     <UTextarea v-model="form.content" placeholder="Текст поста..." autoresize :rows="3" class="mb-2" />
+    <USelect v-model="form.coinId" :options="coinOptions" placeholder="Без привязки к монете" class="mb-3" />
 
-    <div class="grid grid-cols-2 gap-2 mb-3">
-      <USelect v-model="form.coinId" :options="coinOptions" placeholder="Без привязки к монете" />
-      <input type="file" accept="image/*" class="text-xs text-gray-500" @change="onImageChange" />
+    <!-- Existing media -->
+    <div v-if="existingMedia.length" class="mb-1">
+      <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block">Файлы</label>
+      <div class="flex flex-wrap gap-2">
+        <div
+          v-for="media in existingMedia"
+          :key="media.id"
+          class="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100 border border-gray-200"
+        >
+          <video v-if="media.type === 'video'" :src="media.url" class="w-full h-full object-cover" muted />
+          <img v-else :src="media.url" class="w-full h-full object-cover" />
+          <button
+            type="button"
+            class="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-black/60 text-white flex items-center justify-center disabled:opacity-50"
+            title="Удалить файл"
+            :disabled="removingMediaId === media.id"
+            @click="removeExistingMedia(media.id)"
+          >
+            <UIcon name="i-heroicons-x-mark" class="w-3 h-3" />
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- New media -->
+    <PostMediaPicker v-model="form.media" class="mb-3 mt-2" />
 
     <!-- Delete confirmation -->
     <div v-if="isConfirmingDelete" class="flex items-center justify-between rounded-md bg-red-50 border border-red-100 px-3 py-2 mb-3">
@@ -55,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Post } from '~/types/post'
+import type { Post, PostMedia } from '~/types/post'
 import type { Coin } from '~/types/coins'
 import { usePostStore } from '~/stores/post'
 
@@ -76,8 +99,11 @@ const form = reactive({
   title: props.post.title,
   content: props.post.content,
   coinId: props.post.coinId ? String(props.post.coinId) : '',
-  image: undefined as File | undefined
+  media: [] as File[]
 })
+
+const existingMedia = ref<PostMedia[]>([...(props.post.media ?? [])].sort((a, b) => a.order - b.order))
+const removingMediaId = ref<number | null>(null)
 
 const coinOptions = computed(() => [
   { label: 'Без привязки к монете', value: '' },
@@ -89,9 +115,16 @@ onMounted(async () => {
   coins.value = await $api('/coins')
 })
 
-function onImageChange(e: Event) {
-  const file = (e.target as HTMLInputElement).files?.[0]
-  form.image = file ?? undefined
+async function removeExistingMedia(mediaId: number) {
+  removingMediaId.value = mediaId
+  try {
+    await postStore.deleteMedia(props.post.id, mediaId)
+    existingMedia.value = existingMedia.value.filter((m) => m.id !== mediaId)
+  } catch {
+    // error surfaced via postStore.error
+  } finally {
+    removingMediaId.value = null
+  }
 }
 
 const isValid = computed(() => !!form.title.trim() && !!form.content.trim())
@@ -103,7 +136,7 @@ async function submit() {
     title: form.title.trim(),
     content: form.content.trim(),
     coinId: form.coinId ? Number(form.coinId) : undefined,
-    image: form.image
+    media: form.media
   })
   emit('saved')
 }

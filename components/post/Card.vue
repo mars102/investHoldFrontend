@@ -43,7 +43,22 @@
       <div class="px-4 pb-4">
         <h3 class="text-sm font-bold text-gray-900 mb-1">{{ post.title }}</h3>
         <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ post.content }}</p>
-        <img v-if="post.image" :src="post.image" class="mt-3 rounded-md max-h-80 w-full object-cover" />
+
+        <div
+          v-if="sortedMedia.length"
+          class="mt-3 gap-1 grid"
+          :class="sortedMedia.length === 1 ? 'grid-cols-1' : 'grid-cols-2'"
+        >
+          <div
+            v-for="media in sortedMedia"
+            :key="media.id"
+            class="rounded-md overflow-hidden bg-gray-100"
+            :class="sortedMedia.length === 1 ? 'max-h-96' : 'aspect-square'"
+          >
+            <video v-if="media.type === 'video'" :src="media.url" controls class="w-full h-full object-cover" />
+            <img v-else :src="media.url" class="w-full h-full object-cover" />
+          </div>
+        </div>
       </div>
     </template>
   </article>
@@ -54,12 +69,14 @@ import type { Post } from '~/types/post'
 import type { Coin } from '~/types/coins'
 import { useAuthStore } from '~/stores/auth'
 
-defineProps<{
+const props = defineProps<{
   post: Post
   coin: Coin | undefined
 }>()
 
 const isEditing = ref(false)
+
+const sortedMedia = computed(() => [...(props.post.media ?? [])].sort((a, b) => a.order - b.order))
 
 const authStore = useAuthStore()
 const username = computed(() => authStore.user?.username ?? 'Вы')
