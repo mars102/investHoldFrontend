@@ -78,6 +78,18 @@ const coinOptions = computed(() =>
   }))
 )
 
+const formPreview = useTradeFormPreview()
+
+watchEffect(() => {
+  if (!isExpanded.value) return
+  formPreview.value = {
+    coinId: form.coinId ? Number(form.coinId) : null,
+    type: form.type,
+    quantity: Number(form.quantity),
+    pricePerUnit: Number(form.pricePerUnit)
+  }
+})
+
 watch(
   () => form.coinId,
   (coinId) => {
@@ -96,7 +108,18 @@ onMounted(async () => {
   coins.value = await $api('/coins')
 })
 
-const isValid = computed(() => !!form.coinId && form.quantity > 0 && form.pricePerUnit > 0)
+onUnmounted(() => {
+  formPreview.value = null
+})
+
+const isValid = computed(
+  () =>
+    !!form.coinId &&
+    form.quantity > 0 &&
+    form.pricePerUnit > 0 &&
+    !!form.exchangeSource &&
+    !!form.description?.trim()
+)
 
 const previewTotal = computed(() => (form.quantity > 0 && form.pricePerUnit > 0 ? form.quantity * form.pricePerUnit : null))
 
@@ -107,6 +130,7 @@ function expand() {
 function collapse() {
   isExpanded.value = false
   Object.assign(form, defaultForm())
+  formPreview.value = null
 }
 
 async function submit() {

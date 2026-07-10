@@ -1,6 +1,18 @@
 <template>
-  <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_300px] gap-6 items-start">
-    <div class="max-w-2xl w-full space-y-4">
+  <div class="grid grid-cols-1 xl:grid-cols-[260px_minmax(0,1fr)_260px] gap-6 items-start">
+    <div class="sticky top-6 mt-12 flex flex-col gap-4">
+      <PortfolioBalanceSummary />
+
+      <TradeCoinInfoPanel
+        v-if="formPreview"
+        :coin="formPreview.coinId ? coinsById[formPreview.coinId] : undefined"
+        :type="formPreview.type"
+        :quantity="formPreview.quantity"
+        :price-per-unit="formPreview.pricePerUnit"
+      />
+    </div>
+
+    <div class="w-full space-y-4">
       <div class="flex items-center justify-between">
         <h1 class="text-xl font-bold text-gray-900">Лента сделок</h1>
         <button
@@ -12,7 +24,17 @@
         </button>
       </div>
 
-      <TradeComposer />
+      <div ref="composerAnchor" class="min-h-[72px]">
+        <Teleport to="body" :disabled="!isComposerPinned">
+          <div
+            :class="isComposerPinned
+              ? 'fixed bottom-20 md:bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md z-40 shadow-2xl'
+              : ''"
+          >
+            <TradeComposer />
+          </div>
+        </Teleport>
+      </div>
 
       <!-- Loading -->
       <div v-if="tradeStore.loading && !tradeStore.trades.length" class="space-y-4">
@@ -50,12 +72,14 @@
       </div>
     </div>
 
-    <TradeFilters
-      v-model="filters"
-      :coin-options="coinOptions"
-      :exchange-options="exchangeOptions"
-      :result-count="filteredTrades.length"
-    />
+    <div class="sticky top-6 mt-12">
+      <TradeFilters
+        v-model="filters"
+        :coin-options="coinOptions"
+        :exchange-options="exchangeOptions"
+        :result-count="filteredTrades.length"
+      />
+    </div>
   </div>
 </template>
 
@@ -66,6 +90,28 @@ import type { TradeFiltersState } from '~/components/trade/Filters.vue'
 
 const tradeStore = useMyTradeStore()
 const coins = ref<Coin[]>([])
+const formPreview = useTradeFormPreview()
+
+// While the composer's natural spot in the feed is scrolled out of view,
+// float a copy of it at the bottom of the screen so there's always a way
+// to start a trade. While that floating copy is expanded, freeze the feed
+// so it can't drift out from under the user mid-entry.
+const composerAnchor = ref<HTMLElement | null>(null)
+const isAnchorVisible = ref(true)
+const isComposerPinned = computed(() => !isAnchorVisible.value)
+
+useIntersectionObserver(composerAnchor, ([entry]) => {
+  isAnchorVisible.value = entry?.isIntersecting ?? true
+})
+
+const scrollLocked = useScrollLock()
+watchEffect(() => {
+  scrollLocked.value = isComposerPinned.value && formPreview.value !== null
+})
+
+onUnmounted(() => {
+  scrollLocked.value = false
+})
 
 const coinsById = computed<Record<number, Coin>>(() =>
   Object.fromEntries(coins.value.map((coin) => [coin.id, coin]))

@@ -108,7 +108,10 @@
     </div>
 
     <!-- Main Content -->
-    <main class="flex-1 min-h-0 overflow-y-auto w-full px-4 sm:px-6 py-6 pb-20 md:pb-6">
+    <main
+      class="flex-1 min-h-0 w-full px-4 sm:px-6 py-6 pb-20 md:pb-6"
+      :class="isScrollLocked ? 'overflow-hidden' : 'overflow-y-auto'"
+    >
       <slot />
 
       <!-- Modern Footer -->
@@ -139,6 +142,8 @@
 
 <script setup lang="ts">
 import UserMenu from '~/components/user/UserMenu.vue'
+
+const isScrollLocked = useScrollLock()
 </script>
 
 <style scoped>
@@ -164,12 +169,12 @@ import UserMenu from '~/components/user/UserMenu.vue'
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #f97316, #3b82f6);
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #ea580c, #2563eb);
+  background: #94a3b8;
 }
 
 /* Gradient Text */

@@ -90,6 +90,21 @@ const coinOptions = computed(() =>
   }))
 )
 
+const formPreview = useTradeFormPreview()
+
+watchEffect(() => {
+  formPreview.value = {
+    coinId: form.coinId ? Number(form.coinId) : null,
+    type: form.type,
+    quantity: Number(form.quantity),
+    pricePerUnit: Number(form.pricePerUnit)
+  }
+})
+
+onUnmounted(() => {
+  formPreview.value = null
+})
+
 watch(
   () => form.coinId,
   (coinId) => {
@@ -108,7 +123,14 @@ onMounted(async () => {
   coins.value = await $api('/coins')
 })
 
-const isValid = computed(() => !!form.coinId && form.quantity > 0 && form.pricePerUnit > 0)
+const isValid = computed(
+  () =>
+    !!form.coinId &&
+    form.quantity > 0 &&
+    form.pricePerUnit > 0 &&
+    !!form.exchangeSource &&
+    !!form.description?.trim()
+)
 
 const previewTotal = computed(() => (form.quantity > 0 && form.pricePerUnit > 0 ? form.quantity * form.pricePerUnit : null))
 
