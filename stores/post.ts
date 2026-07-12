@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import type { CreatePostPayload, UpdatePostPayload } from "../types/post";
+import type { CreatePostPayload, UpdatePostPayload, Post } from "../types/post";
 import { useFeedStore } from "./feed";
 
 function toFormData(payload: CreatePostPayload | UpdatePostPayload): FormData {
@@ -17,8 +17,24 @@ export const usePostStore = defineStore("post", {
   state: () => ({
     loading: false,
     error: null as string | null,
+    posts: [] as Post[],
   }),
   actions: {
+    async fetchPosts() {
+      const { $api } = useNuxtApp();
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await $api<Post[]>("/posts", { method: "GET" });
+        this.posts = response ?? [];
+        return response;
+      } catch (e: any) {
+        this.error = e?.message || "Ошибка при получении постов";
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async createPost(payload: CreatePostPayload) {
       const { $api } = useNuxtApp();
       this.loading = true;

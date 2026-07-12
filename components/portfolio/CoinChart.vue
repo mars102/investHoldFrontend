@@ -25,9 +25,11 @@
                 v-if="points.length"
                 class="text-xs font-bold px-2 py-0.5 rounded-md"
                 :class="isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'"
+                :title="`Изменение цены за период: ${periodLabels[period]}`"
               >
                 {{ periodChangePercent >= 0 ? '+' : '' }}{{ periodChangePercent.toFixed(2) }}%
               </span>
+              <span v-if="points.length" class="text-[11px] text-gray-400">за {{ periodLabels[period] }}</span>
             </div>
           </div>
         </div>

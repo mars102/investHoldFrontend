@@ -44,16 +44,25 @@
         <h3 class="text-sm font-bold text-gray-900 mb-1">{{ post.title }}</h3>
         <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ post.content }}</p>
 
-        <div
-          v-if="sortedMedia.length"
-          class="mt-3 gap-1 grid"
-          :class="sortedMedia.length === 1 ? 'grid-cols-1' : 'grid-cols-2'"
-        >
+        <!-- Single attachment: show at its natural aspect ratio, capped by height only —
+             never cropped, never allowed to blow up to the image's full native size. -->
+        <div v-if="sortedMedia.length === 1" class="mt-3 rounded-md overflow-hidden bg-gray-50 flex justify-center">
+          <video
+            v-if="sortedMedia[0]!.type === 'video'"
+            :src="sortedMedia[0]!.url"
+            controls
+            class="w-full max-h-[560px] object-contain"
+          />
+          <img v-else :src="sortedMedia[0]!.url" class="w-full max-h-[560px] object-contain" />
+        </div>
+
+        <!-- Multiple attachments: a tidy uniform grid, like a gallery — cropping each
+             tile to a square here is expected (same as VK/Instagram multi-photo posts). -->
+        <div v-else-if="sortedMedia.length > 1" class="mt-3 grid grid-cols-2 gap-1">
           <div
             v-for="media in sortedMedia"
             :key="media.id"
-            class="rounded-md overflow-hidden bg-gray-100"
-            :class="sortedMedia.length === 1 ? 'max-h-96' : 'aspect-square'"
+            class="aspect-square rounded-md overflow-hidden bg-gray-100"
           >
             <video v-if="media.type === 'video'" :src="media.url" controls class="w-full h-full object-cover" />
             <img v-else :src="media.url" class="w-full h-full object-cover" />
