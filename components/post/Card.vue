@@ -1,5 +1,5 @@
 <template>
-  <article class="rounded-lg bg-white border border-gray-100 shadow-sm overflow-hidden">
+  <article class="rounded-lg bg-white border border-gray-100 shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-800">
     <!-- Header -->
     <div class="flex items-center gap-3 p-4 pb-3">
       <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-sm shrink-0">
@@ -8,10 +8,10 @@
 
       <div class="min-w-0 flex-1">
         <div class="flex items-center gap-2">
-          <span class="font-bold text-gray-900 text-sm">{{ username }}</span>
+          <span class="font-bold text-gray-900 text-sm dark:text-white">{{ username }}</span>
           <span class="text-[11px] font-bold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600">Пост</span>
         </div>
-        <div class="text-xs text-gray-400 mt-0.5">
+        <div class="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
           {{ formatRelativeTime(post.createdAt) }}
         </div>
       </div>
@@ -21,12 +21,12 @@
           <img v-if="coin.logoUrl" :src="coin.logoUrl" class="w-full h-full object-cover" />
           <span v-else>{{ coin.ticker.slice(0, 1) }}</span>
         </div>
-        <span class="text-sm font-bold text-gray-900">{{ coin.ticker }}</span>
+        <span class="text-sm font-bold text-gray-900 dark:text-white">{{ coin.ticker }}</span>
       </div>
 
       <button
         v-if="!isEditing"
-        class="w-6 h-6 shrink-0 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+        class="w-6 h-6 shrink-0 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800"
         title="Редактировать"
         @click="isEditing = true"
       >
@@ -41,12 +41,12 @@
 
     <template v-else>
       <div class="px-4 pb-4">
-        <h3 class="text-sm font-bold text-gray-900 mb-1">{{ post.title }}</h3>
-        <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{{ post.content }}</p>
+        <h3 class="text-sm font-bold text-gray-900 mb-1 dark:text-white">{{ post.title }}</h3>
+        <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line dark:text-gray-300">{{ post.content }}</p>
 
         <!-- Single attachment: show at its natural aspect ratio, capped by height only —
              never cropped, never allowed to blow up to the image's full native size. -->
-        <div v-if="sortedMedia.length === 1" class="mt-3 rounded-md overflow-hidden bg-gray-50 flex justify-center">
+        <div v-if="sortedMedia.length === 1" class="mt-3 rounded-md overflow-hidden bg-gray-50 flex justify-center dark:bg-gray-800/60">
           <video
             v-if="sortedMedia[0]!.type === 'video'"
             :src="sortedMedia[0]!.url"
@@ -62,7 +62,7 @@
           <div
             v-for="media in sortedMedia"
             :key="media.id"
-            class="aspect-square rounded-md overflow-hidden bg-gray-100"
+            class="aspect-square rounded-md overflow-hidden bg-gray-100 dark:bg-gray-800"
           >
             <video v-if="media.type === 'video'" :src="media.url" controls class="w-full h-full object-cover" />
             <img v-else :src="media.url" class="w-full h-full object-cover" />

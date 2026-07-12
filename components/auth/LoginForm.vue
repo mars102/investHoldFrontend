@@ -62,7 +62,7 @@
       </UButton>
 
       <div class="text-center mt-6">
-        <p class="text-sm text-gray-400">
+        <p class="text-sm text-gray-400 dark:text-gray-500">
           У вас нет аккаунта?
           <NuxtLink to="/register" class="text-cyan-400 hover:text-cyan-300 ml-1 font-medium">
             Создать

@@ -3,17 +3,17 @@
     <PortfolioBalanceSummary />
 
     <!-- Watchlist -->
-    <div class="rounded-lg bg-white border border-gray-100 shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
-      <div class="px-3 py-2.5 border-b border-gray-100 flex items-center justify-between shrink-0">
-        <h3 class="text-xs font-bold text-gray-900">Ваши монеты</h3>
-        <span class="text-[10px] text-gray-400 font-medium">{{ sortedHoldings.length }}</span>
+    <div class="rounded-lg bg-white border border-gray-100 shadow-sm overflow-hidden flex-1 flex flex-col min-h-0 dark:bg-gray-800 dark:border-gray-800">
+      <div class="px-3 py-2.5 border-b border-gray-100 flex items-center justify-between shrink-0 dark:border-gray-800">
+        <h3 class="text-xs font-bold text-gray-900 dark:text-white">Ваши монеты</h3>
+        <span class="text-[10px] text-gray-400 font-medium dark:text-gray-500">{{ sortedHoldings.length }}</span>
       </div>
 
-      <div class="divide-y divide-gray-50 overflow-y-auto flex-1 min-h-0">
+      <div class="divide-y divide-gray-50 overflow-y-auto flex-1 min-h-0 dark:divide-gray-800">
         <div
           v-for="holding in sortedHoldings"
           :key="holding.id"
-          class="group relative flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors hover:bg-gray-50"
+          class="group relative flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/60"
           :class="holding.coinId === selectedCoinId ? 'bg-blue-50/60' : ''"
           @click="emit('select', holding)"
         >
@@ -29,11 +29,11 @@
 
           <div class="min-w-0 flex-1 leading-tight">
             <div class="flex items-center justify-between gap-2">
-              <span class="font-bold text-gray-900 text-xs">{{ holding.coin.ticker }}</span>
-              <span class="font-bold text-gray-900 text-xs tabular-nums">$ {{ formatNumber(holding.currentValue) }}</span>
+              <span class="font-bold text-gray-900 text-xs dark:text-white">{{ holding.coin.ticker }}</span>
+              <span class="font-bold text-gray-900 text-xs tabular-nums dark:text-white">$ {{ formatNumber(holding.currentValue) }}</span>
             </div>
             <div class="flex items-center justify-between gap-2">
-              <span class="text-[10px] text-gray-400 truncate">{{ formatQuantity(Number(holding.totalQuantity)) }}</span>
+              <span class="text-[10px] text-gray-400 truncate dark:text-gray-500">{{ formatQuantity(Number(holding.totalQuantity)) }}</span>
               <span
                 class="text-[10px] font-semibold shrink-0"
                 :class="holding.profitLossPercentage >= 0 ? 'text-emerald-600' : 'text-red-600'"
@@ -44,7 +44,7 @@
           </div>
 
           <button
-            class="shrink-0 w-5 h-5 rounded-md flex items-center justify-center text-gray-400 opacity-0 group-hover:opacity-100 hover:bg-gray-200 hover:text-gray-700 transition-all"
+            class="shrink-0 w-5 h-5 rounded-md flex items-center justify-center text-gray-400 opacity-0 group-hover:opacity-100 hover:bg-gray-200 hover:text-gray-700 transition-all dark:text-gray-500 dark:hover:text-gray-200"
             title="Обновить цену"
             :disabled="portfolioStore.refreshingCoinId !== null"
             @click.stop="portfolioStore.refreshCoinPrice(holding.coinId)"
@@ -57,7 +57,7 @@
           </button>
         </div>
 
-        <div v-if="!sortedHoldings.length" class="px-3 py-10 text-center text-sm text-gray-400">
+        <div v-if="!sortedHoldings.length" class="px-3 py-10 text-center text-sm text-gray-400 dark:text-gray-500">
           Нет активов в портфеле
         </div>
       </div>

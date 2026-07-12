@@ -1,8 +1,8 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
-    <h3 class="text-sm font-bold text-gray-900 mb-4">Лучший и худший актив</h3>
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-5 dark:bg-gray-800 dark:border-gray-800">
+    <h3 class="text-sm font-bold text-gray-900 mb-4 dark:text-white">Лучший и худший актив</h3>
 
-    <div v-if="!holdings.length" class="h-24 flex items-center justify-center text-sm text-gray-400">
+    <div v-if="!holdings.length" class="h-24 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
       Нет активов в портфеле
     </div>
 
@@ -14,10 +14,10 @@
             <img v-if="best!.coin.logoUrl" :src="best!.coin.logoUrl" class="w-full h-full object-cover" />
             <span v-else>{{ best!.coin.ticker.slice(0, 1) }}</span>
           </div>
-          <span class="text-sm font-bold text-gray-900">{{ best!.coin.ticker }}</span>
+          <span class="text-sm font-bold text-gray-900 dark:text-white">{{ best!.coin.ticker }}</span>
         </div>
         <p class="text-lg font-bold text-emerald-600 tabular-nums">{{ formatPercent(best!.profitLossPercentage) }}</p>
-        <p class="text-[11px] text-gray-500 tabular-nums">$ {{ formatNumber(best!.currentValue) }}</p>
+        <p class="text-[11px] text-gray-500 tabular-nums dark:text-gray-400">$ {{ formatNumber(best!.currentValue) }}</p>
       </div>
 
       <div v-if="worst" class="rounded-md bg-red-50 border border-red-100 p-4">
@@ -27,10 +27,10 @@
             <img v-if="worst.coin.logoUrl" :src="worst.coin.logoUrl" class="w-full h-full object-cover" />
             <span v-else>{{ worst.coin.ticker.slice(0, 1) }}</span>
           </div>
-          <span class="text-sm font-bold text-gray-900">{{ worst.coin.ticker }}</span>
+          <span class="text-sm font-bold text-gray-900 dark:text-white">{{ worst.coin.ticker }}</span>
         </div>
         <p class="text-lg font-bold text-red-600 tabular-nums">{{ formatPercent(worst.profitLossPercentage) }}</p>
-        <p class="text-[11px] text-gray-500 tabular-nums">$ {{ formatNumber(worst.currentValue) }}</p>
+        <p class="text-[11px] text-gray-500 tabular-nums dark:text-gray-400">$ {{ formatNumber(worst.currentValue) }}</p>
       </div>
     </div>
   </div>

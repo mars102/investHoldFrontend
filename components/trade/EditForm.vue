@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="flex items-center justify-between mb-3">
-      <p class="text-sm font-bold text-gray-900">Редактирование сделки</p>
-      <button class="w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" @click="$emit('cancel')">
+      <p class="text-sm font-bold text-gray-900 dark:text-white">Редактирование сделки</p>
+      <button class="w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800" @click="$emit('cancel')">
         <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
       </button>
     </div>
@@ -37,8 +37,8 @@
       <span v-else />
 
       <div class="flex items-center gap-3">
-        <span class="text-xs text-gray-400">
-          <template v-if="previewTotal !== null">Итого: <span class="font-bold text-gray-700">$ {{ formatNumber(previewTotal) }}</span></template>
+        <span class="text-xs text-gray-400 dark:text-gray-500">
+          <template v-if="previewTotal !== null">Итого: <span class="font-bold text-gray-700 dark:text-gray-300">$ {{ formatNumber(previewTotal) }}</span></template>
         </span>
         <div class="flex items-center gap-2">
           <UButton color="gray" variant="ghost" :disabled="tradeStore.loading" @click="$emit('cancel')">

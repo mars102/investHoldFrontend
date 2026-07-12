@@ -8,10 +8,14 @@
       :total-quantity="selectedHolding ? Number(selectedHolding.totalQuantity) : 0"
     />
 
-    <PortfolioHoldingsList
-      :selected-coin-id="selectedHolding?.coinId ?? null"
-      @select="onSelectHolding"
-    />
+    <div class="h-full flex flex-col gap-3 min-h-0">
+      <PortfolioHoldingsList
+        class="flex-[2] min-h-0"
+        :selected-coin-id="selectedHolding?.coinId ?? null"
+        @select="onSelectHolding"
+      />
+      <PortfolioWatchlistPanel class="flex-1" :held-coin-ids="heldCoinIds" />
+    </div>
   </div>
 </template>
 
@@ -23,6 +27,7 @@ const portfolioStore = usePortfolioStore();
 const { summary } = storeToRefs(portfolioStore);
 
 const selectedHolding = ref<Holding | null>(null);
+const heldCoinIds = computed(() => (summary.value?.holdings ?? []).map((h) => h.coinId));
 
 onMounted(async () => {
   await portfolioStore.fetchSummary();

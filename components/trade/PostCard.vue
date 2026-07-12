@@ -1,5 +1,5 @@
 <template>
-  <article class="rounded-lg bg-white border border-gray-100 shadow-sm overflow-hidden">
+  <article class="rounded-lg bg-white border border-gray-100 shadow-sm overflow-hidden dark:bg-gray-800 dark:border-gray-800">
     <!-- Header -->
     <div class="flex items-center gap-3 p-4 pb-3">
       <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-sm shrink-0">
@@ -8,7 +8,7 @@
 
       <div class="min-w-0 flex-1">
         <div class="flex items-center gap-2">
-          <span class="font-bold text-gray-900 text-sm">{{ username }}</span>
+          <span class="font-bold text-gray-900 text-sm dark:text-white">{{ username }}</span>
           <span
             class="text-[11px] font-bold px-1.5 py-0.5 rounded-md"
             :class="isBuy ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'"
@@ -17,12 +17,12 @@
           </span>
           <span
             v-if="!isBuy && costBasis?.percentOfPositionSold != null"
-            class="text-[11px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-500"
+            class="text-[11px] font-bold px-1.5 py-0.5 rounded-md bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
           >
             Продано {{ costBasis.percentOfPositionSold.toFixed(0) }}% позиции
           </span>
         </div>
-        <div class="text-xs text-gray-400 mt-0.5">
+        <div class="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
           {{ formatRelativeTime(trade.executedAt) }} <span v-if="trade.exchangeSource"> · {{ trade.exchangeSource }}</span>
         </div>
       </div>
@@ -32,11 +32,20 @@
           <img v-if="coin?.logoUrl" :src="coin.logoUrl" class="w-full h-full object-cover" />
           <span v-else>{{ coin?.ticker?.slice(0, 1) }}</span>
         </div>
-        <span class="text-sm font-bold text-gray-900">{{ coin?.ticker }}</span>
+        <span class="text-sm font-bold text-gray-900 dark:text-white">{{ coin?.ticker }}</span>
 
         <button
           v-if="!isEditing"
-          class="w-6 h-6 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+          class="w-6 h-6 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800"
+          title="Поделиться картинкой"
+          @click="shareAsImage"
+        >
+          <UIcon name="i-heroicons-share" class="w-3.5 h-3.5" />
+        </button>
+
+        <button
+          v-if="!isEditing"
+          class="w-6 h-6 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800"
           title="Редактировать"
           @click="isEditing = true"
         >
@@ -52,13 +61,13 @@
 
     <template v-else>
       <!-- Caption -->
-      <p v-if="trade.description" class="px-4 pb-3 text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+      <p v-if="trade.description" class="px-4 pb-3 text-sm text-gray-700 leading-relaxed whitespace-pre-line dark:text-gray-300">
         {{ trade.description }}
       </p>
 
       <!-- Chart -->
       <div class="px-4">
-      <div v-if="loading" class="h-40 rounded-md bg-gray-50 flex items-center justify-center">
+      <div v-if="loading" class="h-40 rounded-md bg-gray-50 flex items-center justify-center dark:bg-gray-800/60">
         <div class="flex gap-1.5">
           <span class="w-2 h-2 rounded-full bg-gray-300 animate-bounce" style="animation-delay: 0ms" />
           <span class="w-2 h-2 rounded-full bg-gray-300 animate-bounce" style="animation-delay: 150ms" />
@@ -66,14 +75,14 @@
         </div>
       </div>
 
-      <div v-else-if="!chartData" class="h-40 rounded-md bg-gray-50 flex items-center justify-center text-xs text-gray-400">
+      <div v-else-if="!chartData" class="h-40 rounded-md bg-gray-50 flex items-center justify-center text-xs text-gray-400 dark:bg-gray-800/60 dark:text-gray-500">
         Нет данных графика
       </div>
 
       <template v-else>
         <div
           ref="chartContainer"
-          class="relative h-40 w-full rounded-md overflow-hidden bg-gray-50 cursor-crosshair"
+          class="relative h-40 w-full rounded-md overflow-hidden bg-gray-50 cursor-crosshair dark:bg-gray-800/60"
           @mousemove="onMouseMove"
           @mouseleave="onMouseLeave"
         >
@@ -134,7 +143,7 @@
 
           <div
             v-if="chartData.markY !== null"
-            class="absolute right-1.5 -translate-y-1/2 text-[9px] font-bold text-gray-500 bg-white/90 border border-gray-200 px-1.5 py-0.5 rounded-md whitespace-nowrap pointer-events-none"
+            class="absolute right-1.5 -translate-y-1/2 text-[9px] font-bold text-gray-500 bg-white/90 border border-gray-200 px-1.5 py-0.5 rounded-md whitespace-nowrap pointer-events-none dark:text-gray-400 dark:border-gray-700"
             :style="{ top: chartData.markY + '%' }"
           >
             {{ entryLabel }} $ {{ formatPrice(entryPrice) }}
@@ -150,7 +159,7 @@
         </div>
 
         <!-- time axis -->
-        <div class="flex justify-between mt-1.5 px-0.5 text-[9px] font-medium text-gray-400">
+        <div class="flex justify-between mt-1.5 px-0.5 text-[9px] font-medium text-gray-400 dark:text-gray-500">
           <span>{{ formatAxisDate(points[0]!.timestamp) }}</span>
           <span v-if="points.length > 2">{{ formatAxisDate(points[Math.floor(points.length / 2)]!.timestamp) }}</span>
           <span>{{ formatAxisDate(points[points.length - 1]!.timestamp) }}</span>
@@ -161,19 +170,19 @@
     <!-- Stats footer -->
     <div class="grid grid-cols-4 gap-2 px-4 py-3 mt-1">
       <div>
-        <p class="text-[10px] text-gray-400">Количество</p>
-        <p class="text-xs font-bold text-gray-900 tabular-nums">{{ formatQuantity(trade.quantity) }}</p>
+        <p class="text-[10px] text-gray-400 dark:text-gray-500">Количество</p>
+        <p class="text-xs font-bold text-gray-900 tabular-nums dark:text-white">{{ formatQuantity(trade.quantity) }}</p>
       </div>
       <div>
-        <p class="text-[10px] text-gray-400">{{ isBuy ? 'Точка входа' : 'Цена продажи' }}</p>
-        <p class="text-xs font-bold text-gray-900 tabular-nums">$ {{ formatPrice(trade.pricePerUnit) }}</p>
+        <p class="text-[10px] text-gray-400 dark:text-gray-500">{{ isBuy ? 'Точка входа' : 'Цена продажи' }}</p>
+        <p class="text-xs font-bold text-gray-900 tabular-nums dark:text-white">$ {{ formatPrice(trade.pricePerUnit) }}</p>
       </div>
       <div>
-        <p class="text-[10px] text-gray-400">Сумма</p>
-        <p class="text-xs font-bold text-gray-900 tabular-nums">$ {{ formatNumber(trade.totalAmount) }}</p>
+        <p class="text-[10px] text-gray-400 dark:text-gray-500">Сумма</p>
+        <p class="text-xs font-bold text-gray-900 tabular-nums dark:text-white">$ {{ formatNumber(trade.totalAmount) }}</p>
       </div>
       <div>
-        <p class="text-[10px] text-gray-400">P&L</p>
+        <p class="text-[10px] text-gray-400 dark:text-gray-500">P&L</p>
         <p class="text-xs font-bold tabular-nums" :class="isProfitable ? 'text-emerald-600' : 'text-red-600'">
           {{ pnlPercent >= 0 ? '+' : '' }}{{ pnlPercent.toFixed(2) }}%
         </p>
@@ -295,5 +304,17 @@ function onMouseMove(e: MouseEvent) {
 
 function onMouseLeave() {
   hoverIndex.value = null
+}
+
+function shareAsImage() {
+  const canvas = renderTradeShareImage({
+    trade: props.trade,
+    coin: props.coin,
+    isBuy: isBuy.value,
+    entryPrice: entryPrice.value,
+    latestPrice: latestPrice.value,
+    pnlPercent: pnlPercent.value
+  })
+  downloadCanvasAsImage(canvas, `investhold-${(props.coin?.ticker ?? 'trade').toLowerCase()}-${props.trade.id}.png`)
 }
 </script>

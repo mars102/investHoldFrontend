@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="flex items-center justify-between mb-3">
-      <p class="text-sm font-bold text-gray-900">Редактирование поста</p>
-      <button class="w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" @click="$emit('cancel')">
+      <p class="text-sm font-bold text-gray-900 dark:text-white">Редактирование поста</p>
+      <button class="w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800" @click="$emit('cancel')">
         <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
       </button>
     </div>
@@ -13,12 +13,12 @@
 
     <!-- Existing media -->
     <div v-if="existingMedia.length" class="mb-1">
-      <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block">Файлы</label>
+      <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block dark:text-gray-500">Файлы</label>
       <div class="flex flex-wrap gap-2">
         <div
           v-for="media in existingMedia"
           :key="media.id"
-          class="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100 border border-gray-200"
+          class="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100 border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
         >
           <video v-if="media.type === 'video'" :src="media.url" class="w-full h-full object-cover" muted />
           <img v-else :src="media.url" class="w-full h-full object-cover" />

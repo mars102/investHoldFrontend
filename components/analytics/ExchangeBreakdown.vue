@@ -1,18 +1,18 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
-    <h3 class="text-sm font-bold text-gray-900 mb-4">Активность по биржам</h3>
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-5 dark:bg-gray-800 dark:border-gray-800">
+    <h3 class="text-sm font-bold text-gray-900 mb-4 dark:text-white">Активность по биржам</h3>
 
-    <div v-if="!rows.length" class="h-24 flex items-center justify-center text-sm text-gray-400">
+    <div v-if="!rows.length" class="h-24 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
       Нет данных
     </div>
 
     <div v-else class="space-y-3">
       <div v-for="row in rows" :key="row.exchange">
         <div class="flex items-center justify-between text-xs mb-1">
-          <span class="font-semibold text-gray-700">{{ row.exchange }}</span>
-          <span class="text-gray-400 tabular-nums">{{ row.count }} сделок · $ {{ formatNumber(row.volume) }}</span>
+          <span class="font-semibold text-gray-700 dark:text-gray-300">{{ row.exchange }}</span>
+          <span class="text-gray-400 tabular-nums dark:text-gray-500">{{ row.count }} сделок · $ {{ formatNumber(row.volume) }}</span>
         </div>
-        <div class="h-2.5 rounded-full bg-gray-100 overflow-hidden">
+        <div class="h-2.5 rounded-full bg-gray-100 overflow-hidden dark:bg-gray-800">
           <div
             class="h-full rounded-full bg-[#2a78d6] transition-all"
             :style="{ width: (row.volume / maxVolume) * 100 + '%' }"

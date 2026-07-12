@@ -44,8 +44,8 @@ export const useAuthStore = defineStore('auth', () => {
                 baseURL: useRuntimeConfig().public.apiUrl
             })
 
-            accessToken.value = response.access_token
-            refreshToken.value = response.refresh_token
+            accessToken.value = response.access_token || response.token
+            refreshToken.value = response.refresh_token || response.token
 
             // Устанавливаем пользователя из ответа или загружаем
             if (response.user) {

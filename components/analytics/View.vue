@@ -1,8 +1,8 @@
 <template>
   <div class="space-y-4">
     <div class="mb-2">
-      <h2 class="text-2xl font-bold text-gray-900 mb-1">Аналитика</h2>
-      <p class="text-gray-500 text-sm">Как поживает твой портфель и торговая активность</p>
+      <h2 class="text-2xl font-bold text-gray-900 mb-1 dark:text-white">Аналитика</h2>
+      <p class="text-gray-500 text-sm dark:text-gray-400">Как поживает твой портфель и торговая активность</p>
     </div>
 
     <AnalyticsStatsCards />

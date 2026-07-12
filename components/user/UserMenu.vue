@@ -3,19 +3,19 @@
     <!-- Quick Stats Badge -->
     <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-blue-50 to-orange-50 rounded-lg border border-blue-100/50">
       <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-      <span class="text-xs font-bold text-gray-700">Live</span>
+      <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Live</span>
       <div class="w-px h-3 bg-gray-300"></div>
-      <span class="text-xs font-semibold text-gray-600">v4.0</span>
+      <span class="text-xs font-semibold text-gray-600 dark:text-gray-400">v4.0</span>
     </div>
 
     <!-- Admin Badge for Admin Users -->
     <div v-if="isAdmin" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-100/50">
       <div class="w-2 h-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"></div>
-      <span class="text-xs font-bold text-gray-700">ADMIN</span>
+      <span class="text-xs font-bold text-gray-700 dark:text-gray-300">ADMIN</span>
     </div>
 
     <UDropdown :items="menuItems" :popper="{ placement: 'bottom-end' }">
-      <button class="group relative flex items-center gap-2 p-1 rounded-xl hover:bg-gray-100 transition-all duration-200">
+      <button class="group relative flex items-center gap-2 p-1 rounded-xl hover:bg-gray-100 transition-all duration-200 dark:hover:bg-gray-800">
         <div class="relative">
           <div
               :class="[
@@ -37,7 +37,7 @@
           ></div>
         </div>
         <div class="hidden md:flex flex-col items-start">
-          <span class="text-xs font-bold text-gray-900 leading-tight">{{ user.username }}</span>
+          <span class="text-xs font-bold text-gray-900 leading-tight dark:text-white">{{ user.username }}</span>
           <span :class="[
             'text-[10px] font-medium',
             isAdmin ? 'text-purple-600' : 'text-gray-500'
@@ -47,7 +47,7 @@
         </div>
         <UIcon
             name="i-heroicons-chevron-down"
-            class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors"
+            class="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors dark:text-gray-500"
         />
       </button>
     </UDropdown>

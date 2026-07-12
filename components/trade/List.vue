@@ -14,14 +14,25 @@
 
     <div class="w-full space-y-4">
       <div class="flex items-center justify-between">
-        <h1 class="text-xl font-bold text-gray-900">Лента</h1>
-        <button
-          class="w-8 h-8 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
-          :disabled="isLoading"
-          @click="refresh"
-        >
-          <UIcon name="i-heroicons-arrow-path" class="w-4 h-4" :class="isLoading ? 'animate-spin' : ''" />
-        </button>
+        <h1 class="text-xl font-bold text-gray-900 dark:text-white">Лента</h1>
+        <div class="flex items-center gap-1">
+          <button
+            class="w-8 h-8 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-40 dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800"
+            title="Экспортировать сделки в CSV"
+            :disabled="!tradeStore.trades.length"
+            @click="exportTrades"
+          >
+            <UIcon name="i-heroicons-arrow-down-tray" class="w-4 h-4" />
+          </button>
+          <button
+            class="w-8 h-8 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800"
+            title="Обновить"
+            :disabled="isLoading"
+            @click="refresh"
+          >
+            <UIcon name="i-heroicons-arrow-path" class="w-4 h-4" :class="isLoading ? 'animate-spin' : ''" />
+          </button>
+        </div>
       </div>
 
       <div ref="composerAnchor" class="min-h-[72px]">
@@ -51,8 +62,28 @@
       />
 
       <!-- Empty -->
-      <div v-else-if="!hasAnyContent" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100">
+      <div v-else-if="!hasAnyContent" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100 dark:text-gray-500 dark:bg-gray-800 dark:border-gray-800">
         Пока ничего нет — поделитесь первым постом или сделкой!
+      </div>
+
+      <!-- Search results (flat, client-side, over full trade+post history) -->
+      <div v-else-if="isSearching" class="space-y-4">
+        <div v-if="!searchResults.length" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100 dark:text-gray-500 dark:bg-gray-800 dark:border-gray-800">
+          Ничего не найдено по запросу «{{ filters.search }}»
+        </div>
+        <template v-for="feedItem in searchResults" :key="`${feedItem.type}-${(feedItem.item as any).id}`">
+          <TradePostCard
+            v-if="feedItem.type === 'trade'"
+            :trade="(feedItem.item as Trade)"
+            :coin="coinsById[(feedItem.item as Trade).coinId as number]"
+            :cost-basis="costBasisByTradeId.get((feedItem.item as Trade).id)"
+          />
+          <PostCard
+            v-else
+            :post="(feedItem.item as Post)"
+            :coin="coinsById[(feedItem.item as Post).coinId as number]"
+          />
+        </template>
       </div>
 
       <!-- Grouped by position -->
@@ -91,7 +122,7 @@
       <TradeFilters
         v-model="filters"
         :coin-options="coinOptions"
-        :result-count="filters.grouped ? groupedEntries.length : feedStore.total"
+        :result-count="isSearching ? searchResults.length : (filters.grouped ? groupedEntries.length : feedStore.total)"
       />
     </div>
   </div>
@@ -154,7 +185,8 @@ const costBasisByTradeId = computed(() => computeCostBasisTimeline(tradeStore.tr
 const filters = reactive<FeedFiltersState>({
   type: 'all',
   coinId: 'all',
-  grouped: false
+  grouped: false,
+  search: ''
 })
 
 watch(
@@ -164,6 +196,13 @@ watch(
     feedStore.fetchFeed()
   }
 )
+
+const isSearching = computed(() => filters.search.trim().length > 0)
+
+const searchResults = computed(() => {
+  const filterCoinId = filters.coinId !== 'all' ? Number(filters.coinId) : null
+  return searchFeed(tradeStore.trades, postStore.posts, coinsById.value, filters.search, filters.type, filterCoinId)
+})
 
 const coinOptions = computed(() => [
   { label: 'Все монеты', value: 'all' },
@@ -192,10 +231,19 @@ const groupedEntries = computed<GroupedEntry[]>(() => {
 })
 
 const isLoading = computed(() => feedStore.loading || tradeStore.loading || postStore.loading)
-const hasAnyContent = computed(() => (filters.grouped ? groupedEntries.value.length > 0 : feedStore.items.length > 0))
+const hasAnyContent = computed(() => {
+  if (isSearching.value) return true
+  return filters.grouped ? groupedEntries.value.length > 0 : feedStore.items.length > 0
+})
 
 async function refresh() {
   await Promise.all([feedStore.fetchFeed(), tradeStore.fetchTrades(), postStore.fetchPosts()])
+}
+
+function exportTrades() {
+  const csv = tradesToCsv(tradeStore.trades, coinsById.value)
+  const date = new Date().toISOString().slice(0, 10)
+  downloadCsv(`investhold-trades-${date}.csv`, csv)
 }
 
 onMounted(async () => {

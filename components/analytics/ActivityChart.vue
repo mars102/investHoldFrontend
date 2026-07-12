@@ -1,21 +1,21 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-5 dark:bg-gray-800 dark:border-gray-800">
     <div class="flex items-center justify-between mb-1">
-      <h3 class="text-sm font-bold text-gray-900">Активность</h3>
+      <h3 class="text-sm font-bold text-gray-900 dark:text-white">Активность</h3>
       <div class="flex items-center gap-3 text-[11px]">
-        <span class="flex items-center gap-1.5 text-gray-500">
+        <span class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
           <span class="w-2 h-2 rounded-sm" style="background-color: #2a78d6" />
           Сделки
         </span>
-        <span class="flex items-center gap-1.5 text-gray-500">
+        <span class="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
           <span class="w-2 h-2 rounded-sm" style="background-color: #1baf7a" />
           Посты
         </span>
       </div>
     </div>
-    <p class="text-xs text-gray-400 mb-4">
-      В этом месяце: <span class="font-semibold text-gray-700">{{ monthTradeCount }} сделок</span> ·
-      <span class="font-semibold text-gray-700">{{ monthPostCount }} постов</span>
+    <p class="text-xs text-gray-400 mb-4 dark:text-gray-500">
+      В этом месяце: <span class="font-semibold text-gray-700 dark:text-gray-300">{{ monthTradeCount }} сделок</span> ·
+      <span class="font-semibold text-gray-700 dark:text-gray-300">{{ monthPostCount }} постов</span>
     </p>
 
     <div class="flex items-end gap-[2px] h-32">
@@ -41,7 +41,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between mt-2 text-[10px] text-gray-400">
+    <div class="flex justify-between mt-2 text-[10px] text-gray-400 dark:text-gray-500">
       <span>{{ days[0]?.axisLabel }}</span>
       <span>{{ days[Math.floor(days.length / 2)]?.axisLabel }}</span>
       <span>{{ days[days.length - 1]?.axisLabel }}</span>

@@ -23,7 +23,7 @@
       <div
         v-for="(file, index) in files"
         :key="index"
-        class="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100 border border-gray-200"
+        class="relative w-16 h-16 rounded-md overflow-hidden bg-gray-100 border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
       >
         <video v-if="isVideoMime(file.type)" :src="previewUrl(file)" class="w-full h-full object-cover" muted />
         <img v-else :src="previewUrl(file)" class="w-full h-full object-cover" />

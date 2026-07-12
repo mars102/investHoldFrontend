@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col rounded-lg overflow-hidden border border-gray-100 bg-white shadow-sm">
+  <div class="h-full flex flex-col rounded-lg overflow-hidden border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-800">
     <!-- placeholder when nothing is selected -->
     <div v-if="!coinId" class="flex-1 flex flex-col items-center justify-center text-gray-300 gap-3 min-h-[480px]">
       <UIcon name="i-heroicons-chart-bar-square" class="w-12 h-12" />
@@ -8,7 +8,7 @@
 
     <template v-else>
       <!-- Header -->
-      <div class="p-5 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 shrink-0">
+      <div class="p-5 flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 shrink-0 dark:border-gray-800">
         <div class="flex items-center gap-3 min-w-0">
           <div class="w-11 h-11 shrink-0 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold overflow-hidden">
             <img v-if="coin?.logoUrl" :src="coin.logoUrl" class="w-full h-full object-cover" />
@@ -16,11 +16,11 @@
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-2">
-              <h3 class="text-gray-900 font-bold text-base truncate">{{ coin?.fullName }}</h3>
-              <span class="text-gray-400 text-sm font-medium">{{ coin?.ticker }}</span>
+              <h3 class="text-gray-900 font-bold text-base truncate dark:text-white">{{ coin?.fullName }}</h3>
+              <span class="text-gray-400 text-sm font-medium dark:text-gray-500">{{ coin?.ticker }}</span>
             </div>
             <div class="flex items-baseline gap-2 mt-0.5">
-              <span class="text-2xl font-bold text-gray-900 tabular-nums">$ {{ formatPrice(latestPrice) }}</span>
+              <span class="text-2xl font-bold text-gray-900 tabular-nums dark:text-white">$ {{ formatPrice(latestPrice) }}</span>
               <span
                 v-if="points.length"
                 class="text-xs font-bold px-2 py-0.5 rounded-md"
@@ -29,22 +29,22 @@
               >
                 {{ periodChangePercent >= 0 ? '+' : '' }}{{ periodChangePercent.toFixed(2) }}%
               </span>
-              <span v-if="points.length" class="text-[11px] text-gray-400">за {{ periodLabels[period] }}</span>
+              <span v-if="points.length" class="text-[11px] text-gray-400 dark:text-gray-500">за {{ periodLabels[period] }}</span>
             </div>
           </div>
         </div>
 
         <div class="flex items-center gap-5 text-xs">
           <div class="text-right">
-            <div class="text-gray-400 font-medium">Ваш объём</div>
-            <div class="text-gray-900 font-bold tabular-nums mt-0.5">{{ formatQuantity(totalQuantity) }} {{ coin?.ticker }}</div>
+            <div class="text-gray-400 font-medium dark:text-gray-500">Ваш объём</div>
+            <div class="text-gray-900 font-bold tabular-nums mt-0.5 dark:text-white">{{ formatQuantity(totalQuantity) }} {{ coin?.ticker }}</div>
           </div>
           <div class="text-right">
-            <div class="text-gray-400 font-medium">Ср. цена покупки</div>
+            <div class="text-gray-400 font-medium dark:text-gray-500">Ср. цена покупки</div>
             <div class="text-amber-600 font-bold tabular-nums mt-0.5">$ {{ formatPrice(averageBuyPrice) }}</div>
           </div>
           <div v-if="vsAvgBuyPercent !== null" class="text-right">
-            <div class="text-gray-400 font-medium">P&L</div>
+            <div class="text-gray-400 font-medium dark:text-gray-500">P&L</div>
             <div class="font-bold tabular-nums mt-0.5" :class="vsAvgBuyPercent >= 0 ? 'text-emerald-600' : 'text-red-600'">
               {{ vsAvgBuyPercent >= 0 ? '+' : '' }}{{ vsAvgBuyPercent.toFixed(2) }}%
             </div>
@@ -53,13 +53,13 @@
       </div>
 
       <!-- Toolbar -->
-      <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 shrink-0">
-        <div class="flex items-center gap-1 bg-gray-100 rounded-md p-1">
+      <div class="flex items-center justify-between px-5 py-3 border-b border-gray-100 shrink-0 dark:border-gray-800">
+        <div class="flex items-center gap-1 bg-gray-100 rounded-md p-1 dark:bg-gray-800">
           <button
             v-for="p in periods"
             :key="p"
             class="px-3 py-1.5 text-xs font-bold rounded-md transition-all"
-            :class="period === p ? 'bg-gray-900 text-white shadow' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200'"
+            :class="period === p ? 'bg-gray-900 text-white shadow dark:bg-gray-700' : 'text-gray-500 hover:text-gray-900 hover:bg-gray-200 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700'"
             @click="period = p"
           >
             {{ periodLabels[p] }}
@@ -69,7 +69,7 @@
         <div class="flex items-center gap-2">
           <button
             class="w-8 h-8 rounded-md flex items-center justify-center transition-colors"
-            :class="drawMode ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-400 hover:text-gray-900 hover:bg-gray-200'"
+            :class="drawMode ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-400 hover:text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-500 dark:hover:text-white dark:hover:bg-gray-700'"
             title="Линия тренда"
             @click="toggleDrawMode"
           >
@@ -77,7 +77,7 @@
           </button>
           <button
             v-if="lines.length"
-            class="w-8 h-8 rounded-md flex items-center justify-center bg-gray-100 text-gray-400 hover:text-red-500 hover:bg-gray-200 transition-colors"
+            class="w-8 h-8 rounded-md flex items-center justify-center bg-gray-100 text-gray-400 hover:text-red-500 hover:bg-gray-200 transition-colors dark:bg-gray-800 dark:text-gray-500"
             title="Очистить линии"
             @click="clearDrawings"
           >
@@ -98,7 +98,7 @@
 
         <div v-else-if="error" class="flex-1 flex flex-col items-center justify-center text-gray-300 gap-2 min-h-[360px]">
           <UIcon name="i-heroicons-exclamation-triangle" class="w-10 h-10 text-red-400" />
-          <p class="text-sm text-gray-400">{{ error }}</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500">{{ error }}</p>
         </div>
 
         <div v-else-if="!chartData" class="flex-1 flex flex-col items-center justify-center text-gray-300 gap-2 min-h-[360px]">
@@ -259,7 +259,7 @@
           </div>
 
           <!-- time axis -->
-          <div class="flex justify-between mt-2 px-1 text-[10px] font-medium text-gray-400 shrink-0">
+          <div class="flex justify-between mt-2 px-1 text-[10px] font-medium text-gray-400 shrink-0 dark:text-gray-500">
             <span>{{ formatDate(points[0]!.timestamp) }}</span>
             <span v-if="points.length > 2">{{ formatDate(points[Math.floor(points.length / 2)]!.timestamp) }}</span>
             <span>{{ formatDate(points[points.length - 1]!.timestamp) }}</span>

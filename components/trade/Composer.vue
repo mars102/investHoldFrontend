@@ -1,11 +1,11 @@
 <template>
-  <div class="rounded-lg bg-white border border-gray-100 shadow-sm p-4">
+  <div class="rounded-lg bg-white border border-gray-100 shadow-sm p-4 dark:bg-gray-800 dark:border-gray-800">
     <!-- Collapsed prompt -->
     <div v-if="!isExpanded" class="flex items-center gap-3 cursor-text" @click="expand">
       <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-sm shrink-0">
         {{ userInitial }}
       </div>
-      <div class="flex-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors px-4 py-2.5 text-sm text-gray-400">
+      <div class="flex-1 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors px-4 py-2.5 text-sm text-gray-400 dark:bg-gray-800 dark:text-gray-500">
         Поделитесь постом или сделкой...
       </div>
       <UIcon name="i-heroicons-plus-circle" class="w-7 h-7 text-blue-500 shrink-0" />
@@ -18,19 +18,19 @@
           {{ userInitial }}
         </div>
         <div class="min-w-0 flex-1">
-          <p class="font-bold text-gray-900 text-sm">{{ username }}</p>
-          <p class="text-xs text-gray-400">{{ mode === 'post' ? 'Новый пост' : 'Новая сделка' }}</p>
+          <p class="font-bold text-gray-900 text-sm dark:text-white">{{ username }}</p>
+          <p class="text-xs text-gray-400 dark:text-gray-500">{{ mode === 'post' ? 'Новый пост' : 'Новая сделка' }}</p>
         </div>
-        <button class="w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" @click="collapse">
+        <button class="w-7 h-7 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors dark:text-gray-500 dark:hover:text-gray-200 dark:hover:bg-gray-800" @click="collapse">
           <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
         </button>
       </div>
 
-      <div class="flex rounded-md overflow-hidden border border-gray-200 mb-3">
+      <div class="flex rounded-md overflow-hidden border border-gray-200 mb-3 dark:border-gray-700">
         <button
           type="button"
           class="flex-1 py-2 text-xs font-bold transition-colors"
-          :class="mode === 'post' ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'"
+          :class="mode === 'post' ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-800/60'"
           @click="mode = 'post'"
         >
           Пост
@@ -38,7 +38,7 @@
         <button
           type="button"
           class="flex-1 py-2 text-xs font-bold transition-colors"
-          :class="mode === 'trade' ? 'bg-gray-900 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'"
+          :class="mode === 'trade' ? 'bg-gray-900 text-white dark:bg-gray-700' : 'bg-white text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-800/60'"
           @click="mode = 'trade'"
         >
           Сделка
@@ -64,8 +64,8 @@
         <TradeFormFields v-model="tradeForm" :coin-options="tradeCoinOptions" class="mb-3" />
 
         <div class="flex items-center justify-between">
-          <span class="text-xs text-gray-400">
-            <template v-if="previewTotal !== null">Итого: <span class="font-bold text-gray-700">$ {{ formatNumber(previewTotal) }}</span></template>
+          <span class="text-xs text-gray-400 dark:text-gray-500">
+            <template v-if="previewTotal !== null">Итого: <span class="font-bold text-gray-700 dark:text-gray-300">$ {{ formatNumber(previewTotal) }}</span></template>
           </span>
           <UButton :loading="tradeStore.loading" :disabled="!isTradeValid" @click="submitTrade">
             Опубликовать

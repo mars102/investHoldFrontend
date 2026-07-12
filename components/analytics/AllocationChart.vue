@@ -1,14 +1,14 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-5">
-    <h3 class="text-sm font-bold text-gray-900 mb-4">Распределение портфеля</h3>
+  <div class="bg-white rounded-lg border border-gray-100 shadow-sm p-5 dark:bg-gray-800 dark:border-gray-800">
+    <h3 class="text-sm font-bold text-gray-900 mb-4 dark:text-white">Распределение портфеля</h3>
 
-    <div v-if="!segments.length" class="h-24 flex items-center justify-center text-sm text-gray-400">
+    <div v-if="!segments.length" class="h-24 flex items-center justify-center text-sm text-gray-400 dark:text-gray-500">
       Нет активов в портфеле
     </div>
 
     <template v-else>
       <!-- Single stacked bar: part-to-whole by current value -->
-      <div class="flex h-8 rounded-md overflow-hidden gap-0.5 bg-white">
+      <div class="flex h-8 rounded-md overflow-hidden gap-0.5 bg-white dark:bg-gray-800">
         <div
           v-for="seg in segments"
           :key="seg.key"
@@ -31,8 +31,8 @@
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mt-4">
         <div v-for="seg in segments" :key="seg.key" class="flex items-center gap-2 min-w-0">
           <span class="w-2.5 h-2.5 rounded-sm shrink-0" :style="{ backgroundColor: seg.color }" />
-          <span class="text-xs font-semibold text-gray-700 truncate">{{ seg.label }}</span>
-          <span class="text-xs text-gray-400 ml-auto shrink-0">{{ seg.percent.toFixed(1) }}%</span>
+          <span class="text-xs font-semibold text-gray-700 truncate dark:text-gray-300">{{ seg.label }}</span>
+          <span class="text-xs text-gray-400 ml-auto shrink-0 dark:text-gray-500">{{ seg.percent.toFixed(1) }}%</span>
         </div>
       </div>
     </template>

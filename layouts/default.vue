@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen flex flex-col bg-gradient-to-br from-white via-gray-50 to-blue-50">
+  <div class="h-screen flex flex-col bg-gradient-to-br from-white via-gray-50 to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-950">
     <!-- Ultra-Compact Header -->
-    <header class="shrink-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-sm">
+    <header class="shrink-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-100 dark:border-gray-800 shadow-sm">
       <div class="w-full px-4 sm:px-6">
         <div class="flex items-center justify-between h-14">
           <!-- Logo Section -->
@@ -10,10 +10,10 @@
               <img src="/images/logo.png">
             </div>
             <div class="flex flex-col leading-tight">
-              <h1 class="text-lg font-black bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent tracking-tight">
+              <h1 class="text-lg font-black bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent tracking-tight">
                 InvestHold
               </h1>
-              <p class="text-[10px] text-gray-500 font-medium tracking-wide">ULTRA EDITION</p>
+              <p class="text-[10px] text-gray-500 dark:text-gray-400 font-medium tracking-wide">ULTRA EDITION</p>
             </div>
           </div>
 
@@ -21,7 +21,7 @@
           <nav class="hidden md:flex items-center gap-1">
             <NuxtLink
                 to="/"
-                class="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all duration-200 hover:scale-[1.02]"
+                class="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-500/10 rounded-lg transition-all duration-200 hover:scale-[1.02]"
                 active-class="!text-orange-600 !bg-orange-50 !font-bold"
             >
               <div class="flex items-center gap-2">
@@ -34,7 +34,7 @@
 
             <NuxtLink
                 to="/trades"
-                class="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 hover:scale-[1.02]"
+                class="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-all duration-200 hover:scale-[1.02]"
                 active-class="!text-blue-600 !bg-blue-50 !font-bold"
             >
               <div class="flex items-center gap-2">
@@ -47,7 +47,7 @@
 
             <NuxtLink
                 to="/analytics"
-                class="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all duration-200 hover:scale-[1.02]"
+                class="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-500/10 rounded-lg transition-all duration-200 hover:scale-[1.02]"
                 active-class="!text-purple-600 !bg-purple-50 !font-bold"
             >
               <div class="flex items-center gap-2">
@@ -61,18 +61,28 @@
 
           </nav>
 
-          <!-- User Menu -->
-          <UserMenu />
+          <div class="flex items-center gap-2">
+            <button
+              class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              :title="colorMode.value === 'dark' ? 'Светлая тема' : 'Тёмная тема'"
+              @click="colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'"
+            >
+              <UIcon :name="colorMode.value === 'dark' ? 'i-heroicons-sun' : 'i-heroicons-moon'" class="w-4 h-4" />
+            </button>
+
+            <!-- User Menu -->
+            <UserMenu />
+          </div>
         </div>
       </div>
     </header>
 
     <!-- Mobile Bottom Navigation -->
-    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-100 py-2 px-4 z-40">
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-100 dark:border-gray-800 py-2 px-4 z-40">
       <div class="flex justify-around items-center">
         <NuxtLink
             to="/"
-            class="flex flex-col items-center p-2"
+            class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400"
             active-class="text-orange-600"
         >
           <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-1">
@@ -83,7 +93,7 @@
 
         <NuxtLink
             to="/trades"
-            class="flex flex-col items-center p-2"
+            class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400"
             active-class="text-blue-600"
         >
           <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-1">
@@ -94,7 +104,7 @@
 
         <NuxtLink
             to="/analytics"
-            class="flex flex-col items-center p-2"
+            class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400"
             active-class="text-purple-600"
         >
           <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-1">
@@ -115,14 +125,14 @@
       <slot />
 
       <!-- Modern Footer -->
-      <div class="mt-12 pt-8 border-t border-gray-200">
+      <div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">
           <div class="flex items-center gap-3">
             <div class="w-6 h-6 bg-gradient-to-br from-orange-500 to-blue-600 rounded-lg"></div>
-            <span class="text-xs font-bold text-gray-700">InvestHold Pro v4.0</span>
+            <span class="text-xs font-bold text-gray-700 dark:text-gray-300">InvestHold Pro v4.0</span>
           </div>
           <div class="flex items-center gap-6">
-            <span class="text-xs text-gray-500 font-medium">© 2024 Ultra Edition</span>
+            <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">© 2024 Ultra Edition</span>
             <div class="flex items-center gap-4">
               <a href="#" class="text-xs text-gray-500 hover:text-orange-600 font-medium">Terms</a>
               <a href="#" class="text-xs text-gray-500 hover:text-blue-600 font-medium">Privacy</a>
@@ -142,6 +152,8 @@
 
 <script setup lang="ts">
 import UserMenu from '~/components/user/UserMenu.vue'
+
+const colorMode = useColorMode()
 
 const isScrollLocked = useScrollLock()
 </script>
@@ -175,6 +187,18 @@ const isScrollLocked = useScrollLock()
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+:global(.dark) ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+:global(.dark) ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+:global(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
 }
 
 /* Gradient Text */
