@@ -1,21 +1,25 @@
 <template>
-  <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-6 items-stretch">
-    <PortfolioCoinChart
-      class="h-full"
-      :coin-id="selectedHolding?.coinId ?? null"
-      :coin="selectedHolding?.coin ?? null"
-      :average-buy-price="selectedHolding ? Number(selectedHolding.averageBuyPrice) : 0"
-      :total-quantity="selectedHolding ? Number(selectedHolding.totalQuantity) : 0"
-    />
-
-    <div class="h-full flex flex-col gap-3 min-h-0">
-      <PortfolioHoldingsList
-        class="flex-[2] min-h-0"
-        :selected-coin-id="selectedHolding?.coinId ?? null"
-        @select="onSelectHolding"
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-6 items-stretch">
+      <PortfolioCoinChart
+        class="h-full"
+        :coin-id="selectedHolding?.coinId ?? null"
+        :coin="selectedHolding?.coin ?? null"
+        :average-buy-price="selectedHolding ? Number(selectedHolding.averageBuyPrice) : 0"
+        :total-quantity="selectedHolding ? Number(selectedHolding.totalQuantity) : 0"
       />
-      <PortfolioWatchlistPanel class="flex-1" :held-coin-ids="heldCoinIds" />
+
+      <div class="h-full flex flex-col gap-3 min-h-0">
+        <PortfolioHoldingsList
+          class="flex-[2] min-h-0"
+          :selected-coin-id="selectedHolding?.coinId ?? null"
+          @select="onSelectHolding"
+        />
+        <PortfolioWatchlistPanel class="flex-1" :held-coin-ids="heldCoinIds" />
+      </div>
     </div>
+
+    <PortfolioRiskCard hide-when-unknown />
   </div>
 </template>
 

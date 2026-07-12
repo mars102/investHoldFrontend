@@ -77,6 +77,7 @@
             :trade="(feedItem.item as Trade)"
             :coin="coinsById[(feedItem.item as Trade).coinId as number]"
             :cost-basis="costBasisByTradeId.get((feedItem.item as Trade).id)"
+            :timing-score="timingScoreByTradeId.get(Number((feedItem.item as Trade).id))"
           />
           <PostCard
             v-else
@@ -102,6 +103,11 @@
             :trade="(feedItem.item as Trade)"
             :coin="coinsById[(feedItem.item as Trade).coinId as number]"
             :cost-basis="costBasisByTradeId.get((feedItem.item as Trade).id)"
+            :timing-score="timingScoreByTradeId.get(Number((feedItem.item as Trade).id))"
+          />
+          <InsightsCard
+            v-else-if="feedItem.type === 'insight'"
+            :insight="(feedItem.item as Insight)"
           />
           <PostCard
             v-else
@@ -133,9 +139,11 @@ import { useMyTradeStore } from '~/stores/trade'
 import { useFeedStore } from '~/stores/feed'
 import { usePostStore } from '~/stores/post'
 import { usePortfolioStore } from '~/stores/portfolio'
+import { useAnalyticsStore } from '~/stores/analytics'
 import type { Coin } from '~/types/coins'
 import type { Trade } from '~/types/trade'
 import type { Post } from '~/types/post'
+import type { Insight } from '~/types/analytics'
 import type { Holding } from '~/types/portfolio'
 import type { Position } from '~/utils/position'
 import type { FeedFiltersState } from '~/components/trade/Filters.vue'
@@ -144,6 +152,7 @@ const tradeStore = useMyTradeStore()
 const feedStore = useFeedStore()
 const postStore = usePostStore()
 const portfolioStore = usePortfolioStore()
+const analyticsStore = useAnalyticsStore()
 const { summary } = storeToRefs(portfolioStore)
 const coins = ref<Coin[]>([])
 const formPreview = useTradeFormPreview()
@@ -181,6 +190,14 @@ const holdingsByCoinId = computed<Record<number, Holding>>(() =>
 // unpaginated trade history — the feed itself is paginated and mixes in posts,
 // so it can't be used as the source for that calculation.
 const costBasisByTradeId = computed(() => computeCostBasisTimeline(tradeStore.trades))
+
+const timingScoreByTradeId = computed(() => {
+  const map = new Map<number, number>()
+  for (const item of analyticsStore.tradeTiming?.trades ?? []) {
+    if (item.score != null) map.set(item.transactionId, item.score)
+  }
+  return map
+})
 
 const filters = reactive<FeedFiltersState>({
   type: 'all',
@@ -253,7 +270,8 @@ onMounted(async () => {
     $api<Coin[]>('/coins'),
     feedStore.fetchFeed(),
     postStore.fetchPosts(),
-    portfolioStore.summary ? Promise.resolve() : portfolioStore.fetchSummary()
+    portfolioStore.summary ? Promise.resolve() : portfolioStore.fetchSummary(),
+    analyticsStore.fetchTradeTiming()
   ])
   coins.value = coinsResponse ?? []
 })

@@ -18,6 +18,10 @@
       <AnalyticsExchangeBreakdown :trades="tradeStore.trades" />
       <AnalyticsActivityChart :trades="tradeStore.trades" :posts="postStore.posts" />
     </div>
+
+    <AnalyticsTradeTiming />
+
+    <InsightsSection />
   </div>
 </template>
 

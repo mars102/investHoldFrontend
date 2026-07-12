@@ -1,12 +1,13 @@
 import type { Trade } from "./trade";
 import type { Post } from "./post";
+import type { Insight } from "./analytics";
 
-export type FeedItemType = "post" | "trade";
+export type FeedItemType = "post" | "trade" | "insight";
 
 export interface FeedItem {
   type: FeedItemType;
   date: string;
-  item: Post | Trade;
+  item: Post | Trade | Insight;
 }
 
 export interface FeedResponse {
@@ -16,4 +17,4 @@ export interface FeedResponse {
   items: FeedItem[];
 }
 
-export type FeedFilterType = "all" | "trades" | "posts";
+export type FeedFilterType = "all" | "trades" | "posts" | "insights";

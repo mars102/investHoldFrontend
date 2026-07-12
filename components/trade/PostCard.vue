@@ -21,6 +21,15 @@
           >
             Продано {{ costBasis.percentOfPositionSold.toFixed(0) }}% позиции
           </span>
+          <span
+            v-if="timingScore != null"
+            class="flex items-center gap-1 text-[11px] font-bold px-1.5 py-0.5 rounded-md"
+            :class="timingScoreStyle.badge"
+            title="Оценка тайминга сделки"
+          >
+            <UIcon name="i-heroicons-clock" class="w-3 h-3" />
+            {{ Math.round(timingScore) }}
+          </span>
         </div>
         <div class="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
           {{ formatRelativeTime(trade.executedAt) }} <span v-if="trade.exchangeSource"> · {{ trade.exchangeSource }}</span>
@@ -202,9 +211,17 @@ const props = defineProps<{
   trade: Trade
   coin: Coin | undefined
   costBasis?: TradeCostBasis
+  timingScore?: number
 }>()
 
 const isEditing = ref(false)
+
+const timingScoreStyle = computed(() => {
+  const score = props.timingScore ?? 0
+  if (score >= 70) return { badge: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' }
+  if (score >= 40) return { badge: 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400' }
+  return { badge: 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400' }
+})
 
 const authStore = useAuthStore()
 const username = computed(() => authStore.user?.username ?? 'Вы')

@@ -35,12 +35,12 @@
 
     <div>
       <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block dark:text-gray-500">Тип</label>
-      <div class="grid grid-cols-3 rounded-md overflow-hidden border border-gray-200 dark:border-gray-700" :class="{ 'opacity-40 pointer-events-none': filters.grouped }">
+      <div class="grid grid-cols-4 rounded-md overflow-hidden border border-gray-200 dark:border-gray-700" :class="{ 'opacity-40 pointer-events-none': filters.grouped }">
         <button
           v-for="opt in typeOptions"
           :key="opt.value"
           type="button"
-          class="py-1.5 text-xs font-bold transition-colors"
+          class="py-1.5 px-0.5 text-[10px] font-bold transition-colors leading-tight"
           :class="filters.type === opt.value ? 'bg-gray-900 text-white dark:bg-gray-700' : 'bg-white text-gray-500 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-800/60'"
           @click="filters.type = opt.value"
         >
@@ -81,7 +81,8 @@ const filters = defineModel<FeedFiltersState>({ required: true })
 const typeOptions: { label: string; value: FeedFiltersState['type'] }[] = [
   { label: 'Все', value: 'all' },
   { label: 'Сделки', value: 'trades' },
-  { label: 'Посты', value: 'posts' }
+  { label: 'Посты', value: 'posts' },
+  { label: 'Инсайты', value: 'insights' }
 ]
 
 const groupedOptions: { label: string; value: boolean }[] = [

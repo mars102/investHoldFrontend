@@ -24,7 +24,10 @@ export function searchFeed(
   const q = query.trim().toLowerCase();
   const items: FeedItem[] = [];
 
-  if (type !== "posts") {
+  // Insights aren't part of this search — they're a separate, on-demand-generated
+  // resource rather than a locally-held full list, so "insights" simply yields no
+  // trade/post matches instead of (incorrectly) falling through to search both.
+  if (type === "all" || type === "trades") {
     for (const trade of trades) {
       if (coinId != null && Number(trade.coinId) !== coinId) continue;
       const coin = trade.coinId != null ? coinsById[Number(trade.coinId)] : undefined;
@@ -33,7 +36,7 @@ export function searchFeed(
     }
   }
 
-  if (type !== "trades") {
+  if (type === "all" || type === "posts") {
     for (const post of posts) {
       if (coinId != null && Number(post.coinId) !== coinId) continue;
       const coin = post.coinId != null ? coinsById[Number(post.coinId)] : undefined;
