@@ -12,8 +12,24 @@
     </div>
 
     <div>
+      <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block">Вид ленты</label>
+      <div class="grid grid-cols-2 rounded-md overflow-hidden border border-gray-200">
+        <button
+          v-for="opt in groupedOptions"
+          :key="String(opt.value)"
+          type="button"
+          class="py-1.5 text-xs font-bold transition-colors"
+          :class="filters.grouped === opt.value ? 'bg-gray-900 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'"
+          @click="filters.grouped = opt.value"
+        >
+          {{ opt.label }}
+        </button>
+      </div>
+    </div>
+
+    <div>
       <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block">Тип</label>
-      <div class="grid grid-cols-3 rounded-md overflow-hidden border border-gray-200">
+      <div class="grid grid-cols-3 rounded-md overflow-hidden border border-gray-200" :class="{ 'opacity-40 pointer-events-none': filters.grouped }">
         <button
           v-for="opt in typeOptions"
           :key="opt.value"
@@ -25,6 +41,7 @@
           {{ opt.label }}
         </button>
       </div>
+      <p v-if="filters.grouped" class="text-[10px] text-gray-400 mt-1">Недоступно в режиме "По монетам" — позиция объединяет и сделки, и посты</p>
     </div>
 
     <div>
@@ -44,6 +61,7 @@ import type { FeedFilterType } from '~/types/feed'
 export interface FeedFiltersState {
   type: FeedFilterType
   coinId: string
+  grouped: boolean
 }
 
 defineProps<{
@@ -59,10 +77,16 @@ const typeOptions: { label: string; value: FeedFiltersState['type'] }[] = [
   { label: 'Посты', value: 'posts' }
 ]
 
-const hasActiveFilters = computed(() => filters.value.type !== 'all' || filters.value.coinId !== 'all')
+const groupedOptions: { label: string; value: boolean }[] = [
+  { label: 'Лента', value: false },
+  { label: 'По монетам', value: true }
+]
+
+const hasActiveFilters = computed(() => filters.value.type !== 'all' || filters.value.coinId !== 'all' || filters.value.grouped)
 
 function reset() {
   filters.value.type = 'all'
   filters.value.coinId = 'all'
+  filters.value.grouped = false
 }
 </script>

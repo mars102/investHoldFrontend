@@ -17,10 +17,10 @@
         <h1 class="text-xl font-bold text-gray-900">Лента</h1>
         <button
           class="w-8 h-8 rounded-md flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
-          :disabled="feedStore.loading"
-          @click="feedStore.fetchFeed()"
+          :disabled="isLoading"
+          @click="refresh"
         >
-          <UIcon name="i-heroicons-arrow-path" class="w-4 h-4" :class="feedStore.loading ? 'animate-spin' : ''" />
+          <UIcon name="i-heroicons-arrow-path" class="w-4 h-4" :class="isLoading ? 'animate-spin' : ''" />
         </button>
       </div>
 
@@ -37,7 +37,7 @@
       </div>
 
       <!-- Loading -->
-      <div v-if="feedStore.loading && !feedStore.items.length" class="space-y-4">
+      <div v-if="isLoading && !hasAnyContent" class="space-y-4">
         <USkeleton v-for="i in 3" :key="i" class="h-64 w-full rounded-lg" />
       </div>
 
@@ -51,11 +51,19 @@
       />
 
       <!-- Empty -->
-      <div v-else-if="!feedStore.items.length" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100">
+      <div v-else-if="!hasAnyContent" class="text-center text-gray-400 py-16 rounded-lg bg-white border border-gray-100">
         Пока ничего нет — поделитесь первым постом или сделкой!
       </div>
 
-      <!-- Feed -->
+      <!-- Grouped by position -->
+      <div v-else-if="filters.grouped" class="space-y-4">
+        <template v-for="entry in groupedEntries" :key="`${entry.kind}-${entry.kind === 'position' ? entry.position.coinId : entry.post.id}`">
+          <PositionCard v-if="entry.kind === 'position'" :position="entry.position" />
+          <PostCard v-else :post="entry.post" :coin="coinsById[entry.post.coinId as number]" />
+        </template>
+      </div>
+
+      <!-- Plain feed -->
       <div v-else class="space-y-4">
         <template v-for="feedItem in feedStore.items" :key="`${feedItem.type}-${(feedItem.item as any).id}`">
           <TradePostCard
@@ -83,7 +91,7 @@
       <TradeFilters
         v-model="filters"
         :coin-options="coinOptions"
-        :result-count="feedStore.total"
+        :result-count="filters.grouped ? groupedEntries.length : feedStore.total"
       />
     </div>
   </div>
@@ -92,13 +100,20 @@
 <script setup lang="ts">
 import { useMyTradeStore } from '~/stores/trade'
 import { useFeedStore } from '~/stores/feed'
+import { usePostStore } from '~/stores/post'
+import { usePortfolioStore } from '~/stores/portfolio'
 import type { Coin } from '~/types/coins'
 import type { Trade } from '~/types/trade'
 import type { Post } from '~/types/post'
+import type { Holding } from '~/types/portfolio'
+import type { Position } from '~/utils/position'
 import type { FeedFiltersState } from '~/components/trade/Filters.vue'
 
 const tradeStore = useMyTradeStore()
 const feedStore = useFeedStore()
+const postStore = usePostStore()
+const portfolioStore = usePortfolioStore()
+const { summary } = storeToRefs(portfolioStore)
 const coins = ref<Coin[]>([])
 const formPreview = useTradeFormPreview()
 
@@ -127,6 +142,10 @@ const coinsById = computed<Record<number, Coin>>(() =>
   Object.fromEntries(coins.value.map((coin) => [coin.id, coin]))
 )
 
+const holdingsByCoinId = computed<Record<number, Holding>>(() =>
+  Object.fromEntries((summary.value?.holdings ?? []).map((h) => [h.coinId, h]))
+)
+
 // The cost-basis (average price / realized P&L) replay needs the user's full,
 // unpaginated trade history — the feed itself is paginated and mixes in posts,
 // so it can't be used as the source for that calculation.
@@ -134,7 +153,8 @@ const costBasisByTradeId = computed(() => computeCostBasisTimeline(tradeStore.tr
 
 const filters = reactive<FeedFiltersState>({
   type: 'all',
-  coinId: 'all'
+  coinId: 'all',
+  grouped: false
 })
 
 watch(
@@ -152,12 +172,40 @@ const coinOptions = computed(() => [
     .map((coin) => ({ label: `${coin.fullName} (${coin.ticker})`, value: String(coin.id) }))
 ])
 
+const groupedFeed = computed(() => {
+  const filterCoinId = filters.coinId !== 'all' ? Number(filters.coinId) : null
+  const trades = filterCoinId ? tradeStore.trades.filter((t: Trade) => Number(t.coinId) === filterCoinId) : tradeStore.trades
+  const posts = filterCoinId ? postStore.posts.filter((p) => Number(p.coinId) === filterCoinId) : postStore.posts
+  return groupByPosition(trades, posts, coinsById.value, holdingsByCoinId.value)
+})
+
+type GroupedEntry = { kind: 'position'; position: Position } | { kind: 'post'; post: Post }
+
+const groupedEntries = computed<GroupedEntry[]>(() => {
+  const positionEntries: GroupedEntry[] = groupedFeed.value.positions.map((position) => ({ kind: 'position', position }))
+  const postEntries: GroupedEntry[] = groupedFeed.value.unassignedPosts.map((post) => ({ kind: 'post', post }))
+  return [...positionEntries, ...postEntries].sort((a, b) => {
+    const dateA = a.kind === 'position' ? a.position.lastActivityDate : a.post.createdAt
+    const dateB = b.kind === 'position' ? b.position.lastActivityDate : b.post.createdAt
+    return new Date(dateB).getTime() - new Date(dateA).getTime()
+  })
+})
+
+const isLoading = computed(() => feedStore.loading || tradeStore.loading || postStore.loading)
+const hasAnyContent = computed(() => (filters.grouped ? groupedEntries.value.length > 0 : feedStore.items.length > 0))
+
+async function refresh() {
+  await Promise.all([feedStore.fetchFeed(), tradeStore.fetchTrades(), postStore.fetchPosts()])
+}
+
 onMounted(async () => {
   const { $api } = useNuxtApp()
   const [, coinsResponse] = await Promise.all([
     tradeStore.fetchTrades(),
     $api<Coin[]>('/coins'),
-    feedStore.fetchFeed()
+    feedStore.fetchFeed(),
+    postStore.fetchPosts(),
+    portfolioStore.summary ? Promise.resolve() : portfolioStore.fetchSummary()
   ])
   coins.value = coinsResponse ?? []
 })
