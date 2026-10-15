@@ -70,9 +70,9 @@
             class="mr-2"
         />
         <span class="text-sm text-gray-300" style="font-size: 12px;">
-         Я согласен с  и Политикой конфиденциальности
-          <a href="#" class="text-cyan-400 hover:text-cyan-300">Условиями</a> и
-          <a href="#" class="text-cyan-400 hover:text-cyan-300">Политикой конфидециальности</a>
+          Я принимаю
+          <a href="/terms" target="_blank" class="text-cyan-400 hover:text-cyan-300">Пользовательское соглашение</a> и даю согласие на обработку персональных данных в соответствии с
+          <a href="/privacy" target="_blank" class="text-cyan-400 hover:text-cyan-300">Политикой конфиденциальности</a>
         </span>
       </div>
       </div>

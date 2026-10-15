@@ -134,8 +134,8 @@
           <div class="flex items-center gap-6">
             <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">© 2024 Ultra Edition</span>
             <div class="flex items-center gap-4">
-              <a href="#" class="text-xs text-gray-500 hover:text-orange-600 font-medium">Terms</a>
-              <a href="#" class="text-xs text-gray-500 hover:text-blue-600 font-medium">Privacy</a>
+              <NuxtLink to="/terms" class="text-xs text-gray-500 hover:text-orange-600 font-medium">Terms</NuxtLink>
+              <NuxtLink to="/privacy" class="text-xs text-gray-500 hover:text-blue-600 font-medium">Privacy</NuxtLink>
               <a href="#" class="text-xs text-gray-500 hover:text-emerald-600 font-medium">Docs</a>
             </div>
           </div>
