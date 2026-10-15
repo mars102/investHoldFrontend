@@ -158,6 +158,27 @@
             {{ entryLabel }} $ {{ formatPrice(entryPrice) }}
           </div>
 
+          <!-- trade moment -->
+          <div
+            v-if="entryDot"
+            class="absolute pointer-events-none -translate-x-1/2 -translate-y-1/2"
+            :style="{ left: `clamp(6px, ${entryDot.x}%, calc(100% - 6px))`, top: entryDot.y + '%' }"
+            :title="isBuy ? 'Покупка' : 'Продажа'"
+          >
+            <span class="block w-3 h-3 rounded-full border-2 border-white shadow dark:border-gray-900" :class="isBuy ? 'bg-emerald-500' : 'bg-red-500'" />
+          </div>
+
+          <!-- entry price far outside the chart: pinned edge tag instead of a squashed line -->
+          <div
+            v-else-if="chartData.markOffscreen"
+            class="absolute right-1.5 flex items-center gap-1 text-[9px] font-bold text-gray-500 bg-white/90 border border-dashed border-gray-300 px-1.5 py-0.5 rounded-md whitespace-nowrap pointer-events-none dark:bg-gray-900/90 dark:text-gray-400 dark:border-gray-600"
+            :class="chartData.markOffscreen === 'above' ? 'top-1.5' : 'bottom-1.5'"
+          >
+            <UIcon :name="chartData.markOffscreen === 'above' ? 'i-heroicons-arrow-up' : 'i-heroicons-arrow-down'" class="w-3 h-3" />
+            {{ entryLabel }} $ {{ formatPrice(entryPrice) }}
+            <span class="font-semibold text-gray-400 dark:text-gray-500">{{ formatMarkDistance(entryPrice, latestPrice) }}</span>
+          </div>
+
           <div
             v-if="hoverPoint"
             class="absolute pointer-events-none -translate-x-1/2 -translate-y-full bg-gray-900/95 text-white text-[10px] rounded-md px-2 py-1 shadow-lg whitespace-nowrap"
@@ -169,9 +190,9 @@
 
         <!-- time axis -->
         <div class="flex justify-between mt-1.5 px-0.5 text-[9px] font-medium text-gray-400 dark:text-gray-500">
-          <span>{{ formatAxisDate(points[0]!.timestamp) }}</span>
-          <span v-if="points.length > 2">{{ formatAxisDate(points[Math.floor(points.length / 2)]!.timestamp) }}</span>
-          <span>{{ formatAxisDate(points[points.length - 1]!.timestamp) }}</span>
+          <span>{{ formatAxisDate(chartPoints[0]!.timestamp) }}</span>
+          <span v-if="chartPoints.length > 2">{{ formatAxisDate(chartPoints[Math.floor(chartPoints.length / 2)]!.timestamp) }}</span>
+          <span>{{ formatAxisDate(chartPoints[chartPoints.length - 1]!.timestamp) }}</span>
         </div>
       </template>
     </div>
@@ -235,13 +256,14 @@ const chartContainer = ref<HTMLElement | null>(null)
 const hoverIndex = ref<number | null>(null)
 const gradientId = `trade-post-gradient-${Math.random().toString(36).slice(2)}`
 
+// The chart always covers at least the last year; a trade older than that
+// extends it back to the trade itself.
+function isOlderThanYear(executedAt: string) {
+  return (Date.now() - new Date(executedAt).getTime()) / 86400000 > 365
+}
+
 function pickPeriod(executedAt: string): PriceHistoryPeriod {
-  const days = (Date.now() - new Date(executedAt).getTime()) / 86400000
-  if (days <= 7) return '7d'
-  if (days <= 30) return '30d'
-  if (days <= 90) return '90d'
-  if (days <= 365) return '1y'
-  return 'all'
+  return isOlderThanYear(executedAt) ? 'all' : '1y'
 }
 
 async function loadHistory() {
@@ -291,7 +313,33 @@ const pnlPercent = computed(() => {
 const isProfitable = computed(() => pnlPercent.value >= 0)
 const trendColor = computed(() => (isProfitable.value ? '#10b981' : '#ef4444'))
 
-const chartData = computed(() => computeChartGeometry(points.value, entryPrice.value))
+// Trade within the last year: the whole year is shown with the entry dot at
+// the trade moment. Older trade: the full history is cropped to start at it.
+const chartView = computed(() => {
+  const all = points.value
+  const tradeTime = new Date(props.trade.executedAt).getTime()
+  const firstAfter = all.findIndex((p) => new Date(p.timestamp).getTime() >= tradeTime)
+
+  if (firstAfter === -1) return { points: all, entryIndex: all.length - 1 }
+  if (firstAfter > 0 && isOlderThanYear(props.trade.executedAt)) {
+    return { points: all.slice(firstAfter), entryIndex: 0 }
+  }
+  return { points: all, entryIndex: firstAfter }
+})
+
+const chartPoints = computed(() => chartView.value.points)
+
+const chartData = computed(() => computeChartGeometry(chartPoints.value, entryPrice.value))
+
+// Dot at the trade moment, at the trade's own price (buy or sell price).
+const entryDot = computed(() => {
+  const data = chartData.value
+  const coord = data?.coords[chartView.value.entryIndex]
+  if (!data || !coord || !tradePrice.value) return null
+  const y = data.priceToY(tradePrice.value)
+  if (y < 0 || y > 100) return null
+  return { x: coord.x, y }
+})
 
 const hoverPoint = computed(() => {
   if (hoverIndex.value === null || !chartData.value) return null

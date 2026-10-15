@@ -30,7 +30,9 @@ export default defineNuxtConfig({
   nitro: {
     devProxy: {
       "/backend": {
-        target: "http://investhold.ru/backend", //"http://localhost", //'http://investhold.ru/backend',
+        // https: nginx на investhold.ru редиректит http → https (301),
+        // а при редиректе POST превращается в GET → "Cannot GET /auth/login"
+        target: "https://investhold.ru/backend", //"http://localhost",
         changeOrigin: true,
         prependPath: true,
       },

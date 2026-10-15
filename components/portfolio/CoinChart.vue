@@ -237,6 +237,17 @@
               $ {{ formatPrice(averageBuyPrice) }}
             </div>
 
+            <!-- avg buy price far outside the chart: pinned edge tag instead of a squashed line -->
+            <div
+              v-else-if="chartData.markOffscreen"
+              class="absolute left-2 flex items-center gap-1 text-[10px] font-bold text-amber-600 bg-amber-50 border border-dashed border-amber-200 px-1.5 py-0.5 rounded-md whitespace-nowrap pointer-events-none dark:bg-amber-500/10 dark:border-amber-500/30"
+              :class="chartData.markOffscreen === 'above' ? 'top-2' : 'bottom-2'"
+            >
+              <UIcon :name="chartData.markOffscreen === 'above' ? 'i-heroicons-arrow-up' : 'i-heroicons-arrow-down'" class="w-3 h-3" />
+              Ср. цена $ {{ formatPrice(averageBuyPrice) }}
+              <span class="font-semibold opacity-70">{{ formatMarkDistance(averageBuyPrice, latestPrice) }}</span>
+            </div>
+
             <!-- current price tag -->
             <div
               v-if="lastCoord"

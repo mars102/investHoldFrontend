@@ -10,7 +10,16 @@ export interface ChartGeometry {
   linePath: string
   areaPath: string
   markY: number | null
+  // Set when the mark is too far from the price data to fit without flattening
+  // the line — the caller should render it as an edge tag instead of a line.
+  markOffscreen: 'above' | 'below' | null
+  // Maps a price into the chart's 0..100 Y space (may fall outside it).
+  priceToY: (price: number) => number
 }
+
+// The mark is pulled into the Y range only if that keeps the price data at
+// least this share of the chart height; otherwise it goes offscreen.
+const MIN_DATA_SHARE = 0.4
 
 export function buildSmoothPath(coords: { x: number; y: number }[]): string {
   if (!coords.length) return ''
@@ -28,6 +37,14 @@ export function buildSmoothPath(coords: { x: number; y: number }[]): string {
   return d
 }
 
+// How far the mark is from the current price, e.g. "+1290%" for an entry far above.
+export function formatMarkDistance(mark: number, current: number): string {
+  if (!mark || !current) return ''
+  const pct = ((mark - current) / current) * 100
+  const rounded = Math.abs(pct) >= 100 ? Math.round(pct) : Number(pct.toFixed(1))
+  return `${rounded > 0 ? '+' : ''}${rounded}%`
+}
+
 export function computeChartGeometry(
   points: { price: number; timestamp: string }[],
   markValue?: number | null
@@ -36,26 +53,44 @@ export function computeChartGeometry(
 
   const prices = points.map((p) => p.price)
   const mark = markValue ?? 0
-  const allValues = mark > 0 ? [...prices, mark] : prices
-  const min = Math.min(...allValues)
-  const max = Math.max(...allValues)
-  const range = max - min || max || 1
+  const dataMin = Math.min(...prices)
+  const dataMax = Math.max(...prices)
+  // A perfectly flat series would otherwise get a zero range; give it a
+  // small band around the price so the line sits mid-chart.
+  const dataRange = dataMax - dataMin || Math.abs(dataMax) * 0.02 || 1
+
+  let markOffscreen: ChartGeometry['markOffscreen'] = null
+  let min = dataMin
+  let max = dataMax
+  if (mark > 0) {
+    const withMarkRange = Math.max(dataMax, mark) - Math.min(dataMin, mark)
+    if (dataRange / withMarkRange >= MIN_DATA_SHARE) {
+      min = Math.min(dataMin, mark)
+      max = Math.max(dataMax, mark)
+    } else {
+      markOffscreen = mark > dataMax ? 'above' : 'below'
+    }
+  }
+
+  const range = max - min || dataRange
   const pad = range * 0.15
   const scaledMin = min - pad
   const scaledMax = max + pad
   const scaledRange = scaledMax - scaledMin || 1
 
+  const priceToY = (price: number) => 100 - ((price - scaledMin) / scaledRange) * 100
+
   const n = points.length
   const coords: ChartCoord[] = points.map((p, i) => ({
     x: n === 1 ? 50 : (i / (n - 1)) * 100,
-    y: 100 - ((p.price - scaledMin) / scaledRange) * 100,
+    y: priceToY(p.price),
     price: p.price,
     timestamp: p.timestamp
   }))
 
   const linePath = buildSmoothPath(coords)
   const areaPath = `${linePath} L ${coords[coords.length - 1]!.x},100 L ${coords[0]!.x},100 Z`
-  const markY = mark > 0 ? 100 - ((mark - scaledMin) / scaledRange) * 100 : null
+  const markY = mark > 0 && !markOffscreen ? priceToY(mark) : null
 
-  return { coords, linePath, areaPath, markY }
+  return { coords, linePath, areaPath, markY, markOffscreen, priceToY }
 }
