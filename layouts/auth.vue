@@ -1,5 +1,8 @@
 <template>
   <div class="auth-layout">
+    <div class="theme-corner">
+      <ThemeSwitch />
+    </div>
 <!--    <PhoenixMain width="600px"-->
 <!--                 height="900px"-->
 <!--                 :animation-speed="0.55"-->
@@ -24,7 +27,7 @@
           <div class="logo-icon">
             <img src="/images/logo.png">
             <div>
-              <span style="color: #ffc865; font-size: 32px;">Invest</span><span style="color:#1c667d;">Hold</span>
+              <span class="brand-invest">Invest</span><span class="brand-hold">Hold</span>
             </div>
           </div>
           <h1 class="logo-text">
@@ -48,7 +51,7 @@
               class="form-card-container"
           >
             <!-- Компактная карточка формы -->
-            <div class="bg-white rounded-xl p-6 shadow-lg border border-gray-100
+            <div class="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-800
                         transform transition-all duration-300 hover:shadow-xl
                         relative overflow-hidden form-card-inner">
 
@@ -65,8 +68,8 @@
               </transition-group>
 
               <!-- Минималистичный футер -->
-              <div class="mt-6 pt-4 border-t border-gray-100">
-                <p class="text-xs text-gray-400 text-center">
+              <div class="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+                <p class="text-xs text-gray-400 dark:text-gray-500 text-center">
                   © 2025 • Команда-феникс
                 </p>
               </div>
@@ -152,6 +155,35 @@ export default {
   position: relative;
   overflow: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: background 0.3s ease;
+}
+
+:global(.dark) .auth-layout {
+  background: linear-gradient(135deg, #070b14 0%, #0d1320 50%, #111827 100%);
+}
+
+.theme-corner {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+}
+
+.brand-invest {
+  color: #e5a83a;
+  font-size: 32px;
+}
+
+.brand-hold {
+  color: #1c667d;
+}
+
+:global(.dark) .brand-invest {
+  color: #ffc865;
+}
+
+:global(.dark) .brand-hold {
+  color: #3fb8d6;
 }
 
 /* Анимированный фон */
@@ -169,6 +201,21 @@ export default {
       linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
   animation: grid-move 20s linear infinite;
+}
+
+:global(.dark) .grid-pattern {
+  background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+:global(.dark) .shape {
+  background: linear-gradient(135deg, rgba(255, 200, 101, 0.12), rgba(28, 102, 125, 0.25));
+}
+
+:global(.dark) .light-beams {
+  background: radial-gradient(circle at 20% 80%, rgba(28, 102, 125, 0.25) 0%, transparent 50%),
+  radial-gradient(circle at 80% 20%, rgba(255, 200, 101, 0.12) 0%, transparent 50%);
 }
 
 @keyframes grid-move {
@@ -306,6 +353,10 @@ export default {
   color: #64748b;
   letter-spacing: 2px;
   text-transform: uppercase;
+}
+
+:global(.dark) .text-subtitle {
+  color: #94a3b8;
 }
 
 /* Обертка для карточки формы */

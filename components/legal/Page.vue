@@ -8,13 +8,14 @@
             <span class="text-amber-500">Invest</span><span class="text-cyan-600 dark:text-cyan-400">Hold</span>
           </span>
         </NuxtLink>
-        <nav class="flex items-center gap-4 text-sm">
+        <nav class="flex items-center gap-3 sm:gap-4 text-sm">
           <NuxtLink to="/terms" class="text-gray-500 hover:text-gray-900 dark:hover:text-white" active-class="!text-gray-900 dark:!text-white font-semibold">
             Условия
           </NuxtLink>
           <NuxtLink to="/privacy" class="text-gray-500 hover:text-gray-900 dark:hover:text-white" active-class="!text-gray-900 dark:!text-white font-semibold">
             Конфиденциальность
           </NuxtLink>
+          <ThemeSwitch />
         </nav>
       </div>
     </header>

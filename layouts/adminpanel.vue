@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50/30">
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-orange-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
     <!-- Premium Glass Header -->
-    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-2xl border-b border-blue-100/50 shadow-xl">
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl border-b border-blue-100/50 dark:border-gray-800 shadow-xl">
       <div class="container mx-auto px-4">
         <div class="flex items-center justify-between h-20">
           <!-- Logo with Premium Glow -->
@@ -15,13 +15,13 @@
 
             <div class="flex flex-col leading-tight">
               <div class="flex items-center gap-3">
-                <h1 class="text-2xl font-black bg-gradient-to-r from-blue-900 via-blue-700 to-orange-600 bg-clip-text text-transparent tracking-tight">
+                <h1 class="text-2xl font-black bg-gradient-to-r from-blue-900 via-blue-700 to-orange-600 dark:from-blue-300 dark:via-blue-400 dark:to-orange-400 bg-clip-text text-transparent tracking-tight">
                   Invest<span class="text-orange-600">Hold</span>
                 </h1>
 
               </div>
-              <p class="text-xs text-gray-600 font-medium tracking-wide mt-1 flex items-center gap-2">
-                <span class="px-2 py-0.5 bg-gradient-to-r from-blue-100 to-orange-100 rounded-full text-blue-700 font-bold">ADMIN PANEL</span>
+              <p class="text-xs text-gray-600 dark:text-gray-400 font-medium tracking-wide mt-1 flex items-center gap-2">
+                <span class="px-2 py-0.5 bg-gradient-to-r from-blue-100 to-orange-100 dark:from-blue-500/20 dark:to-orange-500/20 rounded-full text-blue-700 dark:text-blue-300 font-bold">ADMIN PANEL</span>
                 <span>v4.0</span>
               </p>
             </div>
@@ -31,8 +31,8 @@
           <nav class="hidden lg:flex items-center gap-1">
             <NuxtLink
                 to="/admin/users"
-                class="relative px-5 py-3 text-sm font-semibold text-gray-700 hover:text-blue-700 rounded-xl transition-all duration-300 group overflow-hidden"
-                active-class="!text-blue-700 !font-bold"
+                class="relative px-5 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 rounded-xl transition-all duration-300 group overflow-hidden"
+                active-class="!text-blue-700 dark:!text-blue-400 !font-bold"
             >
               <div class="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
               <div class="flex items-center gap-3 relative z-10">
@@ -48,8 +48,8 @@
 
             <NuxtLink
                 to="/admin/tasks"
-                class="relative px-5 py-3 text-sm font-semibold text-gray-700 hover:text-orange-700 rounded-xl transition-all duration-300 group overflow-hidden"
-                active-class="!text-orange-700 !font-bold"
+                class="relative px-5 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-orange-700 dark:hover:text-orange-400 rounded-xl transition-all duration-300 group overflow-hidden"
+                active-class="!text-orange-700 dark:!text-orange-400 !font-bold"
             >
               <div class="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-orange-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
               <div class="flex items-center gap-3 relative z-10">
@@ -65,8 +65,8 @@
 
             <NuxtLink
                 to="/admin/coins"
-                class="relative px-5 py-3 text-sm font-semibold text-gray-700 hover:text-blue-700 rounded-xl transition-all duration-300 group overflow-hidden"
-                active-class="!text-blue-700 !font-bold"
+                class="relative px-5 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 rounded-xl transition-all duration-300 group overflow-hidden"
+                active-class="!text-blue-700 dark:!text-blue-400 !font-bold"
             >
               <div class="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-orange-500/5 to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
               <div class="flex items-center gap-3 relative z-10">
@@ -81,10 +81,14 @@
             </NuxtLink>
           </nav>
 
-          <!-- User Menu with Premium Style -->
-          <div class="relative group">
-            <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-            <UserMenu class="relative" />
+          <div class="flex items-center gap-3">
+            <ThemeSwitch />
+
+            <!-- User Menu with Premium Style -->
+            <div class="relative group">
+              <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+              <UserMenu class="relative" />
+            </div>
           </div>
         </div>
       </div>
@@ -96,7 +100,7 @@
     <div class="lg:hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
       <div class="relative">
         <div class="absolute -inset-4 bg-gradient-to-r from-blue-600 to-orange-500 rounded-3xl blur-xl opacity-30"></div>
-        <div class="bg-white/95 backdrop-blur-2xl border border-blue-100/50 rounded-2xl py-3 px-6 shadow-2xl">
+        <div class="bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl border border-blue-100/50 dark:border-gray-800 rounded-2xl py-3 px-6 shadow-2xl">
           <div class="flex items-center gap-8">
             <NuxtLink
                 to="/admin/users"
@@ -106,7 +110,7 @@
               <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center mb-2 group-hover:scale-110 transition-all duration-300 shadow-md group-hover:shadow-blue-200">
                 <UIcon name="i-heroicons-users" class="w-6 h-6 text-blue-600" />
               </div>
-              <span class="text-xs font-bold text-gray-700">Пользователи</span>
+              <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Пользователи</span>
             </NuxtLink>
 
             <NuxtLink
@@ -117,7 +121,7 @@
               <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center mb-2 group-hover:scale-110 transition-all duration-300 shadow-md group-hover:shadow-orange-200">
                 <UIcon name="i-heroicons-clipboard-document-check" class="w-6 h-6 text-orange-600" />
               </div>
-              <span class="text-xs font-bold text-gray-700">Задачи</span>
+              <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Задачи</span>
             </NuxtLink>
 
             <NuxtLink
@@ -128,7 +132,7 @@
               <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-orange-50 flex items-center justify-center mb-2 group-hover:scale-110 transition-all duration-300 shadow-md group-hover:shadow-blue-200">
                 <UIcon name="i-heroicons-currency-dollar" class="w-6 h-6 text-blue-600" />
               </div>
-              <span class="text-xs font-bold text-gray-700">Монеты</span>
+              <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Монеты</span>
             </NuxtLink>
           </div>
         </div>
@@ -141,24 +145,24 @@
         <!-- Premium Content Container -->
         <div class="relative mb-12">
           <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-orange-500 rounded-3xl blur-xl opacity-20"></div>
-          <div class="relative bg-white/90 backdrop-blur-sm rounded-2xl border border-blue-100/50 shadow-2xl overflow-hidden">
+          <div class="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-2xl border border-blue-100/50 dark:border-gray-800 shadow-2xl overflow-hidden">
             <!-- Animated Header -->
             <div class="relative h-32 bg-gradient-to-r from-blue-600/10 via-orange-500/10 to-blue-600/10 overflow-hidden">
               <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(59,130,246,0.1),transparent_50%)]"></div>
               <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,rgba(249,115,22,0.1),transparent_50%)]"></div>
               <div class="relative h-full flex items-center justify-between px-8">
                 <div>
-                  <h2 class="text-3xl font-black bg-gradient-to-r from-blue-900 via-blue-700 to-orange-600 bg-clip-text text-transparent">
+                  <h2 class="text-3xl font-black bg-gradient-to-r from-blue-900 via-blue-700 to-orange-600 dark:from-blue-300 dark:via-blue-400 dark:to-orange-400 bg-clip-text text-transparent">
                     <slot name="title">Админ-панель Elite</slot>
                   </h2>
-                  <p class="text-gray-600 font-medium mt-2 flex items-center gap-3">
+                  <p class="text-gray-600 dark:text-gray-400 font-medium mt-2 flex items-center gap-3">
                     <span class="text-sm"><slot name="subtitle">Премиум управление системой</slot></span>
-                    <span class="px-3 py-1 bg-gradient-to-r from-blue-500/10 to-orange-500/10 rounded-full text-xs font-bold text-blue-700 border border-blue-200/50">ЭЛИТНЫЙ ДОСТУП</span>
+                    <span class="px-3 py-1 bg-gradient-to-r from-blue-500/10 to-orange-500/10 rounded-full text-xs font-bold text-blue-700 dark:text-blue-300 border border-blue-200/50 dark:border-blue-500/30">ЭЛИТНЫЙ ДОСТУП</span>
                   </p>
                 </div>
                 <div class="hidden lg:block">
-                  <div class="px-6 py-3 bg-gradient-to-r from-blue-500/10 to-orange-500/10 border border-blue-200/50 rounded-xl backdrop-blur-sm">
-                    <p class="text-sm font-bold text-blue-800 flex items-center gap-3">
+                  <div class="px-6 py-3 bg-gradient-to-r from-blue-500/10 to-orange-500/10 border border-blue-200/50 dark:border-blue-500/30 rounded-xl backdrop-blur-sm">
+                    <p class="text-sm font-bold text-blue-800 dark:text-blue-300 flex items-center gap-3">
                       <span class="relative">
                         <UIcon name="i-heroicons-shield-check" class="w-5 h-5 text-blue-600" />
                       </span>
@@ -171,7 +175,7 @@
 
             <!-- Content Slot with Glass Effect -->
             <div class="p-8">
-              <div class="bg-white/80 backdrop-blur-sm rounded-xl border border-blue-100/30 p-6 shadow-inner">
+              <div class="bg-white/80 dark:bg-gray-950/60 backdrop-blur-sm rounded-xl border border-blue-100/30 dark:border-gray-800 p-6 shadow-inner">
                 <slot />
               </div>
             </div>
@@ -179,7 +183,7 @@
         </div>
 
         <!-- Premium Footer -->
-        <div class="mt-20 pt-8 border-t border-blue-100/50">
+        <div class="mt-20 pt-8 border-t border-blue-100/50 dark:border-gray-800">
           <div class="flex flex-col lg:flex-row justify-between items-center gap-8">
             <div class="flex items-center gap-4">
               <div class="relative">
@@ -189,18 +193,18 @@
                 <div class="absolute -inset-2 bg-gradient-to-r from-blue-400 to-orange-400 rounded-xl blur-md opacity-50"></div>
               </div>
               <div class="flex flex-col">
-                <span class="text-lg font-black bg-gradient-to-r from-blue-900 to-orange-700 bg-clip-text text-transparent">InvestHold PRO</span>
+                <span class="text-lg font-black bg-gradient-to-r from-blue-900 to-orange-700 dark:from-blue-300 dark:to-orange-400 bg-clip-text text-transparent">InvestHold PRO</span>
                 <span class="text-xs text-gray-500 font-medium">Система премиум-класса</span>
               </div>
             </div>
 
             <div class="flex flex-col items-center lg:items-end gap-4">
               <div class="flex items-center gap-6">
-                <span class="text-sm font-bold text-gray-700">© 2024 ELITE EDITION</span>
+                <span class="text-sm font-bold text-gray-700 dark:text-gray-300">© 2024 ELITE EDITION</span>
                 <div class="flex items-center gap-6">
-                  <a href="#" class="text-sm font-semibold text-gray-600 hover:text-blue-600 transition-colors duration-300 hover:scale-105">Аудит</a>
-                  <a href="#" class="text-sm font-semibold text-gray-600 hover:text-orange-600 transition-colors duration-300 hover:scale-105">Безопасность</a>
-                  <a href="#" class="text-sm font-semibold text-gray-600 hover:text-blue-700 transition-colors duration-300 hover:scale-105">Документация</a>
+                  <a href="#" class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors duration-300 hover:scale-105">Аудит</a>
+                  <a href="#" class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-orange-600 transition-colors duration-300 hover:scale-105">Безопасность</a>
+                  <a href="#" class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-blue-700 transition-colors duration-300 hover:scale-105">Документация</a>
                 </div>
               </div>
               <p class="text-xs text-gray-500 text-center lg:text-right">
@@ -269,6 +273,14 @@ import UserMenu from '~/components/user/UserMenu.vue'
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(to bottom, #1d4ed8, #ea580c);
   box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
+}
+
+:global(.dark) ::-webkit-scrollbar-track {
+  background: #111827;
+}
+
+:global(.dark) ::-webkit-scrollbar-thumb {
+  border-color: #111827;
 }
 
 /* Glass Effects */

@@ -62,13 +62,7 @@
           </nav>
 
           <div class="flex items-center gap-2">
-            <button
-              class="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              :title="colorMode.value === 'dark' ? 'Светлая тема' : 'Тёмная тема'"
-              @click="colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'"
-            >
-              <UIcon :name="colorMode.value === 'dark' ? 'i-heroicons-sun' : 'i-heroicons-moon'" class="w-4 h-4" />
-            </button>
+            <ThemeSwitch />
 
             <!-- User Menu -->
             <UserMenu />
@@ -147,8 +141,6 @@
 
 <script setup lang="ts">
 import UserMenu from '~/components/user/UserMenu.vue'
-
-const colorMode = useColorMode()
 
 const isScrollLocked = useScrollLock()
 </script>

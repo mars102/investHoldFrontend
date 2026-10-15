@@ -1,5 +1,5 @@
 <template>
-  <div class="promo min-h-screen bg-[#070b14] text-gray-100 overflow-x-hidden">
+  <div class="promo min-h-screen bg-[var(--p-bg)] text-gray-900 dark:text-gray-100 overflow-x-hidden">
     <!-- Background glow -->
     <div class="pointer-events-none fixed inset-0 overflow-hidden">
       <div class="glow glow-gold"></div>
@@ -8,25 +8,26 @@
     </div>
 
     <!-- Header -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#070b14]/70 border-b border-white/5">
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-[#f7f8fb]/70 dark:bg-[#070b14]/70 border-b border-gray-200/70 dark:border-white/5">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <NuxtLink to="/promo" class="flex items-center gap-2">
           <img src="/images/logo.png" alt="InvestHold" class="h-9 w-auto" />
           <span class="text-xl font-black tracking-tight">
-            <span class="text-[#ffc865]">Invest</span><span class="text-[#3fb8d6]">Hold</span>
+            <span class="text-amber-500 dark:text-[#ffc865]">Invest</span><span class="text-[#1c667d] dark:text-[#3fb8d6]">Hold</span>
           </span>
         </NuxtLink>
-        <nav class="hidden md:flex items-center gap-8 text-sm text-gray-400">
-          <a href="#features" class="hover:text-white transition-colors">Возможности</a>
-          <a href="#how" class="hover:text-white transition-colors">Как это работает</a>
-          <a href="#honest" class="hover:text-white transition-colors">Честно о нас</a>
-          <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+        <nav class="hidden md:flex items-center gap-8 text-sm text-gray-600 dark:text-gray-400">
+          <a href="#features" class="hover:text-gray-900 dark:hover:text-white transition-colors">Возможности</a>
+          <a href="#how" class="hover:text-gray-900 dark:hover:text-white transition-colors">Как это работает</a>
+          <a href="#honest" class="hover:text-gray-900 dark:hover:text-white transition-colors">Честно о нас</a>
+          <a href="#faq" class="hover:text-gray-900 dark:hover:text-white transition-colors">FAQ</a>
         </nav>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1 sm:gap-2">
+          <ThemeSwitch />
           <NuxtLink
             v-if="!isAuthenticated"
             to="/login"
-            class="hidden sm:inline-flex px-4 py-2 text-sm font-semibold text-gray-300 hover:text-white transition-colors"
+            class="hidden sm:inline-flex px-4 py-2 text-sm font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"
           >
             Войти
           </NuxtLink>
@@ -41,15 +42,15 @@
     <section class="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-20">
       <div class="grid lg:grid-cols-2 gap-14 items-center">
         <div class="reveal">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#ffc865]/30 bg-[#ffc865]/10 text-[#ffc865] text-xs font-semibold mb-6">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#ffc865] animate-pulse"></span>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:border-[#ffc865]/30 dark:bg-[#ffc865]/10 dark:text-[#ffc865] text-xs font-semibold mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-[#ffc865] animate-pulse"></span>
             Менеджер криптопортфеля
           </div>
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
             Перестаньте гадать,<br />
             <span class="hero-gradient">сколько вы заработали</span>
           </h1>
-          <p class="mt-6 text-lg text-gray-400 max-w-xl leading-relaxed">
+          <p class="mt-6 text-lg text-gray-600 dark:text-gray-400 max-w-xl leading-relaxed">
             InvestHold собирает все ваши сделки с разных бирж в один портфель, считает среднюю цену,
             реальный P&amp;L и показывает, где вы рискуете. Без таблиц, формул и самообмана.
           </p>
@@ -63,9 +64,9 @@
             </a>
           </div>
           <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
-            <span class="flex items-center gap-1.5"><UIcon name="i-heroicons-check-circle" class="w-4 h-4 text-emerald-400" />Регистрация за минуту</span>
-            <span class="flex items-center gap-1.5"><UIcon name="i-heroicons-check-circle" class="w-4 h-4 text-emerald-400" />Не нужны API-ключи</span>
-            <span class="flex items-center gap-1.5"><UIcon name="i-heroicons-check-circle" class="w-4 h-4 text-emerald-400" />Доступ к средствам не нужен</span>
+            <span class="flex items-center gap-1.5"><UIcon name="i-heroicons-check-circle" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />Регистрация за минуту</span>
+            <span class="flex items-center gap-1.5"><UIcon name="i-heroicons-check-circle" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />Не нужны API-ключи</span>
+            <span class="flex items-center gap-1.5"><UIcon name="i-heroicons-check-circle" class="w-4 h-4 text-emerald-500 dark:text-emerald-400" />Доступ к средствам не нужен</span>
           </div>
         </div>
 
@@ -77,7 +78,7 @@
                 <div class="text-xs text-gray-500 uppercase tracking-wider">Баланс портфеля</div>
                 <div class="text-3xl font-black tabular-nums mt-1">$ {{ animatedBalance }}</div>
               </div>
-              <div class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 text-sm font-bold tabular-nums">
+              <div class="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-sm font-bold tabular-nums">
                 +24.8%
               </div>
             </div>
@@ -85,19 +86,19 @@
             <svg viewBox="0 0 400 120" class="w-full h-28" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="promoArea" x1="0" x2="0" y1="0" y2="1">
-                  <stop offset="0%" stop-color="#ffc865" stop-opacity="0.35" />
-                  <stop offset="100%" stop-color="#ffc865" stop-opacity="0" />
+                  <stop offset="0%" stop-color="var(--p-gold)" stop-opacity="0.35" />
+                  <stop offset="100%" stop-color="var(--p-gold)" stop-opacity="0" />
                 </linearGradient>
               </defs>
               <path :d="chartArea" fill="url(#promoArea)" />
-              <path :d="chartLine" fill="none" stroke="#ffc865" stroke-width="2.5" stroke-linecap="round" class="chart-line" />
+              <path :d="chartLine" fill="none" stroke="var(--p-gold)" stroke-width="2.5" stroke-linecap="round" class="chart-line" />
             </svg>
 
             <div class="mt-5 space-y-2.5">
               <div
                 v-for="coin in mockCoins"
                 :key="coin.symbol"
-                class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/5"
+                class="flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-100 dark:bg-white/[0.03] dark:border-white/5"
               >
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-gray-900" :style="{ background: coin.color }">
@@ -110,7 +111,10 @@
                 </div>
                 <div class="text-right">
                   <div class="text-sm font-semibold tabular-nums">{{ coin.value }}</div>
-                  <div class="text-[11px] font-bold tabular-nums" :class="coin.pnl > 0 ? 'text-emerald-400' : 'text-rose-400'">
+                  <div
+                    class="text-[11px] font-bold tabular-nums"
+                    :class="coin.pnl > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'"
+                  >
                     {{ coin.pnl > 0 ? '+' : '' }}{{ coin.pnl }}%
                   </div>
                 </div>
@@ -120,14 +124,14 @@
 
           <!-- Floating cards -->
           <div class="float-card float-a hidden sm:flex">
-            <UIcon name="i-heroicons-shield-check" class="w-5 h-5 text-[#3fb8d6]" />
+            <UIcon name="i-heroicons-shield-check" class="w-5 h-5 text-[#1c667d] dark:text-[#3fb8d6]" />
             <div>
               <div class="text-[10px] text-gray-500">Риск-профиль</div>
               <div class="text-xs font-bold">Умеренный · HHI 2840</div>
             </div>
           </div>
           <div class="float-card float-b hidden sm:flex">
-            <UIcon name="i-heroicons-bell-alert" class="w-5 h-5 text-[#ffc865]" />
+            <UIcon name="i-heroicons-bell-alert" class="w-5 h-5 text-amber-500 dark:text-[#ffc865]" />
             <div>
               <div class="text-[10px] text-gray-500">Уведомление</div>
               <div class="text-xs font-bold">SOL +12% за сутки</div>
@@ -137,12 +141,12 @@
       </div>
     </section>
 
-    <!-- Pain points strip -->
-    <section class="border-y border-white/5 bg-white/[0.02]">
+    <!-- Stats strip -->
+    <section class="border-y border-gray-200/70 bg-white/60 dark:border-white/5 dark:bg-white/[0.02]">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
         <div v-for="s in stats" :key="s.label" class="reveal">
           <div class="text-3xl sm:text-4xl font-black hero-gradient">{{ s.value }}</div>
-          <div class="mt-1 text-sm text-gray-400">{{ s.label }}</div>
+          <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ s.label }}</div>
         </div>
       </div>
     </section>
@@ -152,7 +156,7 @@
       <div class="reveal text-center max-w-2xl mx-auto">
         <div class="section-tag">Возможности</div>
         <h2 class="section-title">Всё, что нужно инвестору,<br class="hidden sm:block" /> в одном окне</h2>
-        <p class="mt-4 text-gray-400">
+        <p class="mt-4 text-gray-600 dark:text-gray-400">
           Мы сделали инструмент, которым сами пользуемся каждый день. Никакой лишней мишуры — только то, что помогает принимать решения.
         </p>
       </div>
@@ -168,7 +172,7 @@
             <UIcon :name="f.icon" class="w-6 h-6" />
           </div>
           <h3 class="mt-5 text-lg font-bold">{{ f.title }}</h3>
-          <p class="mt-2 text-sm text-gray-400 leading-relaxed">{{ f.text }}</p>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{{ f.text }}</p>
         </div>
       </div>
     </section>
@@ -182,7 +186,7 @@
         </div>
 
         <div class="mt-14 grid md:grid-cols-3 gap-6 relative">
-          <div class="hidden md:block absolute top-10 left-[16%] right-[16%] h-px bg-gradient-to-r from-[#ffc865]/0 via-[#ffc865]/40 to-[#3fb8d6]/0"></div>
+          <div class="steps-line hidden md:block absolute top-10 left-[16%] right-[16%] h-px"></div>
           <div
             v-for="(step, i) in steps"
             :key="step.title"
@@ -191,7 +195,7 @@
           >
             <div class="step-num">{{ i + 1 }}</div>
             <h3 class="mt-6 text-lg font-bold">{{ step.title }}</h3>
-            <p class="mt-2 text-sm text-gray-400 max-w-xs mx-auto leading-relaxed">{{ step.text }}</p>
+            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 max-w-xs mx-auto leading-relaxed">{{ step.text }}</p>
           </div>
         </div>
       </div>
@@ -202,43 +206,43 @@
       <div class="reveal text-center max-w-2xl mx-auto">
         <div class="section-tag">Честно о нас</div>
         <h2 class="section-title">Плюсы и минусы — без маркетинга</h2>
-        <p class="mt-4 text-gray-400">
+        <p class="mt-4 text-gray-600 dark:text-gray-400">
           Мы не идеальны и не будем притворяться. Вот что мы делаем отлично, а над чем ещё работаем.
         </p>
       </div>
 
       <div class="mt-14 grid lg:grid-cols-2 gap-6">
-        <div class="reveal honest-card border-emerald-500/20">
+        <div class="reveal honest-card border-emerald-500/25 dark:border-emerald-500/20">
           <div class="flex items-center gap-3 mb-6">
             <div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center">
-              <UIcon name="i-heroicons-hand-thumb-up" class="w-5 h-5 text-emerald-400" />
+              <UIcon name="i-heroicons-hand-thumb-up" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <h3 class="text-xl font-bold">Плюсы</h3>
           </div>
           <ul class="space-y-4">
             <li v-for="p in pros" :key="p.title" class="flex gap-3">
-              <UIcon name="i-heroicons-check-circle-solid" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+              <UIcon name="i-heroicons-check-circle-solid" class="w-5 h-5 text-emerald-500 dark:text-emerald-400 shrink-0 mt-0.5" />
               <div>
                 <div class="font-semibold">{{ p.title }}</div>
-                <div class="text-sm text-gray-400 mt-0.5">{{ p.text }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{{ p.text }}</div>
               </div>
             </li>
           </ul>
         </div>
 
-        <div class="reveal honest-card border-amber-500/20" style="--delay: 120ms">
+        <div class="reveal honest-card border-amber-500/25 dark:border-amber-500/20" style="--delay: 120ms">
           <div class="flex items-center gap-3 mb-6">
             <div class="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center">
-              <UIcon name="i-heroicons-wrench-screwdriver" class="w-5 h-5 text-amber-400" />
+              <UIcon name="i-heroicons-wrench-screwdriver" class="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <h3 class="text-xl font-bold">Минусы <span class="text-sm font-medium text-gray-500">(пока)</span></h3>
           </div>
           <ul class="space-y-4">
             <li v-for="c in cons" :key="c.title" class="flex gap-3">
-              <UIcon name="i-heroicons-minus-circle-solid" class="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+              <UIcon name="i-heroicons-minus-circle-solid" class="w-5 h-5 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
               <div>
                 <div class="font-semibold">{{ c.title }}</div>
-                <div class="text-sm text-gray-400 mt-0.5">{{ c.text }}</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{{ c.text }}</div>
               </div>
             </li>
           </ul>
@@ -251,26 +255,26 @@
       <div class="reveal text-center">
         <h2 class="section-title">InvestHold vs таблица в Excel</h2>
       </div>
-      <div class="reveal mt-10 overflow-x-auto rounded-2xl border border-white/10">
+      <div class="reveal mt-10 overflow-x-auto rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-transparent">
         <table class="w-full text-sm min-w-[480px]">
           <thead>
-            <tr class="bg-white/[0.04] text-gray-400">
+            <tr class="bg-gray-50 text-gray-500 dark:bg-white/[0.04] dark:text-gray-400">
               <th class="text-left font-semibold px-5 py-4"></th>
-              <th class="font-bold px-5 py-4 text-[#ffc865]">InvestHold</th>
+              <th class="font-bold px-5 py-4 text-amber-600 dark:text-[#ffc865]">InvestHold</th>
               <th class="font-semibold px-5 py-4">Excel / заметки</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in comparison" :key="row.label" class="border-t border-white/5">
-              <td class="px-5 py-3.5 text-gray-300">{{ row.label }}</td>
+            <tr v-for="row in comparison" :key="row.label" class="border-t border-gray-100 dark:border-white/5">
+              <td class="px-5 py-3.5 text-gray-700 dark:text-gray-300">{{ row.label }}</td>
               <td class="px-5 py-3.5 text-center">
-                <UIcon name="i-heroicons-check-circle-solid" class="w-5 h-5 text-emerald-400 inline-block" />
+                <UIcon name="i-heroicons-check-circle-solid" class="w-5 h-5 text-emerald-500 dark:text-emerald-400 inline-block" />
               </td>
               <td class="px-5 py-3.5 text-center">
                 <UIcon
                   :name="row.excel ? 'i-heroicons-check-circle-solid' : 'i-heroicons-x-circle'"
                   class="w-5 h-5 inline-block"
-                  :class="row.excel ? 'text-gray-500' : 'text-rose-400/70'"
+                  :class="row.excel ? 'text-gray-400 dark:text-gray-500' : 'text-rose-500/70 dark:text-rose-400/70'"
                 />
               </td>
             </tr>
@@ -289,10 +293,10 @@
         <div
           v-for="(q, i) in faq"
           :key="q.q"
-          class="reveal rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden"
+          class="reveal rounded-2xl border border-gray-200 bg-white dark:border-white/10 dark:bg-white/[0.02] overflow-hidden"
         >
           <button
-            class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold hover:bg-white/[0.03] transition-colors"
+            class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors"
             @click="openFaq = openFaq === i ? null : i"
           >
             {{ q.q }}
@@ -304,7 +308,7 @@
           </button>
           <div class="faq-body" :class="{ open: openFaq === i }">
             <div class="overflow-hidden">
-              <p class="px-5 pb-5 text-sm text-gray-400 leading-relaxed">{{ q.a }}</p>
+              <p class="px-5 pb-5 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{{ q.a }}</p>
             </div>
           </div>
         </div>
@@ -318,7 +322,7 @@
           Ваш портфель заслуживает<br />
           <span class="hero-gradient">большего, чем таблица</span>
         </h2>
-        <p class="mt-5 text-gray-300 max-w-xl mx-auto">
+        <p class="mt-5 text-gray-700 dark:text-gray-300 max-w-xl mx-auto">
           Зарегистрируйтесь, добавьте первую сделку и через пару минут увидите свой портфель так, как никогда раньше.
         </p>
         <NuxtLink :to="ctaLink" class="cta-btn cta-big mt-9 px-9 py-4 text-lg">
@@ -326,18 +330,23 @@
           <UIcon name="i-heroicons-rocket-launch" class="w-5 h-5" />
         </NuxtLink>
         <p v-if="!isAuthenticated" class="mt-4 text-sm text-gray-500">
-          Уже есть аккаунт? <NuxtLink to="/login" class="text-[#3fb8d6] hover:underline">Войти</NuxtLink>
+          Уже есть аккаунт?
+          <NuxtLink to="/login" class="text-[#1c667d] dark:text-[#3fb8d6] hover:underline">Войти</NuxtLink>
         </p>
       </div>
     </section>
 
-    <footer class="border-t border-white/5 py-8">
+    <footer class="border-t border-gray-200/70 dark:border-white/5 py-8">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
         <div class="flex items-center gap-2">
           <img src="/images/logo.png" alt="" class="h-6 w-auto opacity-70" />
           <span>© {{ year }} InvestHold</span>
         </div>
-        <span>Не является инвестиционной рекомендацией.</span>
+        <div class="flex items-center gap-4">
+          <NuxtLink to="/terms" class="hover:text-gray-900 dark:hover:text-white">Условия</NuxtLink>
+          <NuxtLink to="/privacy" class="hover:text-gray-900 dark:hover:text-white">Конфиденциальность</NuxtLink>
+          <span class="hidden sm:inline">Не является инвестиционной рекомендацией.</span>
+        </div>
       </div>
     </footer>
   </div>
@@ -392,55 +401,55 @@ const features = [
     icon: 'i-heroicons-chart-bar',
     title: 'Портфель с реальным P&L',
     text: 'Средняя цена покупки, вложено, текущая стоимость и прибыль по каждой монете и по всему портфелю.',
-    color: '#ffc865',
+    color: '#f59e0b',
   },
   {
     icon: 'i-heroicons-chart-pie',
     title: 'Глубокая аналитика',
     text: 'Распределение активов, лучшая и худшая сделка, средний P&L, активность по биржам и периодам.',
-    color: '#a78bfa',
+    color: '#8b5cf6',
   },
   {
     icon: 'i-heroicons-shield-check',
     title: 'Риск-профиль',
     text: 'Индекс концентрации HHI показывает, не сложили ли вы все яйца в одну корзину.',
-    color: '#3fb8d6',
+    color: '#0ea5c6',
   },
   {
     icon: 'i-heroicons-clock',
     title: 'Оценка тайминга',
     text: 'Узнайте, насколько удачно вы входите и выходите из позиций. Цифры не врут — в отличие от памяти.',
-    color: '#34d399',
+    color: '#10b981',
   },
   {
     icon: 'i-heroicons-chat-bubble-left-right',
     title: 'Дневник трейдера',
     text: 'Записывайте мысли к каждой сделке, прикладывайте скриншоты и ведите ленту своих решений.',
-    color: '#f472b6',
+    color: '#ec4899',
   },
   {
     icon: 'i-heroicons-bell-alert',
     title: 'Watchlist и уведомления',
     text: 'Следите за интересными монетами и получайте уведомления о резких изменениях цены.',
-    color: '#fb923c',
+    color: '#f97316',
   },
   {
     icon: 'i-heroicons-presentation-chart-line',
     title: 'Графики с линиями тренда',
     text: 'Рисуйте линии тренда прямо на графике монеты и смотрите баланс по ней во времени.',
-    color: '#60a5fa',
+    color: '#3b82f6',
   },
   {
     icon: 'i-heroicons-photo',
     title: 'Красивые карточки для шеринга',
     text: 'Поделитесь удачной сделкой картинкой в один клик — друзьям или в свой канал.',
-    color: '#facc15',
+    color: '#eab308',
   },
   {
     icon: 'i-heroicons-arrow-down-tray',
     title: 'Ваши данные — ваши',
-    text: 'Экспорт всех сделок в CSV в любой момент. Скрытие баланса одной кнопкой, тёмная тема.',
-    color: '#94a3b8',
+    text: 'Экспорт всех сделок в CSV в любой момент. Скрытие баланса одной кнопкой, светлая и тёмная тема.',
+    color: '#64748b',
   },
 ]
 
@@ -455,7 +464,7 @@ const pros = [
   { title: 'Все биржи в одном месте', text: 'Отмечайте биржу у каждой сделки и смотрите, где вы торгуете активнее всего.' },
   { title: 'Аналитика, которой нет у бирж', text: 'Тайминг сделок, риск-профиль, лучшие и худшие решения — биржи такого не покажут.' },
   { title: 'Дневник решений', text: 'Мысли к сделкам помогают учиться на своих ошибках, а не повторять их.' },
-  { title: 'Быстро и без лишнего', text: 'Чистый интерфейс, тёмная тема, адаптив под телефон.' },
+  { title: 'Быстро и без лишнего', text: 'Чистый интерфейс, светлая и тёмная тема, адаптив под телефон.' },
 ]
 
 const cons = [
@@ -528,8 +537,51 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Theme tokens: light by default, dark under .dark */
 .promo {
+  --p-bg: #f7f8fb;
+  --p-gold: #f59e0b;
+  --p-teal: #1c667d;
+  --p-card: #ffffff;
+  --p-card-border: rgba(15, 23, 42, 0.08);
+  --p-card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 32px -16px rgba(15, 23, 42, 0.12);
+  --p-glow-opacity: 0.22;
+  --p-grid-line: rgba(15, 23, 42, 0.05);
+  --p-mockup-bg: linear-gradient(160deg, #ffffff, #f8fafc);
+  --p-mockup-shadow: 0 40px 80px -30px rgba(15, 23, 42, 0.25);
+  --p-float-bg: rgba(255, 255, 255, 0.95);
+  --p-step-bg: #ffffff;
+  --p-final-bg:
+    radial-gradient(ellipse at 20% 0%, rgba(245, 158, 11, 0.18), transparent 60%),
+    radial-gradient(ellipse at 90% 100%, rgba(28, 102, 125, 0.18), transparent 60%),
+    #ffffff;
+  --p-ghost-border: rgba(15, 23, 42, 0.15);
+  --p-ghost-hover: rgba(15, 23, 42, 0.04);
+  --p-ghost-text: #1f2937;
   scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+:global(.dark) .promo {
+  --p-bg: #070b14;
+  --p-gold: #ffc865;
+  --p-teal: #3fb8d6;
+  --p-card: rgba(255, 255, 255, 0.025);
+  --p-card-border: rgba(255, 255, 255, 0.07);
+  --p-card-shadow: none;
+  --p-glow-opacity: 0.35;
+  --p-grid-line: rgba(255, 255, 255, 0.03);
+  --p-mockup-bg: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  --p-mockup-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8);
+  --p-float-bg: rgba(15, 20, 32, 0.9);
+  --p-step-bg: #0d1320;
+  --p-final-bg:
+    radial-gradient(ellipse at 20% 0%, rgba(255, 200, 101, 0.25), transparent 60%),
+    radial-gradient(ellipse at 90% 100%, rgba(28, 102, 125, 0.5), transparent 60%),
+    #0d1320;
+  --p-ghost-border: rgba(255, 255, 255, 0.12);
+  --p-ghost-hover: rgba(255, 255, 255, 0.05);
+  --p-ghost-text: #e5e7eb;
 }
 
 /* Background */
@@ -537,14 +589,14 @@ onMounted(() => {
   position: absolute;
   border-radius: 9999px;
   filter: blur(120px);
-  opacity: 0.35;
+  opacity: var(--p-glow-opacity);
 }
 .glow-gold {
   width: 520px;
   height: 520px;
   top: -160px;
   right: -120px;
-  background: #ffc865;
+  background: var(--p-gold);
   animation: drift 18s ease-in-out infinite;
 }
 .glow-teal {
@@ -559,8 +611,8 @@ onMounted(() => {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(var(--p-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--p-grid-line) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%);
 }
@@ -571,10 +623,13 @@ onMounted(() => {
 
 /* Text */
 .hero-gradient {
-  background: linear-gradient(120deg, #ffc865 0%, #ff9f43 40%, #3fb8d6 100%);
+  background: linear-gradient(120deg, #f59e0b 0%, #ea580c 45%, #1c667d 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+:global(.dark) .hero-gradient {
+  background-image: linear-gradient(120deg, #ffc865 0%, #ff9f43 40%, #3fb8d6 100%);
 }
 .section-tag {
   display: inline-block;
@@ -582,8 +637,11 @@ onMounted(() => {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #ffc865;
+  color: #d97706;
   margin-bottom: 12px;
+}
+:global(.dark) .section-tag {
+  color: #ffc865;
 }
 .section-title {
   font-size: clamp(1.875rem, 4vw, 2.75rem);
@@ -602,12 +660,12 @@ onMounted(() => {
   color: #111827;
   border-radius: 12px;
   background: linear-gradient(135deg, #ffd88a 0%, #ffc865 45%, #ff9f43 100%);
-  box-shadow: 0 8px 24px -8px rgba(255, 180, 70, 0.6);
+  box-shadow: 0 8px 24px -8px rgba(255, 160, 50, 0.6);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .cta-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 34px -8px rgba(255, 180, 70, 0.75);
+  box-shadow: 0 14px 34px -8px rgba(255, 160, 50, 0.75);
 }
 .cta-big {
   position: relative;
@@ -631,13 +689,12 @@ onMounted(() => {
   justify-content: center;
   font-weight: 600;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #e5e7eb;
+  border: 1px solid var(--p-ghost-border);
+  color: var(--p-ghost-text);
   transition: background 0.2s, border-color 0.2s;
 }
 .ghost-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: var(--p-ghost-hover);
 }
 
 /* Hero mockup */
@@ -645,9 +702,9 @@ onMounted(() => {
   position: relative;
   padding: 24px;
   border-radius: 24px;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 200, 101, 0.05);
+  background: var(--p-mockup-bg);
+  border: 1px solid var(--p-card-border);
+  box-shadow: var(--p-mockup-shadow);
   backdrop-filter: blur(16px);
   transform: perspective(1200px) rotateY(-6deg) rotateX(3deg);
   transition: transform 0.6s;
@@ -669,9 +726,9 @@ onMounted(() => {
   gap: 10px;
   padding: 10px 14px;
   border-radius: 14px;
-  background: rgba(15, 20, 32, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.7);
+  background: var(--p-float-bg);
+  border: 1px solid var(--p-card-border);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(10px);
 }
 .float-a {
@@ -694,14 +751,14 @@ onMounted(() => {
   position: relative;
   padding: 28px;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--p-card);
+  border: 1px solid var(--p-card-border);
+  box-shadow: var(--p-card-shadow);
   transition: transform 0.3s, border-color 0.3s, background 0.3s;
 }
 .feature-card:hover {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-  background: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 .feature-icon {
   width: 48px;
@@ -711,11 +768,16 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+:global(.dark) .feature-icon {
   box-shadow: 0 0 24px -6px var(--accent);
 }
 
 /* Steps */
+.steps-line {
+  background: linear-gradient(to right, transparent, color-mix(in srgb, var(--p-gold) 50%, transparent), transparent);
+}
 .step-num {
   position: relative;
   width: 80px;
@@ -727,10 +789,10 @@ onMounted(() => {
   justify-content: center;
   font-size: 32px;
   font-weight: 900;
-  color: #ffc865;
-  background: #0d1320;
-  border: 1px solid rgba(255, 200, 101, 0.3);
-  box-shadow: 0 0 40px -10px rgba(255, 200, 101, 0.5);
+  color: var(--p-gold);
+  background: var(--p-step-bg);
+  border: 1px solid color-mix(in srgb, var(--p-gold) 35%, transparent);
+  box-shadow: 0 0 40px -10px color-mix(in srgb, var(--p-gold) 55%, transparent);
 }
 
 /* Pros / cons */
@@ -738,7 +800,8 @@ onMounted(() => {
   padding: 32px;
   border-radius: 24px;
   border-width: 1px;
-  background: rgba(255, 255, 255, 0.025);
+  background: var(--p-card);
+  box-shadow: var(--p-card-shadow);
 }
 
 /* FAQ */
@@ -757,11 +820,9 @@ onMounted(() => {
   padding: 72px 24px;
   border-radius: 32px;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 20% 0%, rgba(255, 200, 101, 0.25), transparent 60%),
-    radial-gradient(ellipse at 90% 100%, rgba(28, 102, 125, 0.5), transparent 60%),
-    #0d1320;
-  border: 1px solid rgba(255, 200, 101, 0.2);
+  background: var(--p-final-bg);
+  border: 1px solid color-mix(in srgb, var(--p-gold) 25%, transparent);
+  box-shadow: var(--p-card-shadow);
 }
 
 /* Reveal on scroll */
@@ -774,6 +835,12 @@ onMounted(() => {
 .reveal.visible {
   opacity: 1;
   transform: none;
+}
+.feature-card.reveal.visible {
+  transition: opacity 0.7s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+.feature-card.reveal.visible:hover {
+  transform: translateY(-4px);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-2xl font-bold mb-6" style="color: #386c7d;">Вход в учетную запись</h2>
+    <h2 class="text-2xl font-bold mb-6 text-[#386c7d] dark:text-cyan-400">Вход в учетную запись</h2>
 
     <UForm :schema="loginSchema" :state="state" @submit="handleSubmit" class="space-y-4">
       <UFormGroup label="Email или логин" name="login">
@@ -11,8 +11,7 @@
             icon="i-heroicons-user"
             size="lg"
             :ui="{
-            icon: { trailing: { pointer: '' } },
-            base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
+            icon: { trailing: { pointer: '' } }
           }"
         />
       </UFormGroup>
@@ -25,8 +24,7 @@
             icon="i-heroicons-lock-closed"
             size="lg"
             :ui="{
-            icon: { trailing: { pointer: '' } },
-            base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
+            icon: { trailing: { pointer: '' } }
           }"
         />
       </UFormGroup>
@@ -38,7 +36,7 @@
               color="primary"
               class="mr-2"
           />
-          <span class="text-sm text-gray-300">Запомнить меня</span>
+          <span class="text-sm text-gray-600 dark:text-gray-300">Запомнить меня</span>
         </label>
       </div>
 
@@ -64,7 +62,7 @@
       <div class="text-center mt-6">
         <p class="text-sm text-gray-400 dark:text-gray-500">
           У вас нет аккаунта?
-          <NuxtLink to="/register" class="text-cyan-400 hover:text-cyan-300 ml-1 font-medium">
+          <NuxtLink to="/register" class="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 ml-1 font-medium">
             Создать
           </NuxtLink>
         </p>

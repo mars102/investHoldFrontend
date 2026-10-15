@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="text-2xl font-bold mb-6" style="color: #386c7d;">Создание аккаунта</h2>
+    <h2 class="text-2xl font-bold mb-6 text-[#386c7d] dark:text-cyan-400">Создание аккаунта</h2>
 
     <UForm :schema="registerSchema" :state="state" @submit="handleSubmit">
       <div class="field-pole">
@@ -11,8 +11,7 @@
             icon="i-heroicons-user"
             size="lg"
             :ui="{
-            icon: { trailing: { pointer: '' } },
-            base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
+            icon: { trailing: { pointer: '' } }
           }"
         />
       </UFormGroup>
@@ -26,8 +25,7 @@
             icon="i-heroicons-envelope"
             size="lg"
             :ui="{
-            icon: { trailing: { pointer: '' } },
-            base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
+            icon: { trailing: { pointer: '' } }
           }"
         />
       </UFormGroup>
@@ -41,8 +39,7 @@
             icon="i-heroicons-lock-closed"
             size="lg"
             :ui="{
-            icon: { trailing: { pointer: '' } },
-            base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
+            icon: { trailing: { pointer: '' } }
           }"
         />
       </UFormGroup>
@@ -56,8 +53,7 @@
             icon="i-heroicons-lock-closed"
             size="lg"
             :ui="{
-            icon: { trailing: { pointer: '' } },
-            base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
+            icon: { trailing: { pointer: '' } }
           }"
         />
       </UFormGroup>
@@ -69,10 +65,10 @@
             color="primary"
             class="mr-2"
         />
-        <span class="text-sm text-gray-300" style="font-size: 12px;">
+        <span class="text-gray-600 dark:text-gray-300" style="font-size: 12px;">
           Я принимаю
-          <a href="/terms" target="_blank" class="text-cyan-400 hover:text-cyan-300">Пользовательское соглашение</a> и даю согласие на обработку персональных данных в соответствии с
-          <a href="/privacy" target="_blank" class="text-cyan-400 hover:text-cyan-300">Политикой конфиденциальности</a>
+          <a href="/terms" target="_blank" class="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300">Пользовательское соглашение</a> и даю согласие на обработку персональных данных в соответствии с
+          <a href="/privacy" target="_blank" class="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300">Политикой конфиденциальности</a>
         </span>
       </div>
       </div>
@@ -100,7 +96,7 @@
       <div class="text-center mt-2">
         <p class="text-sm text-gray-400 dark:text-gray-500">
           Уже есть аккаунт?
-          <NuxtLink to="/login" class="text-cyan-400 hover:text-cyan-300 ml-1 font-medium">
+          <NuxtLink to="/login" class="text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 ml-1 font-medium">
            Войти
           </NuxtLink>
         </p>
