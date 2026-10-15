@@ -7,7 +7,7 @@
       </button>
     </div>
 
-    <TradeFormFields v-model="form" :coin-options="coinOptions" class="mb-3" />
+    <TradeFormFields v-model="form" :coins="coins" class="mb-3" />
 
     <!-- Delete confirmation -->
     <div v-if="isConfirmingDelete" class="flex items-center justify-between rounded-md bg-red-50 border border-red-100 px-3 py-2 mb-3">
@@ -83,13 +83,6 @@ const form = reactive<createTrade>({
   executedAt: toDatetimeLocalValue(new Date(props.trade.executedAt))
 })
 
-const coinOptions = computed(() =>
-  coins.value.map((coin) => ({
-    label: `${coin.fullName} (${coin.ticker})`,
-    value: Number(coin.id)
-  }))
-)
-
 const formPreview = useTradeFormPreview()
 
 watchEffect(() => {
@@ -108,9 +101,6 @@ onUnmounted(() => {
 watch(
   () => form.coinId,
   (coinId) => {
-    // USelect's native <select> always emits option values as strings
-    // (event.target.value), even though coinOptions provides numbers —
-    // so the comparison must coerce both sides.
     const selected = coins.value.find((c) => c.id === Number(coinId))
     if (selected) {
       form.pricePerUnit = selected.currentPrice

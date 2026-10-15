@@ -52,7 +52,7 @@
 
     <div>
       <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block dark:text-gray-500">Монета</label>
-      <USelect v-model="filters.coinId" :options="coinOptions" />
+      <CoinSelect v-model="selectedCoinId" :coins="coins" placeholder="Все монеты" clearable />
     </div>
 
     <div class="text-xs text-gray-400 pt-3 border-t border-gray-100 dark:text-gray-500 dark:border-gray-800">
@@ -63,6 +63,7 @@
 
 <script setup lang="ts">
 import type { FeedFilterType } from '~/types/feed'
+import type { Coin } from '~/types/coins'
 
 export interface FeedFiltersState {
   type: FeedFilterType
@@ -72,11 +73,19 @@ export interface FeedFiltersState {
 }
 
 defineProps<{
-  coinOptions: { label: string; value: string }[]
+  coins: Coin[]
   resultCount: number
 }>()
 
 const filters = defineModel<FeedFiltersState>({ required: true })
+
+// filters.coinId uses the 'all' sentinel; CoinSelect works with an empty value
+const selectedCoinId = computed({
+  get: () => (filters.value.coinId !== 'all' ? Number(filters.value.coinId) : undefined),
+  set: (id) => {
+    filters.value.coinId = id ? String(id) : 'all'
+  }
+})
 
 const typeOptions: { label: string; value: FeedFiltersState['type'] }[] = [
   { label: 'Все', value: 'all' },

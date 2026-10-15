@@ -9,7 +9,7 @@
 
     <UInput v-model="form.title" placeholder="Заголовок" class="mb-2" />
     <UTextarea v-model="form.content" placeholder="Текст поста..." autoresize :rows="3" class="mb-2" />
-    <USelect v-model="form.coinId" :options="coinOptions" placeholder="Без привязки к монете" class="mb-3" />
+    <CoinSelect v-model="form.coinId" :coins="coins" placeholder="Без привязки к монете" clearable class="mb-3" />
 
     <!-- Existing media -->
     <div v-if="existingMedia.length" class="mb-1">
@@ -98,17 +98,12 @@ const coins = ref<Coin[]>([])
 const form = reactive({
   title: props.post.title,
   content: props.post.content,
-  coinId: props.post.coinId ? String(props.post.coinId) : '',
+  coinId: props.post.coinId ? Number(props.post.coinId) : undefined,
   media: [] as File[]
 })
 
 const existingMedia = ref<PostMedia[]>([...(props.post.media ?? [])].sort((a, b) => a.order - b.order))
 const removingMediaId = ref<number | null>(null)
-
-const coinOptions = computed(() => [
-  { label: 'Без привязки к монете', value: '' },
-  ...coins.value.map((coin) => ({ label: `${coin.fullName} (${coin.ticker})`, value: String(coin.id) }))
-])
 
 onMounted(async () => {
   const { $api } = useNuxtApp()

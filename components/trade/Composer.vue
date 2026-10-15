@@ -49,7 +49,7 @@
       <template v-if="mode === 'post'">
         <UInput v-model="postForm.title" placeholder="Заголовок" class="mb-2" />
         <UTextarea v-model="postForm.content" placeholder="О чём хотите рассказать?" autoresize :rows="3" class="mb-2" />
-        <USelect v-model="postForm.coinId" :options="postCoinOptions" placeholder="Без привязки к монете" class="mb-2" />
+        <CoinSelect v-model="postForm.coinId" :coins="coins" placeholder="Без привязки к монете" clearable class="mb-2" />
         <PostMediaPicker v-model="postForm.media" class="mb-3" />
 
         <div class="flex items-center justify-end">
@@ -61,7 +61,7 @@
 
       <!-- Trade mode -->
       <template v-else>
-        <TradeFormFields v-model="tradeForm" :coin-options="tradeCoinOptions" class="mb-3" />
+        <TradeFormFields v-model="tradeForm" :coins="coins" class="mb-3" />
 
         <div class="flex items-center justify-between">
           <span class="text-xs text-gray-400 dark:text-gray-500">
@@ -122,17 +122,12 @@ function defaultPostForm() {
   return {
     title: '',
     content: '',
-    coinId: '',
+    coinId: undefined as number | undefined,
     media: [] as File[]
   }
 }
 
 const postForm = reactive(defaultPostForm())
-
-const postCoinOptions = computed(() => [
-  { label: 'Без привязки к монете', value: '' },
-  ...coins.value.map((coin) => ({ label: `${coin.fullName} (${coin.ticker})`, value: String(coin.id) }))
-])
 
 const isPostValid = computed(() => !!postForm.title.trim() && !!postForm.content.trim())
 
@@ -166,13 +161,6 @@ function defaultTradeForm(): createTrade {
 
 const tradeForm = reactive<createTrade>(defaultTradeForm())
 
-const tradeCoinOptions = computed(() =>
-  coins.value.map((coin) => ({
-    label: `${coin.fullName} (${coin.ticker})`,
-    value: Number(coin.id)
-  }))
-)
-
 const formPreview = useTradeFormPreview()
 
 watchEffect(() => {
@@ -192,9 +180,6 @@ watch(mode, (value) => {
 watch(
   () => tradeForm.coinId,
   (coinId) => {
-    // USelect's native <select> always emits option values as strings
-    // (event.target.value), even though coinOptions provides numbers —
-    // so the comparison must coerce both sides.
     const selected = coins.value.find((c) => c.id === Number(coinId))
     if (selected) {
       tradeForm.pricePerUnit = selected.currentPrice

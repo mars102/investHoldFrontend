@@ -30,13 +30,26 @@
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-      <div class="col-span-2 sm:col-span-1">
+      <div class="col-span-2">
         <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block dark:text-gray-500">Монета *</label>
-        <USelect v-model="form.coinId" :options="coinOptions" placeholder="Выберите монету" />
+        <CoinSelect v-model="form.coinId" :coins="coins" />
       </div>
       <div>
         <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block dark:text-gray-500">Биржа *</label>
-        <USelect v-model="form.exchangeSource" :options="exchangeOptions" placeholder="Биржа" />
+        <USelectMenu
+          v-model="form.exchangeSource"
+          :options="exchangeOptions"
+          value-attribute="value"
+          option-attribute="label"
+          searchable
+          searchable-placeholder="Название биржи..."
+          placeholder="Выберите биржу"
+          :ui-menu="{ width: 'w-full min-w-[12rem]' }"
+        >
+          <template #option-empty="{ query }">
+            Биржа «{{ query }}» не найдена — выберите «Другое»
+          </template>
+        </USelectMenu>
       </div>
       <div>
         <label class="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1 block dark:text-gray-500">Дата и время</label>
@@ -84,10 +97,11 @@
 
 <script setup lang="ts">
 import type { createTrade } from '~/types/trade'
+import type { Coin } from '~/types/coins'
 import { usePortfolioStore } from '~/stores/portfolio'
 
 defineProps<{
-  coinOptions: { label: string; value: number }[]
+  coins: Coin[]
 }>()
 
 const form = defineModel<createTrade>({ required: true })
@@ -96,7 +110,14 @@ const exchangeOptions = [
   { label: 'Binance', value: 'binance' },
   { label: 'Bybit', value: 'bybit' },
   { label: 'OKX', value: 'okx' },
-  { label: 'Huobi', value: 'huobi' },
+  { label: 'Bitget', value: 'bitget' },
+  { label: 'BingX', value: 'bingx' },
+  { label: 'MEXC', value: 'mexc' },
+  { label: 'KuCoin', value: 'kucoin' },
+  { label: 'Gate.io', value: 'gate' },
+  { label: 'HTX (Huobi)', value: 'huobi' },
+  { label: 'Coinbase', value: 'coinbase' },
+  { label: 'Kraken', value: 'kraken' },
   { label: 'Другое', value: 'other' }
 ]
 

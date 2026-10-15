@@ -12,10 +12,11 @@
     </div>
 
     <div v-if="isPicking" class="p-2 border-b border-gray-100 dark:border-gray-800">
-      <USelect
-        :model-value="''"
-        :options="pickableOptions"
-        placeholder="Выберите монету..."
+      <CoinSelect
+        :model-value="undefined"
+        :coins="coins"
+        :exclude-ids="excludedIds"
+        placeholder="Найти монету..."
         @update:model-value="onPick"
       />
     </div>
@@ -85,20 +86,9 @@ const watchedCoins = computed(() =>
     .sort((a, b) => a.ticker.localeCompare(b.ticker))
 )
 
-const pickableOptions = computed(() => {
-  const heldSet = new Set(props.heldCoinIds)
-  return [
-    { label: 'Выберите монету...', value: '' },
-    ...coins.value
-      .filter((c) => !watchlist.isWatched(c.id) && !heldSet.has(c.id))
-      .sort((a, b) => a.ticker.localeCompare(b.ticker))
-      .map((c) => ({ label: `${c.fullName} (${c.ticker})`, value: String(c.id) }))
-  ]
-})
+const excludedIds = computed(() => [...props.heldCoinIds, ...watchlist.coinIds.value])
 
-function onPick(value: string | number) {
-  // USelect's native <select> always emits option values as strings
-  // (event.target.value), so coerce back to the numeric coin id.
+function onPick(value: string | number | undefined) {
   const coinId = Number(value)
   if (coinId) {
     watchlist.add(coinId)

@@ -127,7 +127,7 @@
     <div class="sticky top-6 mt-12">
       <TradeFilters
         v-model="filters"
-        :coin-options="coinOptions"
+        :coins="coins"
         :result-count="isSearching ? searchResults.length : (filters.grouped ? groupedEntries.length : feedStore.total)"
       />
     </div>
@@ -220,13 +220,6 @@ const searchResults = computed(() => {
   const filterCoinId = filters.coinId !== 'all' ? Number(filters.coinId) : null
   return searchFeed(tradeStore.trades, postStore.posts, coinsById.value, filters.search, filters.type, filterCoinId)
 })
-
-const coinOptions = computed(() => [
-  { label: 'Все монеты', value: 'all' },
-  ...[...coins.value]
-    .sort((a, b) => a.ticker.localeCompare(b.ticker))
-    .map((coin) => ({ label: `${coin.fullName} (${coin.ticker})`, value: String(coin.id) }))
-])
 
 const groupedFeed = computed(() => {
   const filterCoinId = filters.coinId !== 'all' ? Number(filters.coinId) : null
