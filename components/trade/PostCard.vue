@@ -320,11 +320,13 @@ const chartView = computed(() => {
   const tradeTime = new Date(props.trade.executedAt).getTime()
   const firstAfter = all.findIndex((p) => new Date(p.timestamp).getTime() >= tradeTime)
 
-  if (firstAfter === -1) return { points: all, entryIndex: all.length - 1 }
-  if (firstAfter > 0 && isOlderThanYear(props.trade.executedAt)) {
-    return { points: all.slice(firstAfter), entryIndex: 0 }
-  }
-  return { points: all, entryIndex: firstAfter }
+  const cropped = firstAfter > 0 && isOlderThanYear(props.trade.executedAt) ? all.slice(firstAfter) : all
+  const view = downsampleByTime(cropped)
+  if (firstAfter === -1) return { points: view, entryIndex: view.length - 1 }
+  if (cropped !== all) return { points: view, entryIndex: 0 }
+
+  const idx = view.findIndex((p) => new Date(p.timestamp).getTime() >= tradeTime)
+  return { points: view, entryIndex: idx === -1 ? view.length - 1 : idx }
 })
 
 const chartPoints = computed(() => chartView.value.points)

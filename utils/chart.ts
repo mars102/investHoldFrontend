@@ -37,6 +37,22 @@ export function buildSmoothPath(coords: { x: number; y: number }[]): string {
   return d
 }
 
+// Thins a series to at most `buckets` points over equal time slices (last
+// price in each slice), always keeping the first and last point.
+export function downsampleByTime<T extends { price: number; timestamp: string }>(points: T[], buckets = 250): T[] {
+  if (points.length <= buckets) return points
+  const t0 = new Date(points[0]!.timestamp).getTime()
+  const span = new Date(points[points.length - 1]!.timestamp).getTime() - t0
+  if (span <= 0) return points
+
+  const lastInBucket = new Map<number, T>()
+  for (let i = 1; i < points.length - 1; i++) {
+    const bucket = Math.floor(((new Date(points[i]!.timestamp).getTime() - t0) / span) * buckets)
+    lastInBucket.set(bucket, points[i]!)
+  }
+  return [points[0]!, ...lastInBucket.values(), points[points.length - 1]!]
+}
+
 // How far the mark is from the current price, e.g. "+1290%" for an entry far above.
 export function formatMarkDistance(mark: number, current: number): string {
   if (!mark || !current) return ''
@@ -80,9 +96,13 @@ export function computeChartGeometry(
 
   const priceToY = (price: number) => 100 - ((price - scaledMin) / scaledRange) * 100
 
+  // X follows time, not point index: history mixes daily CoinGecko points with
+  // dense recent snapshots, and index spacing would stretch the recent part.
   const n = points.length
+  const t0 = new Date(points[0]!.timestamp).getTime()
+  const tSpan = new Date(points[n - 1]!.timestamp).getTime() - t0
   const coords: ChartCoord[] = points.map((p, i) => ({
-    x: n === 1 ? 50 : (i / (n - 1)) * 100,
+    x: n === 1 ? 50 : tSpan > 0 ? ((new Date(p.timestamp).getTime() - t0) / tSpan) * 100 : (i / (n - 1)) * 100,
     y: priceToY(p.price),
     price: p.price,
     timestamp: p.timestamp
