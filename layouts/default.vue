@@ -142,11 +142,6 @@
         </div>
       </div>
     </main>
-
-    <!-- Notifications -->
-    <ClientOnly>
-      <UNotifications />
-    </ClientOnly>
   </div>
 </template>
 

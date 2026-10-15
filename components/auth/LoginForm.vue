@@ -3,7 +3,7 @@
     <h2 class="text-2xl font-bold mb-6" style="color: #386c7d;">Вход в учетную запись</h2>
 
     <UForm :schema="loginSchema" :state="state" @submit="handleSubmit" class="space-y-4">
-      <UFormField label="Email или логин" name="email">
+      <UFormGroup label="Email или логин" name="login">
         <UInput
             v-model="state.login"
             type="text"
@@ -15,9 +15,9 @@
             base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
           }"
         />
-      </UFormField>
+      </UFormGroup>
       <br>
-      <UFormField label="Password" name="password">
+      <UFormGroup label="Пароль" name="password">
         <UInput
             v-model="state.password"
             type="password"
@@ -29,7 +29,7 @@
             base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
           }"
         />
-      </UFormField>
+      </UFormGroup>
 
       <div class="flex items-center justify-between">
         <label class="flex items-center">
@@ -77,8 +77,7 @@
 import { loginSchema } from '../../utils/validation'
 
 const authStore = useAuthStore()
-const { $toast } = useNuxtApp()
-const router = useRouter()
+const toast = useToast()
 
 const pending = ref(false)
 
@@ -99,7 +98,7 @@ const handleSubmit = async () => {
   pending.value = false
 
   if (!result.success) {
-    $toast.error(result.error || 'Вход не выполнен')
+    toast.add({ title: result.error || 'Вход не выполнен', color: 'red' })
   }
 }
 </script>

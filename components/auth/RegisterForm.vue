@@ -4,7 +4,7 @@
 
     <UForm :schema="registerSchema" :state="state" @submit="handleSubmit">
       <div class="field-pole">
-        <UFormField  label="Full Name" name="name">
+        <UFormGroup label="Логин" name="username">
         <UInput
             v-model="state.username"
             placeholder="Login"
@@ -15,10 +15,10 @@
             base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
           }"
         />
-      </UFormField>
+      </UFormGroup>
       </div>
       <div class="field-pole">
-        <UFormField  label="Email" name="email">
+        <UFormGroup label="Email" name="email">
         <UInput
             v-model="state.email"
             type="email"
@@ -30,10 +30,10 @@
             base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
           }"
         />
-      </UFormField>
+      </UFormGroup>
       </div>
       <div class="field-pole">
-      <UFormField class="field-pole" label="Password" name="password">
+      <UFormGroup label="Пароль" name="password">
         <UInput
             v-model="state.password"
             type="password"
@@ -45,10 +45,10 @@
             base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
           }"
         />
-      </UFormField>
+      </UFormGroup>
       </div>
       <div class="field-pole">
-      <UFormField class="field-pole" label="Confirm Password" name="confirmPassword">
+      <UFormGroup label="Повторите пароль" name="confirmPassword">
         <UInput
             v-model="state.confirmPassword"
             type="password"
@@ -60,7 +60,7 @@
             base: 'bg-white/5 border-white/10 text-white placeholder-gray-400'
           }"
         />
-      </UFormField>
+      </UFormGroup>
       </div>
       <div class="button-pole">
       <div class="flex items-center">
@@ -114,8 +114,7 @@ import { registerSchema } from '~/utils/validation'
 
 
 const authStore = useAuthStore()
-const { $toast } = useNuxtApp()
-const router = useRouter()
+const toast = useToast()
 
 const pending = ref(false)
 
@@ -128,9 +127,8 @@ const state = reactive({
 })
 
 const handleSubmit = async () => {
-  console.log("что происходит !!!")
   if (!state.terms) {
-    $toast.error('Please accept the terms and conditions')
+    toast.add({ title: 'Примите условия соглашения', color: 'red' })
     return
   }
 
@@ -145,7 +143,7 @@ const handleSubmit = async () => {
   pending.value = false
 
   if (!result.success) {
-    $toast.error(result.error || 'Registration failed')
+    toast.add({ title: result.error || 'Не удалось зарегистрироваться', color: 'red' })
   }
 }
 </script>

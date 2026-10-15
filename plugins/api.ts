@@ -16,21 +16,21 @@ export default defineNuxtPlugin(() => {
             }
         },
         onResponseError({ response }) {
-            const { $toast } = useNuxtApp()
+            const toast = useToast()
 
             // Если токен истек, пытаемся обновить
             if (response.status === 401 && !response.url?.includes('/auth/refresh')) {
                 authStore.refreshAccessToken().then(refreshed => {
                     if (!refreshed) {
-                        $toast.error('Session expired. Please login again.')
+                        toast.add({ title: 'Сессия истекла. Войдите снова.', color: 'red' })
                     }
                 })
             }
 
             // Показываем ошибки
             if (response.status >= 400 && response.status !== 401) {
-                const errorMessage = response._data?.message || 'An error occurred'
-                $toast.error(errorMessage)
+                const errorMessage = response._data?.message || 'Произошла ошибка'
+                toast.add({ title: errorMessage, color: 'red' })
             }
         }
     })

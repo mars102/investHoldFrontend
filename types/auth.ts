@@ -15,12 +15,12 @@ export interface User {
 }
 
 export interface LoginCredentials {
-    email: string
+    login: string
     password: string
 }
 
 export interface RegisterCredentials {
-    name: string
+    username: string
     email: string
     password: string
 }

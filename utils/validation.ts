@@ -17,12 +17,12 @@ export const loginSchema = z.object({
 })
 
 export const registerSchema = z.object({
-    username: z.string().min(2, 'Name must be at least 2 characters'),
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
+    username: z.string().min(2, 'Логин должен содержать минимум 2 символа'),
+    email: z.string().email('Некорректный email'),
+    password: z.string().min(6, 'Пароль должен содержать минимум 6 символов'),
     confirmPassword: z.string()
 }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: 'Пароли не совпадают',
     path: ["confirmPassword"]
 })
 
