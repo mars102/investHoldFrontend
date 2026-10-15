@@ -275,11 +275,11 @@ import UserMenu from '~/components/user/UserMenu.vue'
   box-shadow: 0 0 15px rgba(249, 115, 22, 0.3);
 }
 
-:global(.dark) ::-webkit-scrollbar-track {
+:global(.dark ::-webkit-scrollbar-track) {
   background: #111827;
 }
 
-:global(.dark) ::-webkit-scrollbar-thumb {
+:global(.dark ::-webkit-scrollbar-thumb) {
   border-color: #111827;
 }
 

@@ -56,8 +56,8 @@ defineProps<{
   line-height: 1.7;
   color: rgb(55 65 81);
 }
-:global(.dark) .legal :deep(p),
-:global(.dark) .legal :deep(li) {
+.dark .legal :deep(p),
+.dark .legal :deep(li) {
   color: rgb(209 213 219);
 }
 .legal :deep(p) {

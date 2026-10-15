@@ -158,7 +158,7 @@ export default {
   transition: background 0.3s ease;
 }
 
-:global(.dark) .auth-layout {
+.dark .auth-layout {
   background: linear-gradient(135deg, #070b14 0%, #0d1320 50%, #111827 100%);
 }
 
@@ -178,11 +178,11 @@ export default {
   color: #1c667d;
 }
 
-:global(.dark) .brand-invest {
+.dark .brand-invest {
   color: #ffc865;
 }
 
-:global(.dark) .brand-hold {
+.dark .brand-hold {
   color: #3fb8d6;
 }
 
@@ -203,17 +203,17 @@ export default {
   animation: grid-move 20s linear infinite;
 }
 
-:global(.dark) .grid-pattern {
+.dark .grid-pattern {
   background-image:
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
-:global(.dark) .shape {
+.dark .shape {
   background: linear-gradient(135deg, rgba(255, 200, 101, 0.12), rgba(28, 102, 125, 0.25));
 }
 
-:global(.dark) .light-beams {
+.dark .light-beams {
   background: radial-gradient(circle at 20% 80%, rgba(28, 102, 125, 0.25) 0%, transparent 50%),
   radial-gradient(circle at 80% 20%, rgba(255, 200, 101, 0.12) 0%, transparent 50%);
 }
@@ -355,7 +355,7 @@ export default {
   text-transform: uppercase;
 }
 
-:global(.dark) .text-subtitle {
+.dark .text-subtitle {
   color: #94a3b8;
 }
 

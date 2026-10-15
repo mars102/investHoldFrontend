@@ -176,15 +176,15 @@ const isScrollLocked = useScrollLock()
   background: #94a3b8;
 }
 
-:global(.dark) ::-webkit-scrollbar-track {
+:global(.dark ::-webkit-scrollbar-track) {
   background: #1f2937;
 }
 
-:global(.dark) ::-webkit-scrollbar-thumb {
+:global(.dark ::-webkit-scrollbar-thumb) {
   background: #4b5563;
 }
 
-:global(.dark) ::-webkit-scrollbar-thumb:hover {
+:global(.dark ::-webkit-scrollbar-thumb:hover) {
   background: #6b7280;
 }
 
