@@ -26,5 +26,19 @@ export const registerSchema = z.object({
     path: ["confirmPassword"]
 })
 
+export const forgotPasswordSchema = z.object({
+    email: z.string().email('Некорректный email')
+})
+
+export const resetPasswordSchema = z.object({
+    password: z.string()
+        .min(6, 'Пароль должен содержать минимум 6 символов')
+        .max(100, 'Пароль слишком длинный'),
+    confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+    message: 'Пароли не совпадают',
+    path: ["confirmPassword"]
+})
+
 export type LoginForm = z.infer<typeof loginSchema>
 export type RegisterForm = z.infer<typeof registerSchema>

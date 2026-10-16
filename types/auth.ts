@@ -9,6 +9,7 @@ export interface User {
     name: string
     username: string
     email: string
+    emailVerified?: boolean
     roles?: UserRole[]
     created_at: string
     updated_at: string

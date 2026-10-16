@@ -133,6 +133,63 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    /* ---------- восстановление пароля и подтверждение email ---------- */
+    // Через $fetch, а не $api: плагин $api показывает тост на любую 4xx и
+    // разлогинивает на 401, а эти формы показывают ошибки сами.
+
+    const authRequest = <T>(url: string, body?: Record<string, unknown>, withToken = false) =>
+        $fetch<T>(url, {
+            method: 'POST',
+            body,
+            baseURL: useRuntimeConfig().public.apiUrl,
+            headers: withToken && accessToken.value ? { Authorization: `Bearer ${accessToken.value}` } : undefined
+        })
+
+    const failure = (error: any, fallback: string) => ({
+        success: false as const,
+        error: error?.data?.message || (error?.response ? fallback : 'Нет связи с сервером'),
+        status: error?.response?.status as number | undefined
+    })
+
+    // Ответ всегда одинаковый, есть такой email или нет — чтобы нельзя было
+    // перебором узнать, кто зарегистрирован.
+    const requestPasswordReset = async (email: string) => {
+        try {
+            await authRequest('auth/password/forgot', { email })
+            return { success: true as const }
+        } catch (error: any) {
+            return failure(error, 'Не удалось отправить письмо')
+        }
+    }
+
+    const resetPassword = async (token: string, password: string) => {
+        try {
+            await authRequest('auth/password/reset', { token, password })
+            return { success: true as const }
+        } catch (error: any) {
+            return failure(error, 'Не удалось сменить пароль')
+        }
+    }
+
+    const verifyEmail = async (token: string) => {
+        try {
+            await authRequest('auth/email/verify', { token })
+            if (user.value) user.value.emailVerified = true
+            return { success: true as const }
+        } catch (error: any) {
+            return failure(error, 'Не удалось подтвердить email')
+        }
+    }
+
+    const resendVerification = async () => {
+        try {
+            await authRequest('auth/email/resend', undefined, true)
+            return { success: true as const }
+        } catch (error: any) {
+            return failure(error, 'Не удалось отправить письмо')
+        }
+    }
+
     // Метод для инициализации при монтировании приложения
     const init = async () => {
         if (accessToken.value) {
@@ -151,6 +208,10 @@ export const useAuthStore = defineStore('auth', () => {
         logout,
         fetchUser,
         refreshAccessToken,
+        requestPasswordReset,
+        resetPassword,
+        verifyEmail,
+        resendVerification,
         init
     }
 })

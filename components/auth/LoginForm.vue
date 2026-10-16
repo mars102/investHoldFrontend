@@ -38,6 +38,12 @@
           />
           <span class="text-sm text-gray-600 dark:text-gray-300">Запомнить меня</span>
         </label>
+        <NuxtLink
+          :to="{ path: '/forgot-password', query: state.login.includes('@') ? { email: state.login.trim() } : {} }"
+          class="text-sm text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300 font-medium"
+        >
+          Забыли пароль?
+        </NuxtLink>
       </div>
 
       <UButton

@@ -116,6 +116,7 @@
       class="flex-1 min-h-0 w-full px-4 sm:px-6 py-6 pb-20 md:pb-6"
       :class="isScrollLocked ? 'overflow-hidden' : 'overflow-y-auto'"
     >
+      <AuthVerifyEmailBanner />
       <slot />
 
       <!-- Modern Footer -->
