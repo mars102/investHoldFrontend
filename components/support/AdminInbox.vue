@@ -150,7 +150,14 @@
         <!-- Messages -->
         <div ref="messagesBox" class="flex-1 min-h-0 overflow-y-auto p-4">
           <div v-if="store.currentLoading" class="py-10 text-center text-sm text-gray-400">Загрузка...</div>
-          <SupportThread v-else :messages="store.current.messages ?? []" viewer="admin" />
+          <SupportThread
+            v-else
+            :messages="store.current.messages ?? []"
+            :pending="store.pendingFor(store.current.id, 'admin')"
+            viewer="admin"
+            @retry="store.retryPending"
+            @discard="store.dropPending"
+          />
         </div>
 
         <!-- Reply -->
@@ -169,7 +176,7 @@
             <div class="flex items-center gap-2 ml-auto">
               <span class="text-[11px] text-gray-400">Статус после ответа</span>
               <USelect v-model="statusAfterReply" :options="statusOptions" size="sm" />
-              <UButton type="submit" icon="i-heroicons-paper-airplane" :loading="store.sending" :disabled="!reply.trim()">
+              <UButton type="submit" icon="i-heroicons-paper-airplane" :disabled="!reply.trim()">
                 Ответить
               </UButton>
             </div>
@@ -220,7 +227,7 @@ async function open(id: number) {
   statusAfterReply.value = 'answered'
   try {
     await store.openAdminTicket(id)
-    scrollToBottom()
+    scrollToBottom(true)
   } catch (error: any) {
     toast.add({ title: error?.data?.message || 'Не удалось открыть обращение', color: 'red' })
   }
@@ -235,26 +242,27 @@ async function changeStatus(status: SupportStatus) {
   }
 }
 
-async function sendReply() {
-  if (!store.current || !reply.value.trim() || store.sending) return
-  try {
-    await store.replyAsAdmin(store.current.id, {
-      text: reply.value.trim(),
-      attachments: replyFiles.value,
-      status: statusAfterReply.value
-    })
-    reply.value = ''
-    replyFiles.value = []
-    store.fetchAdminCounts()
-    scrollToBottom()
-  } catch (error: any) {
-    toast.add({ title: error?.data?.message || 'Не удалось отправить ответ', color: 'red' })
-  }
+// Optimistic: the reply appears in the thread at once and the input clears;
+// delivery state (sending / failed + retry) is shown on the message itself.
+function sendReply() {
+  if (!store.current || !reply.value.trim()) return
+  store.sendMessage('admin', store.current.id, {
+    text: reply.value.trim(),
+    attachments: replyFiles.value,
+    status: statusAfterReply.value
+  })
+  reply.value = ''
+  replyFiles.value = []
+  scrollToBottom(true)
 }
 
-function scrollToBottom() {
+/** Scrolls to the newest message; unless forced, only if the admin is already near the bottom */
+function scrollToBottom(force = false) {
   nextTick(() => {
-    if (messagesBox.value) messagesBox.value.scrollTop = messagesBox.value.scrollHeight
+    const el = messagesBox.value
+    if (!el) return
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120
+    if (force || nearBottom) el.scrollTop = el.scrollHeight
   })
 }
 
@@ -275,13 +283,18 @@ function formatFull(value: string) {
 watch(() => filters.status, load)
 watchDebounced(() => filters.search, load, { debounce: 350 })
 
-let refreshTimer: ReturnType<typeof setInterval> | undefined
-onMounted(() => {
-  load()
-  refreshTimer = setInterval(load, 60_000)
-})
-onUnmounted(() => {
-  clearInterval(refreshTimer)
-  store.closeCurrent()
-})
+// Open ticket: poll fast so user replies show up without reloading
+usePolling(
+  async () => {
+    if (await store.refreshAdminCurrent()) scrollToBottom()
+  },
+  4000,
+  () => !!store.current
+)
+
+// List + counters
+usePolling(load, 15_000)
+
+onMounted(load)
+onUnmounted(() => store.closeCurrent())
 </script>

@@ -38,6 +38,50 @@
       </div>
     </div>
 
+    <!-- Optimistic messages: sending / failed -->
+    <div v-for="p in pending" :key="p.localId" class="flex justify-end">
+      <div class="max-w-[85%]">
+        <div class="text-[10px] mb-1 flex items-center justify-end gap-1.5 text-gray-400 dark:text-gray-500">
+          <template v-if="p.state === 'sending'">
+            <UIcon name="i-heroicons-arrow-path" class="w-3 h-3 animate-spin" />
+            Отправка…
+          </template>
+          <template v-else>
+            <UIcon name="i-heroicons-exclamation-circle" class="w-3.5 h-3.5 text-red-500" />
+            <span class="text-red-500 font-semibold">Не отправлено</span>
+          </template>
+        </div>
+        <div
+          class="rounded-2xl rounded-br-md px-3.5 py-2.5 text-sm whitespace-pre-wrap break-words transition-colors"
+          :class="p.state === 'failed'
+            ? 'bg-red-50 text-red-900 ring-1 ring-red-300 dark:bg-red-500/10 dark:text-red-200 dark:ring-red-500/40'
+            : 'bg-cyan-600/70 text-white dark:bg-cyan-700/70'"
+        >{{ p.text }}</div>
+
+        <div v-if="p.previewUrls.length" class="flex flex-wrap justify-end gap-1.5 mt-1.5">
+          <div
+            v-for="url in p.previewUrls"
+            :key="url"
+            class="w-20 h-16 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700"
+            :class="{ 'opacity-60': p.state === 'sending' }"
+          >
+            <img :src="url" alt="" class="w-full h-full object-cover" />
+          </div>
+        </div>
+
+        <div v-if="p.state === 'failed'" class="mt-1.5 flex items-center justify-end gap-3 text-[11px]">
+          <span v-if="p.error" class="text-red-500 dark:text-red-400 truncate">{{ p.error }}</span>
+          <button type="button" class="flex items-center gap-1 font-semibold text-cyan-600 hover:text-cyan-700 dark:text-cyan-400" @click="$emit('retry', p.localId)">
+            <UIcon name="i-heroicons-arrow-path" class="w-3.5 h-3.5" />
+            Повторить
+          </button>
+          <button type="button" class="font-semibold text-gray-400 hover:text-gray-700 dark:hover:text-gray-200" @click="$emit('discard', p.localId)">
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Lightbox -->
     <Teleport to="body">
       <Transition name="fade">
@@ -64,12 +108,22 @@
 </template>
 
 <script setup lang="ts">
-import type { SupportMessage } from '~/types/support'
+import type { PendingSupportMessage, SupportMessage } from '~/types/support'
 
-const props = defineProps<{
-  messages: SupportMessage[]
-  /** Whose messages are drawn on the right: the current viewer's side */
-  viewer: 'user' | 'admin'
+const props = withDefaults(
+  defineProps<{
+    messages: SupportMessage[]
+    /** Whose messages are drawn on the right: the current viewer's side */
+    viewer: 'user' | 'admin'
+    /** Viewer's own messages still being sent or failed */
+    pending?: PendingSupportMessage[]
+  }>(),
+  { pending: () => [] }
+)
+
+defineEmits<{
+  retry: [localId: string]
+  discard: [localId: string]
 }>()
 
 const lightbox = ref<string | null>(null)

@@ -54,6 +54,21 @@ export interface CreateSupportTicketPayload {
   attachments: File[];
 }
 
+/** A message shown in the thread before (or instead of) the server confirming it */
+export interface PendingSupportMessage {
+  localId: string;
+  ticketId: number;
+  side: "user" | "admin";
+  text: string;
+  files: File[];
+  previewUrls: string[];
+  /** Admin only: status to set together with the reply */
+  statusAfter?: SupportStatus;
+  state: "sending" | "failed";
+  error?: string;
+  createdAt: string;
+}
+
 export interface SupportReplyPayload {
   text: string;
   attachments: File[];

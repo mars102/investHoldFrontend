@@ -61,7 +61,7 @@
           </button>
         </div>
 
-        <div class="min-h-0 flex-1 overflow-y-auto">
+        <div ref="body" class="min-h-0 flex-1 overflow-y-auto">
         <!-- My tickets -->
         <template v-if="tab === 'my'">
           <!-- Ticket thread -->
@@ -80,13 +80,27 @@
                 {{ SUPPORT_STATUS_META[supportStore.myCurrent.status].label }}
               </span>
             </div>
-            <SupportThread :messages="supportStore.myCurrent.messages ?? []" viewer="user" />
+            <SupportThread
+              :messages="supportStore.myCurrent.messages ?? []"
+              :pending="supportStore.pendingFor(supportStore.myCurrent.id, 'user')"
+              viewer="user"
+              @retry="supportStore.retryPending"
+              @discard="supportStore.dropPending"
+            />
 
             <form v-if="supportStore.myCurrent.status !== 'closed'" class="mt-4 space-y-2" @submit.prevent="sendFollowUp">
-              <UTextarea v-model="followUp" :rows="2" autoresize :maxrows="6" placeholder="Дописать в обращение..." />
+              <UTextarea
+                v-model="followUp"
+                :rows="2"
+                autoresize
+                :maxrows="6"
+                placeholder="Дописать в обращение... (Ctrl+Enter — отправить)"
+                @keydown.ctrl.enter.prevent="sendFollowUp"
+                @keydown.meta.enter.prevent="sendFollowUp"
+              />
               <SupportAttachmentPicker v-model="followUpFiles" :paste-target="panel" />
               <div class="flex justify-end">
-                <button type="submit" class="send-btn" :disabled="supportStore.sending || !followUp.trim()">
+                <button type="submit" class="send-btn" :disabled="!followUp.trim()">
                   <UIcon name="i-heroicons-paper-airplane" class="w-4 h-4" />
                   Отправить
                 </button>
@@ -106,7 +120,7 @@
               :key="t.id"
               type="button"
               class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors"
-              @click="supportStore.openMyTicket(t.id)"
+              @click="openTicket(t.id)"
             >
               <div class="flex items-center gap-2">
                 <span v-if="t.hasUnread" class="w-2 h-2 rounded-full bg-red-500 shrink-0" title="Новый ответ" />
@@ -300,6 +314,7 @@ const tabs = [
 ] as const
 const tab = ref<'new' | 'my'>('new')
 const panel = ref<HTMLElement | null>(null)
+const body = ref<HTMLElement | null>(null)
 const attachments = ref<File[]>([])
 const followUp = ref('')
 const followUpFiles = ref<File[]>([])
@@ -375,17 +390,47 @@ function switchTab(value: 'new' | 'my') {
   }
 }
 
-async function sendFollowUp() {
-  const ticket = supportStore.myCurrent
-  if (!ticket || !followUp.value.trim()) return
+async function openTicket(id: number) {
   try {
-    await supportStore.replyAsUser(ticket.id, { text: followUp.value.trim(), attachments: followUpFiles.value })
-    followUp.value = ''
-    followUpFiles.value = []
+    await supportStore.openMyTicket(id)
+    scrollToBottom(true)
   } catch (error: any) {
-    toast.add({ title: error?.data?.message || 'Не удалось отправить сообщение', color: 'red' })
+    toast.add({ title: error?.data?.message || 'Не удалось открыть обращение', color: 'red' })
   }
 }
+
+// Optimistic: the message appears in the thread at once and the input clears;
+// delivery state (sending / failed + retry) is shown on the message itself.
+function sendFollowUp() {
+  const ticket = supportStore.myCurrent
+  if (!ticket || !followUp.value.trim()) return
+  supportStore.sendMessage('user', ticket.id, { text: followUp.value.trim(), attachments: followUpFiles.value })
+  followUp.value = ''
+  followUpFiles.value = []
+  scrollToBottom(true)
+}
+
+/** Scrolls the panel to the newest message; unless forced, only if the user is already near the bottom */
+function scrollToBottom(force = false) {
+  nextTick(() => {
+    const el = body.value
+    if (!el) return
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 120
+    if (force || nearBottom) el.scrollTop = el.scrollHeight
+  })
+}
+
+// Open thread: poll fast so replies show up without reloading
+usePolling(
+  async () => {
+    if (await supportStore.refreshMyCurrent()) scrollToBottom()
+  },
+  4000,
+  () => isOpen.value && tab.value === 'my' && !!supportStore.myCurrent
+)
+
+// Ticket list / unread badge on the robot
+usePolling(() => supportStore.fetchMyTickets(), 30_000, () => isLoggedIn.value)
 
 async function submit() {
   if (!canSubmit.value) {

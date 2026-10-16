@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type {
   CreateSupportTicketPayload,
+  PendingSupportMessage,
   SupportMessage,
   SupportReplyPayload,
   SupportStatus,
@@ -16,17 +17,26 @@ export interface AdminTicketFilters {
 const EMPTY_COUNTS: Record<SupportStatus, number> = { new: 0, in_progress: 0, answered: 0, closed: 0 };
 
 /**
- * For background polling (unread badges, counters): the $api plugin pops an
- * error toast on any 4xx and logs out on 401, which must not happen for
- * requests the user never asked for.
+ * Support requests bypass the $api plugin: it pops an error toast on any 4xx
+ * and logs out on 401. Background polling must stay silent, guests must not be
+ * redirected, and failed messages are shown inline in the thread instead.
  */
-function silentFetch<T>(url: string, params?: Record<string, string | undefined>) {
+function supportFetch<T>(
+  url: string,
+  options: { method?: "GET" | "POST" | "PATCH"; params?: Record<string, string | undefined>; body?: any } = {},
+) {
   const authStore = useAuthStore();
   return $fetch<T>(url, {
-    params,
+    ...options,
     baseURL: useRuntimeConfig().public.apiUrl,
     headers: authStore.accessToken ? { Authorization: `Bearer ${authStore.accessToken}` } : undefined,
   });
+}
+
+function errorMessage(error: any, fallback: string): string {
+  if (error?.data?.message) return String(error.data.message);
+  if (!error?.response) return "Нет связи с сервером";
+  return fallback;
 }
 
 export const useSupportStore = defineStore("support", {
@@ -44,26 +54,23 @@ export const useSupportStore = defineStore("support", {
     current: null as SupportTicket | null,
     currentLoading: false,
     sending: false,
+    // optimistic messages not yet confirmed by the server (both sides)
+    pending: [] as PendingSupportMessage[],
   }),
 
   getters: {
     myUnreadCount: (state) => state.myTickets.filter((t) => t.hasUnread).length,
+    pendingFor: (state) => (ticketId: number, side: "user" | "admin") =>
+      state.pending.filter((p) => p.ticketId === ticketId && p.side === side),
   },
 
   actions: {
-    /**
-     * Creating a ticket works for guests too, so it goes through plain $fetch:
-     * the $api plugin treats 401 as an expired session and redirects to /login.
-     */
     async createTicket(payload: CreateSupportTicketPayload) {
-      const authStore = useAuthStore();
       const { attachments, ...fields } = payload;
       this.sending = true;
       try {
-        return await $fetch<SupportTicket>("/support", {
+        return await supportFetch<SupportTicket>("/support", {
           method: "POST",
-          baseURL: useRuntimeConfig().public.apiUrl,
-          headers: authStore.accessToken ? { Authorization: `Bearer ${authStore.accessToken}` } : undefined,
           body: buildSupportFormData(fields, attachments),
         });
       } finally {
@@ -76,19 +83,18 @@ export const useSupportStore = defineStore("support", {
     async fetchMyTickets() {
       this.myLoading = true;
       try {
-        this.myTickets = (await silentFetch<SupportTicket[]>("/support/my")) ?? [];
+        this.myTickets = (await supportFetch<SupportTicket[]>("/support/my")) ?? [];
       } catch {
-        this.myTickets = [];
+        // keep the previous list: a failed poll shouldn't blank it out
       } finally {
         this.myLoading = false;
       }
     },
 
     async openMyTicket(id: number) {
-      const { $api } = useNuxtApp();
       this.currentLoading = true;
       try {
-        this.myCurrent = await $api<SupportTicket>(`/support/my/${id}`);
+        this.myCurrent = await supportFetch<SupportTicket>(`/support/my/${id}`);
         // the detail request marks admin replies as read on the backend
         const listed = this.myTickets.find((t) => t.id === id);
         if (listed) listed.hasUnread = false;
@@ -97,18 +103,18 @@ export const useSupportStore = defineStore("support", {
       }
     },
 
-    async replyAsUser(id: number, payload: SupportReplyPayload) {
-      const { $api } = useNuxtApp();
-      this.sending = true;
+    /** Poll the open thread; returns true when new messages arrived */
+    async refreshMyCurrent(): Promise<boolean> {
+      const opened = this.myCurrent;
+      if (!opened) return false;
       try {
-        const message = await $api<SupportMessage>(`/support/my/${id}/messages`, {
-          method: "POST",
-          body: buildSupportFormData({ text: payload.text }, payload.attachments),
-        });
-        this.appendToCurrent(id, message, "new");
-        return message;
-      } finally {
-        this.sending = false;
+        const fresh = await supportFetch<SupportTicket>(`/support/my/${opened.id}`);
+        if (this.myCurrent?.id !== fresh.id) return false;
+        const before = this.myCurrent.messages?.length ?? 0;
+        this.myCurrent = fresh;
+        return (fresh.messages?.length ?? 0) > before;
+      } catch {
+        return false;
       }
     },
 
@@ -117,10 +123,11 @@ export const useSupportStore = defineStore("support", {
     async fetchAdminTickets(filters: AdminTicketFilters) {
       this.adminLoading = true;
       try {
-        // silent: the inbox shows load errors inline and refreshes every minute
-        const response = await silentFetch<SupportTicketList>("/support/admin", {
-          status: filters.status === "all" ? undefined : filters.status,
-          search: filters.search.trim() || undefined,
+        const response = await supportFetch<SupportTicketList>("/support/admin", {
+          params: {
+            status: filters.status === "all" ? undefined : filters.status,
+            search: filters.search.trim() || undefined,
+          },
         });
         this.adminTickets = response.items ?? [];
         this.adminTotal = response.total ?? 0;
@@ -133,7 +140,7 @@ export const useSupportStore = defineStore("support", {
     /** Lightweight counters for the admin nav badge */
     async fetchAdminCounts() {
       try {
-        const counts = await silentFetch<Record<SupportStatus, number>>("/support/admin/stats");
+        const counts = await supportFetch<Record<SupportStatus, number>>("/support/admin/stats");
         this.adminCounts = { ...EMPTY_COUNTS, ...(counts ?? {}) };
       } catch {
         // badge is non-essential
@@ -141,10 +148,9 @@ export const useSupportStore = defineStore("support", {
     },
 
     async openAdminTicket(id: number) {
-      const { $api } = useNuxtApp();
       this.currentLoading = true;
       try {
-        this.current = await $api<SupportTicket>(`/support/admin/${id}`);
+        this.current = await supportFetch<SupportTicket>(`/support/admin/${id}`);
         const listed = this.adminTickets.find((t) => t.id === id);
         if (listed) listed.hasUnread = false;
       } finally {
@@ -152,24 +158,24 @@ export const useSupportStore = defineStore("support", {
       }
     },
 
-    async replyAsAdmin(id: number, payload: SupportReplyPayload) {
-      const { $api } = useNuxtApp();
-      this.sending = true;
+    async refreshAdminCurrent(): Promise<boolean> {
+      const opened = this.current;
+      if (!opened) return false;
       try {
-        const message = await $api<SupportMessage>(`/support/admin/${id}/messages`, {
-          method: "POST",
-          body: buildSupportFormData({ text: payload.text, status: payload.status }, payload.attachments),
-        });
-        this.appendToCurrent(id, message, payload.status ?? "answered");
-        return message;
-      } finally {
-        this.sending = false;
+        const fresh = await supportFetch<SupportTicket>(`/support/admin/${opened.id}`);
+        if (this.current?.id !== fresh.id) return false;
+        const before = this.current.messages?.length ?? 0;
+        this.current = fresh;
+        const listed = this.adminTickets.find((t) => t.id === fresh.id);
+        if (listed) Object.assign(listed, { status: fresh.status, hasUnread: false });
+        return (fresh.messages?.length ?? 0) > before;
+      } catch {
+        return false;
       }
     },
 
     async setStatus(id: number, status: SupportStatus) {
-      const { $api } = useNuxtApp();
-      await $api(`/support/admin/${id}`, { method: "PATCH", body: { status } });
+      await supportFetch(`/support/admin/${id}`, { method: "PATCH", body: { status } });
       const previous = this.adminTickets.find((t) => t.id === id)?.status ?? this.current?.status;
       if (this.current?.id === id) this.current.status = status;
       const listed = this.adminTickets.find((t) => t.id === id);
@@ -180,10 +186,74 @@ export const useSupportStore = defineStore("support", {
       }
     },
 
+    /* ---------- optimistic sending (both sides) ---------- */
+
+    /** Shows the message in the thread right away, then delivers it in the background */
+    sendMessage(side: "user" | "admin", ticketId: number, payload: SupportReplyPayload) {
+      const pending: PendingSupportMessage = {
+        localId: `local-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        ticketId,
+        side,
+        text: payload.text,
+        files: payload.attachments,
+        previewUrls: payload.attachments.map((f) => URL.createObjectURL(f)),
+        statusAfter: payload.status,
+        state: "sending",
+        createdAt: new Date().toISOString(),
+      };
+      this.pending.push(pending);
+      void this.deliver(pending.localId);
+    },
+
+    async deliver(localId: string) {
+      const item = this.pending.find((p) => p.localId === localId);
+      if (!item) return;
+      item.state = "sending";
+      item.error = undefined;
+
+      const url =
+        item.side === "user"
+          ? `/support/my/${item.ticketId}/messages`
+          : `/support/admin/${item.ticketId}/messages`;
+      const fields = item.side === "user" ? { text: item.text } : { text: item.text, status: item.statusAfter };
+
+      try {
+        const message = await supportFetch<SupportMessage>(url, {
+          method: "POST",
+          body: buildSupportFormData(fields, item.files),
+        });
+        this.dropPending(localId);
+        this.appendToCurrent(item.ticketId, message, item.side === "user" ? "new" : (item.statusAfter ?? "answered"));
+        if (item.side === "admin") void this.fetchAdminCounts();
+      } catch (error: any) {
+        const failed = this.pending.find((p) => p.localId === localId);
+        if (failed) {
+          failed.state = "failed";
+          failed.error = errorMessage(error, "Не удалось отправить");
+        }
+      }
+    },
+
+    retryPending(localId: string) {
+      void this.deliver(localId);
+    },
+
+    dropPending(localId: string) {
+      const item = this.pending.find((p) => p.localId === localId);
+      if (!item) return;
+      item.previewUrls.forEach((url) => URL.revokeObjectURL(url));
+      this.pending = this.pending.filter((p) => p.localId !== localId);
+    },
+
     appendToCurrent(id: number, message: SupportMessage, status: SupportStatus) {
+      let isNew = false;
       for (const opened of [this.current, this.myCurrent]) {
         if (opened?.id === id) {
-          opened.messages = [...(opened.messages ?? []), message];
+          // a poll may have already brought this message in
+          if (!opened.messages?.some((m) => m.id === message.id)) {
+            opened.messages = [...(opened.messages ?? []), message];
+            isNew = true;
+          }
           opened.status = status;
         }
       }
@@ -193,7 +263,7 @@ export const useSupportStore = defineStore("support", {
           listed.status = status;
           listed.preview = message.text.split("\n")[0] ?? "";
           listed.lastMessageAt = message.createdAt;
-          listed.messagesCount += 1;
+          if (isNew) listed.messagesCount += 1;
         }
       }
     },
