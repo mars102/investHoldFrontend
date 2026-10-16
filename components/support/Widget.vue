@@ -15,7 +15,7 @@
       <div
         v-if="isOpen"
         ref="panel"
-        class="panel mb-3 w-[min(380px,calc(100vw-1.5rem))] max-h-[min(620px,calc(100vh-11rem))] flex flex-col rounded-2xl overflow-hidden border border-gray-200/80 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-gray-900/95"
+        class="panel mb-3 w-[min(380px,calc(100vw-1.5rem))] h-[min(580px,calc(100vh-11rem))] flex flex-col rounded-2xl overflow-hidden border border-gray-200/80 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-white/10 dark:bg-gray-900/95"
         role="dialog"
         aria-label="Обращение в поддержку"
         @keydown.esc="close"
@@ -135,7 +135,7 @@
         </template>
 
         <!-- Success -->
-        <div v-else-if="status === 'success'" class="px-5 py-8 text-center">
+        <div v-else-if="status === 'success'" class="min-h-full flex flex-col items-center justify-center px-5 py-8 text-center">
           <div class="mx-auto w-14 h-14 rounded-full bg-emerald-500/15 flex items-center justify-center">
             <UIcon name="i-heroicons-check-badge" class="w-8 h-8 text-emerald-500" />
           </div>
