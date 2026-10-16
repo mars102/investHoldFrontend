@@ -8,8 +8,7 @@
 <script>
 import UserList from "../../components/user/UserList";
 definePageMeta({
-  layout: "adminpanel",
-  middleware: "auth"
+  layout: "adminpanel"
 });
 </script>
 

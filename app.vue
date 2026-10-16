@@ -5,5 +5,6 @@
 
   <ClientOnly>
     <UNotifications />
+    <SupportWidget />
   </ClientOnly>
 </template>

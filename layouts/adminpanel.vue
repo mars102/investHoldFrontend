@@ -79,6 +79,27 @@
                 </span>
               </div>
             </NuxtLink>
+
+            <NuxtLink
+                to="/admin/support"
+                class="relative px-5 py-3 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:text-emerald-700 dark:hover:text-emerald-400 rounded-xl transition-all duration-300 group overflow-hidden"
+                active-class="!text-emerald-700 dark:!text-emerald-400 !font-bold"
+            >
+              <div class="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/5 to-emerald-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+              <div class="flex items-center gap-3 relative z-10">
+                <div class="relative w-8 h-8 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md group-hover:shadow-emerald-200">
+                  <UIcon name="i-heroicons-lifebuoy" class="w-4 h-4 text-white" />
+                  <span
+                    v-if="newSupportCount"
+                    class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-gray-900"
+                  >{{ newSupportCount }}</span>
+                </div>
+                <span class="relative">
+                  Поддержка
+                  <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-cyan-500 group-hover:w-full transition-all duration-300"></span>
+                </span>
+              </div>
+            </NuxtLink>
           </nav>
 
           <div class="flex items-center gap-3">
@@ -133,6 +154,21 @@
                 <UIcon name="i-heroicons-currency-dollar" class="w-6 h-6 text-blue-600" />
               </div>
               <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Монеты</span>
+            </NuxtLink>
+
+            <NuxtLink
+                to="/admin/support"
+                class="flex flex-col items-center p-2 group"
+                active-class="text-emerald-700"
+            >
+              <div class="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-100 to-cyan-50 flex items-center justify-center mb-2 group-hover:scale-110 transition-all duration-300 shadow-md group-hover:shadow-emerald-200">
+                <UIcon name="i-heroicons-lifebuoy" class="w-6 h-6 text-emerald-600" />
+                <span
+                  v-if="newSupportCount"
+                  class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center"
+                >{{ newSupportCount }}</span>
+              </div>
+              <span class="text-xs font-bold text-gray-700 dark:text-gray-300">Поддержка</span>
             </NuxtLink>
           </div>
         </div>
@@ -220,6 +256,16 @@
 
 <script setup lang="ts">
 import UserMenu from '~/components/user/UserMenu.vue'
+
+const supportStore = useSupportStore()
+const newSupportCount = computed(() => supportStore.adminCounts.new)
+
+let supportCountsTimer: ReturnType<typeof setInterval> | undefined
+onMounted(() => {
+  supportStore.fetchAdminCounts()
+  supportCountsTimer = setInterval(() => supportStore.fetchAdminCounts(), 60_000)
+})
+onUnmounted(() => clearInterval(supportCountsTimer))
 </script>
 
 <style scoped>

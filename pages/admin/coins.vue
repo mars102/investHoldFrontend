@@ -8,8 +8,7 @@
 <script>
 import CoinList from "../../components/coin/CoinList";
 definePageMeta({
-  layout: "adminpanel",
-  middleware: "auth"
+  layout: "adminpanel"
 });
 </script>
 
