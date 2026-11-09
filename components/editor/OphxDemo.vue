@@ -33,6 +33,32 @@
           <span v-if="savedAt"> · черновик сохранён {{ savedAtLabel }}</span>
           <span v-if="styleCount"> · стилей из файла: {{ styleCount }}</span>
         </p>
+        <div class="mt-1.5 flex flex-wrap items-center gap-1.5 pl-8">
+          <a
+            href="https://www.npmjs.com/package/@phenix1024/editor"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600 hover:border-red-300 hover:text-red-600 dark:border-gray-700 dark:text-gray-400 dark:hover:border-red-500/50 dark:hover:text-red-400"
+          >
+            <!-- npm logo -->
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 text-[#cb3837]" fill="currentColor" aria-hidden="true">
+              <path d="M0 7.33h24v8h-12v1.34H6.67v-1.34H0v-8zm1.33 6.67h2.67v-4h1.33v4h1.34V8.67H1.33V14zm6.67-5.33V16h2.67v-1.33h2.66V8.67H8zm2.67 1.33H12v2.67h-1.33V10zm4-1.33V14h2.66v-4H20v4h1.33v-4h1.34v4H24V8.67h-9.33z" />
+            </svg>
+            @phenix1024/editor
+          </a>
+          <a
+            href="https://github.com/mars102/pluginEditor"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 rounded-md border border-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600 hover:border-gray-400 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500 dark:hover:text-white"
+          >
+            <!-- GitHub logo -->
+            <svg viewBox="0 0 16 16" class="h-3.5 w-3.5" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+            </svg>
+            mars102/pluginEditor
+          </a>
+        </div>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
@@ -74,7 +100,7 @@
         <iframe
           ref="frame"
           title="Редактор документа"
-          class="block h-[75vh] w-full xl:h-[calc(100vh-150px)]"
+          class="block h-[75vh] w-full xl:h-[calc(100vh-180px)]"
         />
       </div>
 
