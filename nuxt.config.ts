@@ -27,6 +27,16 @@ export default defineNuxtConfig({
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.png" }],
     },
   },
+  vite: {
+    server: {
+      watch: {
+        // Vite doesn't watch node_modules and keeps serving the old copy of a package
+        // after `npm i` until restart. The editor is loaded by URL into an iframe
+        // (components/editor/OphxDemo.vue), so watch it to pick up new versions live.
+        ignored: ["!**/node_modules/@phenix1024/editor/**"],
+      },
+    },
+  },
   nitro: {
     devProxy: {
       "/backend": {

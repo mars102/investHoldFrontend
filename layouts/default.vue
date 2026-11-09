@@ -58,14 +58,31 @@
               </div>
             </NuxtLink>
 
+            <NuxtLink
+                to="/editor"
+                class="px-4 py-2 text-xs font-semibold text-gray-600 dark:text-gray-400 hover:text-cyan-600 hover:bg-cyan-50 dark:hover:bg-cyan-500/10 rounded-lg transition-all duration-200 hover:scale-[1.02]"
+                active-class="!text-cyan-600 !bg-cyan-50 !font-bold"
+            >
+              <div class="flex items-center gap-2">
+                <div class="w-4 h-4 bg-gradient-to-br from-cyan-500 to-teal-400 rounded flex items-center justify-center">
+                  <UIcon name="i-heroicons-document-text" class="w-2.5 h-2.5 text-white" />
+                </div>
+                <span>Документы</span>
+              </div>
+            </NuxtLink>
+
 
           </nav>
 
           <div class="flex items-center gap-2">
             <ThemeSwitch />
 
-            <!-- User Menu -->
-            <UserMenu />
+            <!-- User Menu (guests on public pages like /editor get a login button instead) -->
+            <UserMenu v-if="authStore.isAuthenticated" />
+            <template v-else>
+              <UButton to="/login" size="sm" color="gray" variant="ghost">Войти</UButton>
+              <UButton to="/register" size="sm" class="hidden sm:inline-flex">Регистрация</UButton>
+            </template>
           </div>
         </div>
       </div>
@@ -107,6 +124,17 @@
           <span class="text-[10px] font-semibold">Аналитика</span>
         </NuxtLink>
 
+        <NuxtLink
+            to="/editor"
+            class="flex flex-col items-center p-2 text-gray-500 dark:text-gray-400"
+            active-class="text-cyan-600"
+        >
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-1">
+            <UIcon name="i-heroicons-document-text" class="w-6 h-6" />
+          </div>
+          <span class="text-[10px] font-semibold">Документы</span>
+        </NuxtLink>
+
 
       </div>
     </div>
@@ -144,6 +172,7 @@
 import UserMenu from '~/components/user/UserMenu.vue'
 
 const isScrollLocked = useScrollLock()
+const authStore = useAuthStore()
 </script>
 
 <style scoped>
